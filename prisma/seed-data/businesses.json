@@ -1,0 +1,264 @@
+[
+  {
+    "slug": "ministry-of-crab",
+    "name": "Ministry of Crab",
+    "description": "Landmark Sri Lankan seafood restaurant inside the Dutch Hospital Shopping Precinct, best known for its Sri Lankan lagoon crab prepared in a range of signature styles.",
+    "primaryCategories": ["restaurant"],
+    "secondaryCategories": ["seafood"],
+    "district": "Colombo 01",
+    "addressFreeText": "Dutch Hospital Shopping Precinct, Bank of Ceylon Mawatha",
+    "latitude": 6.9344,
+    "longitude": 79.8428,
+    "attributes": {
+      "delivery": false,
+      "takeout": false,
+      "dineIn": true,
+      "outdoorSeating": true,
+      "goodForGroups": true,
+      "goodForKids": false,
+      "alcoholServed": true,
+      "reservationsAccepted": true,
+      "priceTier": 4,
+      "parking": "street",
+      "wifi": true
+    }
+  },
+  {
+    "slug": "upalis-by-nawaloka",
+    "name": "Upali's by Nawaloka",
+    "description": "Long-running Sri Lankan restaurant chain known for rice-and-curry buffets and home-style local dishes in a casual dining setting.",
+    "primaryCategories": ["restaurant"],
+    "secondaryCategories": ["sri-lankan"],
+    "district": "Colombo 03",
+    "addressFreeText": "Sir James Peiris Mawatha, Kollupitiya",
+    "latitude": 6.9147,
+    "longitude": 79.8498,
+    "attributes": {
+      "delivery": true,
+      "takeout": true,
+      "dineIn": true,
+      "outdoorSeating": false,
+      "goodForGroups": true,
+      "goodForKids": true,
+      "alcoholServed": false,
+      "reservationsAccepted": false,
+      "priceTier": 2,
+      "parking": "lot",
+      "wifi": false
+    }
+  },
+  {
+    "slug": "nihonbashi-colombo",
+    "name": "Nihonbashi",
+    "description": "One of Colombo's most established Japanese restaurants, serving sushi, sashimi, teppanyaki and a full Japanese a la carte menu.",
+    "primaryCategories": ["restaurant"],
+    "secondaryCategories": ["japanese"],
+    "district": "Colombo 03",
+    "addressFreeText": "Galle Road, Kollupitiya",
+    "latitude": 6.9126,
+    "longitude": 79.8479,
+    "attributes": {
+      "delivery": false,
+      "takeout": true,
+      "dineIn": true,
+      "outdoorSeating": false,
+      "goodForGroups": true,
+      "goodForKids": false,
+      "alcoholServed": true,
+      "reservationsAccepted": true,
+      "priceTier": 4,
+      "parking": "lot",
+      "wifi": true
+    }
+  },
+  {
+    "slug": "cafe-kumbuk",
+    "name": "Cafe Kumbuk",
+    "description": "Relaxed neighbourhood cafe under a large kumbuk tree, known for all-day breakfasts, coffee and a laid-back garden seating area.",
+    "primaryCategories": ["cafe"],
+    "secondaryCategories": ["breakfast"],
+    "district": "Colombo 05",
+    "addressFreeText": "Alfred House Gardens, Havelock Town",
+    "latitude": 6.8845,
+    "longitude": 79.8657,
+    "attributes": {
+      "delivery": false,
+      "takeout": true,
+      "dineIn": true,
+      "outdoorSeating": true,
+      "goodForGroups": true,
+      "goodForKids": true,
+      "alcoholServed": false,
+      "reservationsAccepted": false,
+      "priceTier": 2,
+      "parking": "street",
+      "wifi": true
+    }
+  },
+  {
+    "slug": "barefoot-garden-cafe",
+    "name": "Barefoot Garden Cafe",
+    "description": "Open-air garden cafe behind the Barefoot boutique and gallery, a longtime favourite for lunch, cake and people-watching in a leafy courtyard.",
+    "primaryCategories": ["cafe"],
+    "secondaryCategories": ["restaurant"],
+    "district": "Colombo 03",
+    "addressFreeText": "Galle Road, Bambalapitiya",
+    "latitude": 6.8969,
+    "longitude": 79.8557,
+    "attributes": {
+      "delivery": false,
+      "takeout": false,
+      "dineIn": true,
+      "outdoorSeating": true,
+      "goodForGroups": true,
+      "goodForKids": true,
+      "alcoholServed": false,
+      "reservationsAccepted": false,
+      "priceTier": 2,
+      "parking": "street",
+      "wifi": true
+    }
+  },
+  {
+    "slug": "spa-ceylon-colombo",
+    "name": "Spa Ceylon Colombo",
+    "description": "Sri Lankan luxury Ayurveda spa and wellness retailer offering massages, facials and body treatments using in-house herbal products.",
+    "primaryCategories": ["beauty-spa"],
+    "secondaryCategories": ["ayurveda"],
+    "district": "Colombo 03",
+    "addressFreeText": "Race Course Avenue, Colombo 03",
+    "latitude": 6.9091,
+    "longitude": 79.8590,
+    "attributes": {
+      "walkInsWelcome": false,
+      "appointmentRequired": true,
+      "genderSpecificServices": "both",
+      "priceTier": 3
+    }
+  },
+  {
+    "slug": "toni-and-guy-colombo",
+    "name": "Toni & Guy Colombo",
+    "description": "International hair salon franchise offering cuts, colour and styling, located in Cinnamon Gardens.",
+    "primaryCategories": ["beauty-spa"],
+    "secondaryCategories": ["hair-salon"],
+    "district": "Colombo 07",
+    "addressFreeText": "Ward Place, Cinnamon Gardens",
+    "latitude": 6.9061,
+    "longitude": 79.8621,
+    "attributes": {
+      "walkInsWelcome": true,
+      "appointmentRequired": false,
+      "genderSpecificServices": "both",
+      "priceTier": 3
+    }
+  },
+  {
+    "slug": "abans-elite-service-center",
+    "name": "Abans Elite Service Center",
+    "description": "Authorised appliance and electronics service center for a leading Sri Lankan retailer, handling repairs, installations and warranty service calls.",
+    "primaryCategories": ["home-services"],
+    "secondaryCategories": ["appliance-repair"],
+    "district": "Colombo 02",
+    "addressFreeText": "Union Place, Slave Island",
+    "latitude": 6.9257,
+    "longitude": 79.8489,
+    "attributes": {
+      "licenseVerified": true,
+      "freeEstimates": true,
+      "emergencyService": false,
+      "yearsInBusiness": 30,
+      "serviceAreaRadiusKm": 25
+    }
+  },
+  {
+    "slug": "dimo-automobile-service-centre",
+    "name": "DIMO Automobile Service Centre",
+    "description": "Long-established vehicle servicing and repair centre run by Diesel & Motor Engineering, handling maintenance, repairs and spare parts for a wide range of vehicles.",
+    "primaryCategories": ["vehicle-repair"],
+    "secondaryCategories": ["auto-service"],
+    "district": "Colombo 10",
+    "addressFreeText": "Ward Place, Maradana",
+    "latitude": 6.9280,
+    "longitude": 79.8636,
+    "attributes": {
+      "licenseVerified": true,
+      "freeEstimates": true,
+      "emergencyService": true,
+      "yearsInBusiness": 60,
+      "serviceAreaRadiusKm": 30
+    }
+  },
+  {
+    "slug": "three-wheel-auto-care",
+    "name": "Three Wheel Auto Care",
+    "description": "Neighbourhood garage specialising in three-wheeler (tuk-tuk) repairs, servicing and spare parts for local drivers.",
+    "primaryCategories": ["tuk-repair"],
+    "secondaryCategories": ["auto-service"],
+    "district": "Colombo 06",
+    "addressFreeText": "Galle Road, Wellawatte",
+    "latitude": 6.8767,
+    "longitude": 79.8600,
+    "attributes": {
+      "licenseVerified": false,
+      "freeEstimates": true,
+      "emergencyService": true,
+      "yearsInBusiness": 12,
+      "serviceAreaRadiusKm": 10
+    }
+  },
+  {
+    "slug": "esoft-metro-campus-colombo",
+    "name": "ESOFT Metro Campus Colombo",
+    "description": "Private higher-education and professional training campus offering IT, business and English-language tuition classes for students and working professionals.",
+    "primaryCategories": ["tutoring"],
+    "secondaryCategories": ["education"],
+    "district": "Colombo 06",
+    "addressFreeText": "Green Path, Wellawatte",
+    "latitude": 6.8890,
+    "longitude": 79.8580,
+    "attributes": {
+      "licenseVerified": true,
+      "freeEstimates": false,
+      "emergencyService": false,
+      "yearsInBusiness": 20,
+      "serviceAreaRadiusKm": 15
+    }
+  },
+  {
+    "slug": "cinnamon-grand-weddings",
+    "name": "Cinnamon Grand Colombo Weddings",
+    "description": "Full-service wedding and event venue inside the Cinnamon Grand hotel, offering banquet halls, catering and event planning for local weddings.",
+    "primaryCategories": ["wedding-vendors"],
+    "secondaryCategories": ["event-venue"],
+    "district": "Colombo 03",
+    "addressFreeText": "Galle Road, Kollupitiya",
+    "latitude": 6.9169,
+    "longitude": 79.8487,
+    "attributes": {
+      "licenseVerified": true,
+      "freeEstimates": true,
+      "emergencyService": false,
+      "yearsInBusiness": 45,
+      "serviceAreaRadiusKm": 20
+    }
+  },
+  {
+    "slug": "barnes-place-bespoke-tailors",
+    "name": "Barnes Place Bespoke Tailors",
+    "description": "Bespoke tailoring shop on Colombo's well-known Barnes Place garment district, offering made-to-measure shirts, suits and school/office uniforms.",
+    "primaryCategories": ["tailoring"],
+    "secondaryCategories": ["garments"],
+    "district": "Colombo 07",
+    "addressFreeText": "Barnes Place, Cinnamon Gardens",
+    "latitude": 6.9106,
+    "longitude": 79.8672,
+    "attributes": {
+      "licenseVerified": false,
+      "freeEstimates": true,
+      "emergencyService": false,
+      "yearsInBusiness": 18,
+      "serviceAreaRadiusKm": 10
+    }
+  }
+]

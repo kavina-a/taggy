@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "leaflet/dist/leaflet.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -9,6 +10,7 @@
   --color-foreground: var(--foreground);
   --color-status-open: var(--status-open);
   --color-status-closed: var(--status-closed);
+  --color-brand-accent: var(--brand-accent);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
@@ -85,6 +87,10 @@
   --sidebar-ring: oklch(0.708 0 0);
   --status-open: #16a34a;
   --status-closed: #71717a;
+  /* UI-SPEC accent (10%): reserved ONLY for the primary CTA, active tab
+     indicator, and selected category chip — never shadcn's own semantic
+     `--accent` (used for hover/muted backgrounds), which stays neutral. */
+  --brand-accent: #ea580c;
   /* UI-SPEC Design System: Inter first, with Sinhala/Tamil glyph fallback since
      real seeded business names/addresses may contain Sinhala/Tamil script. */
   --font-sans: var(--font-inter), "Noto Sans Sinhala", "Noto Sans Tamil", system-ui,
