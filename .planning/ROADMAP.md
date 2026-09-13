@@ -83,7 +83,32 @@ Plans:
   4. The home/discovery page shows rails such as trending nearby, top rated this month, new businesses, and category shortcuts.
   5. Any user can search, browse, and read everything with zero login prompts; when they do sign up it's via phone OTP (email optional), with no forced full-profile step, and they can set a language preference (English complete; Sinhala/Tamil structurally supported).
 
-**Plans**: TBD
+**Plans**: 9 plans
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Foundations: npm/shadcn deps, Prisma schema (search indexes + User/OtpChallenge), OTP hashing primitives
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Search Engine Core: ranked tsvector+geo-decay+neutral-rating query, filters, sort, open-now post-filter
+- [ ] 02-03-PLAN.md — Auth Core: OTP send/verify, rate limiting, iron-session
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-04-PLAN.md — Search Results Page & Search Bar (SSR + API route + extended BusinessCard)
+- [ ] 02-05-PLAN.md — Auth UI: phone-OTP login flow + progressive-profile prompt
+- [ ] 02-06-PLAN.md — Header session wiring + language switcher
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 02-07-PLAN.md — Home Discovery Page (rails + category shortcuts)
+- [ ] 02-08-PLAN.md — Search Filters, Sort & Map
+
+**Wave 5 (integration)** *(blocked on Wave 4 completion)*
+
+- [ ] 02-09-PLAN.md — Guest-browsing regression test + full cross-cutting e2e smoke path
+
 **UI hint**: yes
 
 ### Phase 3: Reviews & Ratings
@@ -142,8 +167,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Business Directory Foundation | 5/5 | Complete   | 2026-09-13 |
-| 2. Search, Discovery & Accounts | 0/TBD | Not started | - |
+| 1. Business Directory Foundation | 5/5 | Complete    | 2026-09-13 |
+| 2. Search, Discovery & Accounts | 0/9 | Not started | - |
 | 3. Reviews & Ratings | 0/TBD | Not started | - |
 | 4. Voting, Owner Response & Reporting | 0/TBD | Not started | - |
 | 5. Rich Content — Photos, Q&A & Collections | 0/TBD | Not started | - |
