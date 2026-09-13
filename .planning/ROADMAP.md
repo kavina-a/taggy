@@ -45,7 +45,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A user can view category-conditional attributes (e.g. delivery/takeout/outdoor seating for restaurants; license-verified/free-estimates for home services) and browse a photo gallery, with restaurants also showing a dedicated pinned menu tab.
   4. The directory already contains real, seeded Colombo businesses spanning the Sri Lanka-relevant category taxonomy (including tuk repair, tutoring, wedding vendors, tailoring), so the app isn't empty at first use.
 
-**Plans**: 2/4 plans executed
+**Plans**: 3/4 plans executed
 Plans:
 **Wave 1**
 
@@ -57,7 +57,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md — Category taxonomy + jsonb attribute badges + photo gallery + restaurant Menu tab
+- [x] 01-03-PLAN.md — Category taxonomy + jsonb attribute badges + photo gallery + restaurant Menu tab
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Business Directory Foundation | 2/4 | In Progress|  |
+| 1. Business Directory Foundation | 3/4 | In Progress|  |
 | 2. Search, Discovery & Accounts | 0/TBD | Not started | - |
 | 3. Reviews & Ratings | 0/TBD | Not started | - |
 | 4. Voting, Owner Response & Reporting | 0/TBD | Not started | - |
