@@ -89,6 +89,20 @@ phase (Phases 3-5).
   likely simple heuristics (recently added, random-but-stable sample) rather than real
   trending signals, since no usage data exists yet.
 
+### Post-Research Resolutions (from 02-RESEARCH.md Open Questions)
+- **D-09:** The home page does NOT ship a "Top Rated" rail in Phase 2. Extending D-02's
+  "don't fabricate ratings" principle to this surface too: with zero real reviews/ratings
+  in the data model until Phase 3, a "Top Rated" rail could only be driven by fake or
+  arbitrary data, which is the same honesty violation D-02 already ruled out for search
+  ranking. ROADMAP SC4's rail list ("such as trending nearby, top rated this month, new
+  businesses, category shortcuts") is illustrative, not a strict checklist — ship
+  Trending Nearby (stable-random sample), New Businesses (by `createdAt`), and Category
+  Shortcuts (from the taxonomy) instead. Revisit "Top Rated" once Phase 3 ships real
+  ratings.
+- **D-10:** "Where" search supports both a typed district-name lookup (static
+  district→centroid table, no new dependency) and the browser Geolocation API — accept
+  RESEARCH.md's recommendation as-is.
+
 </decisions>
 
 <canonical_refs>
