@@ -1,6 +1,10 @@
 services:
   db:
     image: postgis/postgis:16-3.5
+    # The official postgis/postgis image only publishes linux/amd64 manifests
+    # (no arm64 build as of this writing). Force amd64 + emulation so this
+    # still runs on Apple Silicon dev machines without switching images.
+    platform: linux/amd64
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: lankareview
