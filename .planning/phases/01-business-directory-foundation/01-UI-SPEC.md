@@ -1,7 +1,7 @@
 ---
 phase: 1
 slug: business-directory-foundation
-status: draft
+status: approved
 shadcn_initialized: false
 preset: next-app-tailwind-new-york-neutral
 created: 2026-09-13
@@ -161,6 +161,18 @@ Do not design or scaffold: search bar, filters, sort controls, login/signup, rev
 composer, Q&A, photo upload, save/collections, or owner-response UI. All are out of this
 phase's boundary per CONTEXT.md.
 
+**Focal point per screen:**
+- Directory index: the category-grouped card grid is the focal point — the eye should land
+  on the first card's photo, not the page chrome.
+- Business profile page: the hero photo + business name (Display, 28/600) together form the
+  focal point at the top of the page; everything else (hours, attributes, gallery, menu) is
+  secondary and ordered below it.
+
+**Icon-only controls:** every icon-only interactive element (hours accordion chevron, tab
+icons if used, breadcrumb separators that double as links) MUST carry an `aria-label` or
+visually-hidden text fallback describing its action/destination — never ship an icon button
+with no accessible name, since lucide-react icons carry no implicit label.
+
 ---
 
 ## Mobile & Performance Notes
@@ -181,11 +193,11 @@ outside Colombo on lower-end Android hardware):
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS (initial FLAG on missing focal-point/aria-label guidance resolved above)
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** APPROVED (2026-09-13)
