@@ -24,7 +24,7 @@ local businesses end-to-end, with zero monetization in the loop yet.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Business Directory Foundation** - Real, structured Colombo business listings exist and are fully browsable
+- [x] **Phase 1: Business Directory Foundation** - Real, structured Colombo business listings exist and are fully browsable (completed 2026-09-13)
 - [ ] **Phase 2: Search, Discovery & Accounts** - Users can search/filter/sort the directory and browse as guests or sign up via phone OTP
 - [ ] **Phase 3: Reviews & Ratings** - Users can write and read trustworthy, filtered reviews that set each business's rating
 - [ ] **Phase 4: Voting, Owner Response & Reporting** - Users can vote on reviews, claimed owners can respond, and anyone can report bad content
@@ -45,7 +45,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A user can view category-conditional attributes (e.g. delivery/takeout/outdoor seating for restaurants; license-verified/free-estimates for home services) and browse a photo gallery, with restaurants also showing a dedicated pinned menu tab.
   4. The directory already contains real, seeded Colombo businesses spanning the Sri Lanka-relevant category taxonomy (including tuk repair, tutoring, wedding vendors, tailoring), so the app isn't empty at first use.
 
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans complete
 Plans:
 **Wave 1**
 
@@ -61,7 +61,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-04-PLAN.md — Full 100-300-business seed dataset, transactional/idempotent seeding, category-grouped paginated directory index
+- [x] 01-04-PLAN.md — Full 100-300-business seed dataset, transactional/idempotent seeding, category-grouped paginated directory index
 
 **UI hint**: yes
 
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Business Directory Foundation | 3/4 | In Progress|  |
+| 1. Business Directory Foundation | 4/4 | Complete   | 2026-09-13 |
 | 2. Search, Discovery & Accounts | 0/TBD | Not started | - |
 | 3. Reviews & Ratings | 0/TBD | Not started | - |
 | 4. Voting, Owner Response & Reporting | 0/TBD | Not started | - |
