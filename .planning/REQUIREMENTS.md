@@ -123,35 +123,43 @@ Explicitly excluded from the near-term roadmap (not the same as "later phase" ab
 
 ## Traceability
 
-Phase numbers below mirror the spec's own Section 18 phasing as a starting hypothesis; `/gsd-roadmapper` will confirm the authoritative phase breakdown next and this table should be reconciled against it.
+Roadmap phases below are the authoritative breakdown from `/gsd-roadmapper` (see ROADMAP.md),
+derived as vertical MVP slices of the 33 v1 requirements. v2 requirements retain the spec's own
+Section 18 phase numbering as a label only (`spec Phase N`) — they are not part of this
+milestone's roadmap and are not yet assigned to concrete roadmap phases.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LIST-01 … LIST-06 | Phase 1 | Pending |
-| SRCH-01 … SRCH-06 | Phase 1 | Pending |
-| REV-01 … REV-06 | Phase 1 | Pending |
-| VOTE-01, VOTE-02 | Phase 1 | Pending |
-| PHOTO-01, PHOTO-02 | Phase 1 | Pending |
-| QA-01 | Phase 1 | Pending |
-| COLL-01, COLL-02 | Phase 1 | Pending |
-| AUTH-01 … AUTH-03 | Phase 1 | Pending |
-| MOD-01, MOD-02 | Phase 1 | Pending |
-| CLAIM-01 | Phase 1 | Pending |
-| LOC-01, LOC-02 | Phase 1 | Pending |
-| BIZ-01, BIZ-02 | Phase 2 | Pending |
-| ADS-01, ADS-02 | Phase 2 | Pending |
-| SUB-01, SUB-02 | Phase 2 | Pending |
-| RSV-01, RSV-02 | Phase 3 | Pending |
-| LEAD-01, LEAD-02 | Phase 4 | Pending |
-| TRUST-01 … TRUST-04 | Phase 5 | Pending |
-| API-01, AI-01, REC-01 | Phase 6 | Pending |
-| DEAL-01 | Phase 2+ | Pending |
+| LIST-01, LIST-02, LIST-03, LIST-04, LIST-05, LIST-06 | Phase 1 | Pending |
+| LOC-02 | Phase 1 | Pending |
+| SRCH-01, SRCH-02, SRCH-03, SRCH-04, SRCH-05, SRCH-06 | Phase 2 | Pending |
+| AUTH-01, AUTH-02, AUTH-03 | Phase 2 | Pending |
+| LOC-01 | Phase 2 | Pending |
+| REV-01, REV-02, REV-03, REV-04, REV-05, REV-06 | Phase 3 | Pending |
+| MOD-01 | Phase 3 | Pending |
+| VOTE-01, VOTE-02 | Phase 4 | Pending |
+| CLAIM-01 | Phase 4 | Pending |
+| MOD-02 | Phase 4 | Pending |
+| PHOTO-01, PHOTO-02 | Phase 5 | Pending |
+| QA-01 | Phase 5 | Pending |
+| COLL-01, COLL-02 | Phase 5 | Pending |
+| BIZ-01, BIZ-02 | v2 (spec Phase 2) | Deferred |
+| ADS-01, ADS-02 | v2 (spec Phase 2) | Deferred |
+| SUB-01, SUB-02 | v2 (spec Phase 2) | Deferred |
+| RSV-01, RSV-02 | v2 (spec Phase 3) | Deferred |
+| LEAD-01, LEAD-02 | v2 (spec Phase 4) | Deferred |
+| TRUST-01, TRUST-02, TRUST-03, TRUST-04 | v2 (spec Phase 5) | Deferred |
+| API-01, AI-01, REC-01 | v2 (spec Phase 6) | Deferred |
+| DEAL-01 | v2 (spec Phase 2+) | Deferred |
 
 **Coverage:**
-- v1 requirements: 30 total
-- Mapped to phases: 30
+- v1 requirements: 33 total (corrected from the initial definition pass's count of 30 —
+  every individually-listed `XXX-NN` id above was recounted directly)
+- Mapped to roadmap phases: 33
 - Unmapped: 0 ✓
+
+**Per-phase counts:** Phase 1: 7 · Phase 2: 10 · Phase 3: 7 · Phase 4: 4 · Phase 5: 5
 
 ---
 *Requirements defined: 2026-09-13*
-*Last updated: 2026-09-13 after initial definition*
+*Last updated: 2026-09-13 after roadmap creation — traceability reconciled against ROADMAP.md's 5-phase breakdown; requirement count corrected to 33*
