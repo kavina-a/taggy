@@ -36,7 +36,14 @@
       { "dayOfWeek": 6, "openTime": "12:00", "closeTime": "15:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "18:30", "closeTime": "23:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/ministry-of-crab-0/800/600", "caption": "Dining room", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/ministry-of-crab-1/800/600", "caption": "Signature crab dish", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/ministry-of-crab-2/800/600", "caption": "Bar area", "sortOrder": 2, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/ministry-of-crab-3/800/600", "caption": "Menu page 1", "sortOrder": 3, "isMenuPhoto": true },
+      { "url": "https://picsum.photos/seed/ministry-of-crab-4/800/600", "caption": "Menu page 2", "sortOrder": 4, "isMenuPhoto": true }
+    ]
   },
   {
     "slug": "upalis-by-nawaloka",
@@ -72,6 +79,13 @@
     ],
     "hoursOverrides": [
       { "date": "2026-12-25", "isClosed": true, "openTime": null, "closeTime": null, "crossesMidnight": false }
+    ],
+    "photos": [
+      { "url": "https://picsum.photos/seed/upalis-by-nawaloka-0/800/600", "caption": "Buffet spread", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/upalis-by-nawaloka-1/800/600", "caption": "Dining hall", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/upalis-by-nawaloka-2/800/600", "caption": "Rice and curry platter", "sortOrder": 2, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/upalis-by-nawaloka-3/800/600", "caption": "Menu board 1", "sortOrder": 3, "isMenuPhoto": true },
+      { "url": "https://picsum.photos/seed/upalis-by-nawaloka-4/800/600", "caption": "Menu board 2", "sortOrder": 4, "isMenuPhoto": true }
     ]
   },
   {
@@ -111,30 +125,31 @@
       { "dayOfWeek": 6, "openTime": "12:00", "closeTime": "14:30", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "18:00", "closeTime": "22:30", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/nihonbashi-colombo-0/800/600", "caption": "Sushi counter", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/nihonbashi-colombo-1/800/600", "caption": "Teppanyaki grill", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/nihonbashi-colombo-2/800/600", "caption": "Private dining room", "sortOrder": 2, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/nihonbashi-colombo-3/800/600", "caption": "Menu page 1", "sortOrder": 3, "isMenuPhoto": true },
+      { "url": "https://picsum.photos/seed/nihonbashi-colombo-4/800/600", "caption": "Menu page 2", "sortOrder": 4, "isMenuPhoto": true }
+    ]
   },
   {
     "slug": "cafe-kumbuk",
     "name": "Cafe Kumbuk",
     "description": "Relaxed neighbourhood cafe under a large kumbuk tree, known for all-day breakfasts, coffee and a laid-back garden seating area.",
-    "primaryCategories": ["cafe"],
+    "primaryCategories": ["cafe-bakery"],
     "secondaryCategories": ["breakfast"],
     "district": "Colombo 05",
     "addressFreeText": "Alfred House Gardens, Havelock Town",
     "latitude": 6.8845,
     "longitude": 79.8657,
     "attributes": {
-      "delivery": false,
-      "takeout": true,
-      "dineIn": true,
+      "wifi": true,
       "outdoorSeating": true,
-      "goodForGroups": true,
-      "goodForKids": true,
-      "alcoholServed": false,
-      "reservationsAccepted": false,
-      "priceTier": 2,
-      "parking": "street",
-      "wifi": true
+      "takeout": true,
+      "delivery": false,
+      "priceTier": 2
     },
     "hours": [
       { "dayOfWeek": 0, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
@@ -145,30 +160,29 @@
       { "dayOfWeek": 5, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/cafe-kumbuk-0/800/600", "caption": "Garden seating", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/cafe-kumbuk-1/800/600", "caption": "Breakfast spread", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/cafe-kumbuk-2/800/600", "caption": "Coffee bar", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "barefoot-garden-cafe",
     "name": "Barefoot Garden Cafe",
     "description": "Open-air garden cafe behind the Barefoot boutique and gallery, a longtime favourite for lunch, cake and people-watching in a leafy courtyard.",
-    "primaryCategories": ["cafe"],
+    "primaryCategories": ["cafe-bakery"],
     "secondaryCategories": ["restaurant"],
     "district": "Colombo 03",
     "addressFreeText": "Galle Road, Bambalapitiya",
     "latitude": 6.8969,
     "longitude": 79.8557,
     "attributes": {
-      "delivery": false,
-      "takeout": false,
-      "dineIn": true,
+      "wifi": true,
       "outdoorSeating": true,
-      "goodForGroups": true,
-      "goodForKids": true,
-      "alcoholServed": false,
-      "reservationsAccepted": false,
-      "priceTier": 2,
-      "parking": "street",
-      "wifi": true
+      "takeout": false,
+      "delivery": false,
+      "priceTier": 2
     },
     "hours": [
       { "dayOfWeek": 0, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
@@ -178,7 +192,13 @@
       { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/barefoot-garden-cafe-0/800/600", "caption": "Courtyard seating", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/barefoot-garden-cafe-1/800/600", "caption": "Cake counter", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/barefoot-garden-cafe-2/800/600", "caption": "Garden path", "sortOrder": 2, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/barefoot-garden-cafe-3/800/600", "caption": "Lunch plate", "sortOrder": 3, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "spa-ceylon-colombo",
@@ -205,7 +225,12 @@
       { "dayOfWeek": 5, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/spa-ceylon-colombo-0/800/600", "caption": "Treatment room", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/spa-ceylon-colombo-1/800/600", "caption": "Herbal products display", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/spa-ceylon-colombo-2/800/600", "caption": "Reception area", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "toni-and-guy-colombo",
@@ -231,7 +256,12 @@
       { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/toni-and-guy-colombo-0/800/600", "caption": "Salon floor", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/toni-and-guy-colombo-1/800/600", "caption": "Styling chairs", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/toni-and-guy-colombo-2/800/600", "caption": "Front entrance", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "abans-elite-service-center",
@@ -258,13 +288,18 @@
       { "dayOfWeek": 5, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/abans-elite-service-center-0/800/600", "caption": "Service counter", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/abans-elite-service-center-1/800/600", "caption": "Repair workshop", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/abans-elite-service-center-2/800/600", "caption": "Storefront", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "dimo-automobile-service-centre",
     "name": "DIMO Automobile Service Centre",
     "description": "Long-established vehicle servicing and repair centre run by Diesel & Motor Engineering, handling maintenance, repairs and spare parts for a wide range of vehicles.",
-    "primaryCategories": ["vehicle-repair"],
+    "primaryCategories": ["auto-repair"],
     "secondaryCategories": ["auto-service"],
     "district": "Colombo 10",
     "addressFreeText": "Ward Place, Maradana",
@@ -275,7 +310,7 @@
       "freeEstimates": true,
       "emergencyService": true,
       "yearsInBusiness": 60,
-      "serviceAreaRadiusKm": 30
+      "servicesOffered": ["Vehicle Servicing", "Repairs", "Spare Parts"]
     },
     "hours": [
       { "dayOfWeek": 1, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false },
@@ -285,7 +320,12 @@
       { "dayOfWeek": 5, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/dimo-automobile-service-centre-0/800/600", "caption": "Service bay", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/dimo-automobile-service-centre-1/800/600", "caption": "Spare parts counter", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/dimo-automobile-service-centre-2/800/600", "caption": "Workshop floor", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "three-wheel-auto-care",
@@ -299,10 +339,10 @@
     "longitude": 79.8600,
     "attributes": {
       "licenseVerified": false,
-      "freeEstimates": true,
       "emergencyService": true,
+      "freeEstimates": true,
       "yearsInBusiness": 12,
-      "serviceAreaRadiusKm": 10
+      "sparePartsAvailable": true
     },
     "hours": [
       { "dayOfWeek": 0, "openTime": "09:00", "closeTime": "13:00", "crossesMidnight": false },
@@ -313,7 +353,12 @@
       { "dayOfWeek": 5, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/three-wheel-auto-care-0/800/600", "caption": "Garage front", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/three-wheel-auto-care-1/800/600", "caption": "Tuk-tuk being serviced", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/three-wheel-auto-care-2/800/600", "caption": "Spare parts shelf", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "esoft-metro-campus-colombo",
@@ -326,11 +371,10 @@
     "latitude": 6.8890,
     "longitude": 79.8580,
     "attributes": {
-      "licenseVerified": true,
-      "freeEstimates": false,
-      "emergencyService": false,
-      "yearsInBusiness": 20,
-      "serviceAreaRadiusKm": 15
+      "subjects": ["IT", "Business", "English"],
+      "ageGroup": "adults",
+      "onlineAvailable": true,
+      "homeVisitsAvailable": false
     },
     "hours": [
       { "dayOfWeek": 1, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false },
@@ -340,7 +384,12 @@
       { "dayOfWeek": 5, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/esoft-metro-campus-colombo-0/800/600", "caption": "Campus entrance", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/esoft-metro-campus-colombo-1/800/600", "caption": "Classroom", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/esoft-metro-campus-colombo-2/800/600", "caption": "Computer lab", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "cinnamon-grand-weddings",
@@ -353,11 +402,9 @@
     "latitude": 6.9169,
     "longitude": 79.8487,
     "attributes": {
-      "licenseVerified": true,
-      "freeEstimates": true,
-      "emergencyService": false,
-      "yearsInBusiness": 45,
-      "serviceAreaRadiusKm": 20
+      "vendorType": "venue",
+      "advanceBookingRequiredMonths": 6,
+      "priceTier": 4
     },
     "hours": [
       { "dayOfWeek": 0, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
@@ -368,7 +415,13 @@
       { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/cinnamon-grand-weddings-0/800/600", "caption": "Banquet hall", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/cinnamon-grand-weddings-1/800/600", "caption": "Wedding setup", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/cinnamon-grand-weddings-2/800/600", "caption": "Reception area", "sortOrder": 2, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/cinnamon-grand-weddings-3/800/600", "caption": "Catering spread", "sortOrder": 3, "isMenuPhoto": false }
+    ]
   },
   {
     "slug": "barnes-place-bespoke-tailors",
@@ -381,11 +434,10 @@
     "latitude": 6.9106,
     "longitude": 79.8672,
     "attributes": {
-      "licenseVerified": false,
-      "freeEstimates": true,
-      "emergencyService": false,
-      "yearsInBusiness": 18,
-      "serviceAreaRadiusKm": 10
+      "customFitting": true,
+      "alterationsOnly": false,
+      "turnaroundDays": 7,
+      "priceTier": 2
     },
     "hours": [
       { "dayOfWeek": 1, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
@@ -395,6 +447,11 @@
       { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
       { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false }
     ],
-    "hoursOverrides": []
+    "hoursOverrides": [],
+    "photos": [
+      { "url": "https://picsum.photos/seed/barnes-place-bespoke-tailors-0/800/600", "caption": "Fabric selection", "sortOrder": 0, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/barnes-place-bespoke-tailors-1/800/600", "caption": "Fitting room", "sortOrder": 1, "isMenuPhoto": false },
+      { "url": "https://picsum.photos/seed/barnes-place-bespoke-tailors-2/800/600", "caption": "Storefront", "sortOrder": 2, "isMenuPhoto": false }
+    ]
   }
 ]

@@ -8,13 +8,13 @@ const mockBusiness: BusinessDetail = {
   slug: "test-cafe",
   name: "Test Cafe",
   description: "A cozy neighbourhood cafe serving coffee and pastries.",
-  primaryCategories: ["cafe", "restaurant"],
+  primaryCategories: ["cafe-bakery", "retail-shopping"],
   secondaryCategories: [],
   district: "Colombo 07",
   addressFreeText: "123 Test Road, Cinnamon Gardens",
   latitude: 6.9061,
   longitude: 79.8621,
-  attributes: {},
+  attributes: { wifi: true, outdoorSeating: true, takeout: true, delivery: false, priceTier: 2 },
   hours: [],
   hoursOverrides: [],
   photos: [],
@@ -67,5 +67,21 @@ describe("BusinessPageView", () => {
     render(<BusinessPageView business={mockBusiness} openNow={false} />);
 
     expect(screen.getByText("Closed")).toBeInTheDocument();
+  });
+
+  it("renders at least one attribute badge for a business with valid attributes", () => {
+    render(<BusinessPageView business={mockBusiness} openNow={null} />);
+
+    expect(screen.getAllByTestId("attribute-badge").length).toBeGreaterThan(0);
+  });
+
+  it("renders the photo gallery section", () => {
+    render(<BusinessPageView business={mockBusiness} openNow={null} />);
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Photos" }),
+    ).toBeInTheDocument();
+    // No photos in the mock -> gallery renders its empty state.
+    expect(screen.getByText("No photos yet")).toBeInTheDocument();
   });
 });

@@ -3,6 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { BusinessMapDynamic } from "@/components/business/business-map-dynamic";
 import { HoursAccordion } from "@/components/business/hours-accordion";
+import { AttributeBadges } from "@/components/business/attribute-badges";
+import { PhotoGallery } from "@/components/business/photo-gallery";
 import type { BusinessDetail } from "@/lib/types/business";
 
 export interface BusinessPageViewProps {
@@ -79,6 +81,30 @@ export function BusinessPageView({ business, openNow }: BusinessPageViewProps) {
           </section>
         </>
       )}
+
+      <Separator />
+
+      <section aria-labelledby="attributes-heading" className="flex flex-col gap-2">
+        <h2 id="attributes-heading" className="text-xl leading-[1.2] font-semibold">
+          Attributes
+        </h2>
+        <AttributeBadges
+          primaryCategory={business.primaryCategories[0]}
+          attributes={business.attributes}
+        />
+      </section>
+
+      <Separator />
+
+      <section aria-labelledby="photos-heading" className="flex flex-col gap-2">
+        <h2 id="photos-heading" className="text-xl leading-[1.2] font-semibold">
+          Photos
+        </h2>
+        <PhotoGallery
+          photos={business.photos}
+          primaryCategories={business.primaryCategories}
+        />
+      </section>
     </article>
   );
 }
