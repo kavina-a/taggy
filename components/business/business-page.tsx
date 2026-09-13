@@ -2,12 +2,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { BusinessMapDynamic } from "@/components/business/business-map-dynamic";
+import { HoursAccordion } from "@/components/business/hours-accordion";
 import type { BusinessDetail } from "@/lib/types/business";
 
 export interface BusinessPageViewProps {
   business: BusinessDetail;
-  // `null` = not computed yet (this plan). 01-02 passes a real boolean and
-  // this component renders the "Open now"/"Closed" badge for a boolean.
+  // `null` = not computed (should not happen once app/business/[slug]/page.tsx
+  // always passes a real boolean from computeOpenNow; kept nullable so this
+  // presentational component stays independently testable).
   openNow: boolean | null;
 }
 
@@ -26,17 +28,6 @@ export function BusinessPageView({ business, openNow }: BusinessPageViewProps) {
               {category}
             </Badge>
           ))}
-          {openNow !== null && (
-            <Badge
-              className={
-                openNow
-                  ? "bg-status-open text-white"
-                  : "bg-status-closed text-white"
-              }
-            >
-              {openNow ? "Open now" : "Closed"}
-            </Badge>
-          )}
         </div>
       </header>
 
@@ -71,6 +62,23 @@ export function BusinessPageView({ business, openNow }: BusinessPageViewProps) {
           </a>
         </Button>
       </section>
+
+      {openNow !== null && (
+        <>
+          <Separator />
+
+          <section aria-labelledby="hours-heading" className="flex flex-col gap-2">
+            <h2 id="hours-heading" className="text-xl leading-[1.2] font-semibold">
+              Hours
+            </h2>
+            <HoursAccordion
+              hours={business.hours}
+              overrides={business.hoursOverrides}
+              openNow={openNow}
+            />
+          </section>
+        </>
+      )}
     </article>
   );
 }

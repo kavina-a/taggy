@@ -21,7 +21,22 @@
       "priceTier": 4,
       "parking": "street",
       "wifi": true
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "12:00", "closeTime": "15:00", "crossesMidnight": false },
+      { "dayOfWeek": 0, "openTime": "18:30", "closeTime": "23:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "12:00", "closeTime": "15:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "18:30", "closeTime": "23:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "12:00", "closeTime": "15:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "18:30", "closeTime": "23:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "12:00", "closeTime": "15:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "18:30", "closeTime": "23:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "12:00", "closeTime": "15:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "18:30", "closeTime": "02:00", "crossesMidnight": true },
+      { "dayOfWeek": 6, "openTime": "12:00", "closeTime": "15:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "18:30", "closeTime": "23:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "upalis-by-nawaloka",
@@ -45,7 +60,19 @@
       "priceTier": 2,
       "parking": "lot",
       "wifi": false
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "11:00", "closeTime": "22:00", "crossesMidnight": false },
+      { "dayOfWeek": 1, "openTime": "11:00", "closeTime": "22:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "11:00", "closeTime": "22:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "11:00", "closeTime": "22:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "11:00", "closeTime": "22:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "11:00", "closeTime": "22:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "11:00", "closeTime": "22:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": [
+      { "date": "2026-12-25", "isClosed": true, "openTime": null, "closeTime": null, "crossesMidnight": false }
+    ]
   },
   {
     "slug": "nihonbashi-colombo",
@@ -69,7 +96,22 @@
       "priceTier": 4,
       "parking": "lot",
       "wifi": true
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "12:00", "closeTime": "14:30", "crossesMidnight": false },
+      { "dayOfWeek": 0, "openTime": "18:00", "closeTime": "22:30", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "12:00", "closeTime": "14:30", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "18:00", "closeTime": "22:30", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "12:00", "closeTime": "14:30", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "18:00", "closeTime": "22:30", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "12:00", "closeTime": "14:30", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "18:00", "closeTime": "22:30", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "12:00", "closeTime": "14:30", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "18:00", "closeTime": "22:30", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "12:00", "closeTime": "14:30", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "18:00", "closeTime": "22:30", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "cafe-kumbuk",
@@ -93,7 +135,17 @@
       "priceTier": 2,
       "parking": "street",
       "wifi": true
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 1, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "07:30", "closeTime": "17:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "barefoot-garden-cafe",
@@ -117,7 +169,16 @@
       "priceTier": 2,
       "parking": "street",
       "wifi": true
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "spa-ceylon-colombo",
@@ -134,7 +195,17 @@
       "appointmentRequired": true,
       "genderSpecificServices": "both",
       "priceTier": 3
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 1, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "10:00", "closeTime": "20:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "toni-and-guy-colombo",
@@ -151,7 +222,16 @@
       "appointmentRequired": false,
       "genderSpecificServices": "both",
       "priceTier": 3
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "19:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "abans-elite-service-center",
@@ -169,7 +249,16 @@
       "emergencyService": false,
       "yearsInBusiness": 30,
       "serviceAreaRadiusKm": 25
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 1, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "08:30", "closeTime": "17:30", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "dimo-automobile-service-centre",
@@ -187,7 +276,16 @@
       "emergencyService": true,
       "yearsInBusiness": 60,
       "serviceAreaRadiusKm": 30
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 1, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "08:00", "closeTime": "17:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "three-wheel-auto-care",
@@ -205,7 +303,17 @@
       "emergencyService": true,
       "yearsInBusiness": 12,
       "serviceAreaRadiusKm": 10
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "09:00", "closeTime": "13:00", "crossesMidnight": false },
+      { "dayOfWeek": 1, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "08:00", "closeTime": "19:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "esoft-metro-campus-colombo",
@@ -223,7 +331,16 @@
       "emergencyService": false,
       "yearsInBusiness": 20,
       "serviceAreaRadiusKm": 15
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 1, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "08:00", "closeTime": "20:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "cinnamon-grand-weddings",
@@ -241,7 +358,17 @@
       "emergencyService": false,
       "yearsInBusiness": 45,
       "serviceAreaRadiusKm": 20
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 0, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
+      { "dayOfWeek": 1, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "21:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   },
   {
     "slug": "barnes-place-bespoke-tailors",
@@ -259,6 +386,15 @@
       "emergencyService": false,
       "yearsInBusiness": 18,
       "serviceAreaRadiusKm": 10
-    }
+    },
+    "hours": [
+      { "dayOfWeek": 1, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 2, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 3, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 4, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 5, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false },
+      { "dayOfWeek": 6, "openTime": "09:00", "closeTime": "18:00", "crossesMidnight": false }
+    ],
+    "hoursOverrides": []
   }
 ]

@@ -12,4 +12,9 @@ test("directory to business page click-through", async ({ page }) => {
     page.getByRole("heading", { level: 1, name: businessName }),
   ).toBeVisible();
   await expect(page.getByTestId("business-map")).toBeVisible();
+
+  // Deterministic regardless of the current wall-clock time — either value
+  // is acceptable, this just proves the badge renders from a real
+  // server-computed value (01-RESEARCH.md's open-now anti-pattern warning).
+  await expect(page.getByText(/Open now|Closed/)).toBeVisible();
 });

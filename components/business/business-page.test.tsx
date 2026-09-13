@@ -56,4 +56,16 @@ describe("BusinessPageView", () => {
 
     expect(screen.getByTestId("business-map")).toBeInTheDocument();
   });
+
+  it('shows "Open now" when openNow is true', () => {
+    render(<BusinessPageView business={mockBusiness} openNow={true} />);
+
+    expect(screen.getByText("Open now")).toBeInTheDocument();
+  });
+
+  it('shows "Closed" when openNow is false', () => {
+    render(<BusinessPageView business={mockBusiness} openNow={false} />);
+
+    expect(screen.getByText("Closed")).toBeInTheDocument();
+  });
 });

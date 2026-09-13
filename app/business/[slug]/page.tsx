@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
+import { DateTime } from "luxon";
 import { prisma } from "@/lib/prisma";
+import { computeOpenNow } from "@/lib/hours/compute-open-now";
 import { BusinessPageView } from "@/components/business/business-page";
 import type { BusinessDetail } from "@/lib/types/business";
 
@@ -53,8 +55,14 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
     })),
   };
 
-  // "Open now" computation ships in 01-02; this plan only proves the LIST-01
-  // fields render, so no badge is shown yet (BusinessPageView renders
-  // nothing for a null openNow).
-  return <BusinessPageView business={detail} openNow={null} />;
+  // Computed server-side with a hardcoded Asia/Colombo zone (never the
+  // server's OS/env timezone) — see 01-RESEARCH.md's anti-pattern warning
+  // against computing "open now" client-side.
+  const openNow = computeOpenNow(
+    detail.hours,
+    detail.hoursOverrides,
+    DateTime.now().setZone("Asia/Colombo"),
+  );
+
+  return <BusinessPageView business={detail} openNow={openNow} />;
 }
