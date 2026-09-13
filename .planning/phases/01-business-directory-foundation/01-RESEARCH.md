@@ -689,7 +689,7 @@ main()
 
 **If this table is empty:** N/A — see entries above; none block planning, all are cheap to confirm during Wave 0.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Photo storage backend (object storage provider) for the photo gallery / menu photos**
    - What we know: UI-SPEC requires lazy-loaded, responsive, blur-placeholder images via
@@ -699,11 +699,11 @@ main()
      alternatives) because CONTEXT.md's discretion list didn't name storage explicitly and
      the phase's own success criteria center on data modeling, not infra selection for
      binary assets.
-   - Recommendation: The planner should treat "where do photo binaries live" as a small,
-     separate research/discretion item — for the seeded ~100-300 businesses, even storing
-     photos in a `public/` directory checked into the repo (a handful of curated photos
-     per business) may be sufficient for Phase 1's scope, deferring real user-upload
-     storage infra to Phase 5 (PHOTO-01/02).
+   - **RESOLVED:** The planner chose deterministic `picsum.photos/seed/{slug}-{n}/800/600`
+     placeholder URLs for seed data (01-03 Task 3) — no object storage provider is
+     provisioned in Phase 1. Gallery/menu-tab *functionality* is fully real; only the image
+     bytes are stock placeholders. Real object storage (for user-uploaded photos) is
+     deferred to Phase 5 (PHOTO-01/02), which is when photos-by-users actually exist.
 
 2. **Exact deploy target for Postgres (Neon vs Supabase vs self-hosted) beyond local dev**
    - What we know: Both Neon and Supabase free tiers support PostGIS; Neon wakes faster
@@ -712,10 +712,10 @@ main()
    - What's unclear: Whether it's worth picking Supabase now to avoid a future migration
      when Phase 2 needs auth, versus picking Neon now for its simplicity and migrating
      later if needed.
-   - Recommendation: Default to Neon for Phase 1 (simpler, faster cold start, this phase
-     has no auth need) and revisit at Phase 2 planning time — Postgres data is portable
-     between either provider via a standard `pg_dump`/`pg_restore`, so this is not a
-     costly decision to defer.
+   - **RESOLVED:** Phase 1 runs local Postgres only, via the `postgis/postgis` Docker
+     Compose image referenced throughout this research — no plan task in this phase
+     provisions a hosted deploy target. The Neon-vs-Supabase choice is deferred to Phase 2
+     planning, when a real (non-local) environment first becomes necessary.
 
 ## Environment Availability
 

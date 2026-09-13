@@ -1,9 +1,9 @@
 ---
 phase: 1
 slug: business-directory-foundation
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: approved
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-09-13
 ---
 
@@ -74,11 +74,17 @@ created: 2026-09-13
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 60s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 60s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+Verified by gsd-plan-checker against the 4 approved plans (01-01..01-04): every mapped
+test file/command is present and correctly wired (01-01→`business-page.test.tsx` &
+`business.schema.test.ts`, 01-02→`compute-open-now.test.ts`, 01-03→`category-config.test.ts`,
+01-04→`photo-gallery.test.tsx` & seed idempotency check, cross-cutting→
+`directory-to-business.spec.ts`).
+
+**Approval:** approved 2026-09-13
