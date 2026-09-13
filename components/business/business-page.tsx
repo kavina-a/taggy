@@ -1,10 +1,20 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { BusinessMapDynamic } from "@/components/business/business-map-dynamic";
 import { HoursAccordion } from "@/components/business/hours-accordion";
 import { AttributeBadges } from "@/components/business/attribute-badges";
 import { PhotoGallery } from "@/components/business/photo-gallery";
+import { getCategoryLabel } from "@/lib/categories/category-config";
 import type { BusinessDetail } from "@/lib/types/business";
 
 export interface BusinessPageViewProps {
@@ -20,6 +30,25 @@ export function BusinessPageView({ business, openNow }: BusinessPageViewProps) {
 
   return (
     <article className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 md:py-12">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/directory">Directory</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            {getCategoryLabel(business.primaryCategories[0]) ??
+              business.primaryCategories[0]}
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{business.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <header className="flex flex-col gap-3">
         <h1 className="text-[28px] leading-[1.2] font-semibold">
           {business.name}

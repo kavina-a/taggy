@@ -73,6 +73,19 @@ export const categoryTaxonomy: {
   },
 ];
 
+// leaf category slug -> human-readable label, built once from the taxonomy
+// above. Used by the breadcrumb trail on the business profile page.
+const categoryLabelBySlug = new Map<string, string>();
+for (const group of categoryTaxonomy) {
+  for (const category of group.categories) {
+    categoryLabelBySlug.set(category.slug, category.label);
+  }
+}
+
+export function getCategoryLabel(slug: string): string | undefined {
+  return categoryLabelBySlug.get(slug);
+}
+
 const priceTier = z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]);
 
 // Restaurants (Food & Dining) — per 01-RESEARCH.md Pattern 3's exact example.

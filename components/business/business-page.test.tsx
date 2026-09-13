@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BusinessPageView } from "./business-page";
+import { getCategoryLabel } from "@/lib/categories/category-config";
 import type { BusinessDetail } from "@/lib/types/business";
 
 const mockBusiness: BusinessDetail = {
@@ -85,6 +86,17 @@ describe("BusinessPageView", () => {
     render(<BusinessPageView business={mockBusiness} openNow={null} />);
 
     expect(screen.getAllByTestId("attribute-badge").length).toBeGreaterThan(0);
+  });
+
+  it("renders a Directory > Category > Business Name breadcrumb", () => {
+    render(<BusinessPageView business={mockBusiness} openNow={null} />);
+
+    const breadcrumb = screen.getByRole("navigation", { name: "breadcrumb" });
+    const categoryLabel = getCategoryLabel(mockBusiness.primaryCategories[0]);
+
+    expect(breadcrumb.textContent).toContain("Directory");
+    expect(breadcrumb.textContent).toContain(categoryLabel);
+    expect(breadcrumb.textContent).toContain(mockBusiness.name);
   });
 
   it("renders the photo gallery section", () => {
