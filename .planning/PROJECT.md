@@ -30,18 +30,21 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Business listings with structured data: categories (primary + secondary), hours
+  (split shifts, holiday overrides, live open/closed), district/DS-division address +
+  lat/lng map pin, category-conditional attributes, photo gallery, restaurant menu tab
+  (photos only) — Phase 1
+- ✓ Seed dataset of real Colombo businesses (107, all 16 leaf categories incl. tuk repair/
+  tutoring/wedding vendors/tailoring) so the directory isn't empty at launch — Phase 1
 
 ### Active
 
-- [ ] Business listings (claimed/unclaimed) with structured data: categories, hours,
-      address/geo, attributes, photos, menu (restaurants)
 - [ ] Consumer accounts with phone-OTP-first auth, guest browsing with no login wall
 - [ ] Search & discovery: search bar (what/where), map + list results, category/price/
       distance/attribute filters, "Recommended" sort (Bayesian-adjusted rating + geo-decay
       + text relevance, no paid blending into organic score)
-- [ ] Business profile page: hours, photos, menu, reviews, Q&A, "people also viewed",
-      Consumer Alert banner slot (even if alerts system itself is a later phase)
+- [ ] Business profile page: reviews, Q&A, "people also viewed", Consumer Alert banner
+      slot (even if alerts system itself is a later phase)
 - [ ] Write/edit reviews: star rating + text, one review per user per business, photo
       attachment, server-side review filter (recommended vs not_recommended) that never
       informs the user in real time whether their review was filtered
@@ -58,7 +61,6 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
       registration-document verification
 - [ ] Trilingual UI scaffolding (English first, Sinhala/Tamil structurally supported via
       `language_pref` even if translations land after English)
-- [ ] Seed dataset of real Colombo businesses so the directory isn't empty at launch
 
 ### Out of Scope (this milestone)
 
@@ -117,12 +119,17 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Backend: Node.js/TypeScript | User's confirmed choice; single language across backend, easier context-switching for a small/solo team | — Pending |
-| Mobile: React Native | User's confirmed choice; single codebase for iOS/Android, faster for a lean team | — Pending |
-| Phase 1 scope = Consumer MVP only, no payments | Matches spec's own Section 18 phasing; avoid building monetization before there's a trustworthy free product to sell against | — Pending |
-| Review filter never tells the user in real time if they were filtered | Prevents reviewers from gaming disclosed filter criteria; matches spec 6.3 and Yelp's own documented rationale | — Pending |
-| Ad auction and organic ranking kept as architecturally separate systems | Spec 6.1 — blending the two is exactly the ambiguity behind Yelp's real-world extortion lawsuits; cheaper to separate now than retrofit later | — Pending |
-| Bootstrap budget: self-hosted/free-tier infra until Phase 2 revenue | User confirmed cost-minimization priority for a pre-revenue solo/small-team build | — Pending |
+| Backend: Node.js/TypeScript | User's confirmed choice; single language across backend, easier context-switching for a small/solo team | ✓ Good — Prisma 7 + Next.js 16 route handlers proved productive in Phase 1 |
+| Mobile: React Native | User's confirmed choice; single codebase for iOS/Android, faster for a lean team | — Pending (deferred past Phase 1, web-only so far) |
+| Phase 1 scope = Consumer MVP only, no payments | Matches spec's own Section 18 phasing; avoid building monetization before there's a trustworthy free product to sell against | ✓ Good — Phase 1 shipped clean with zero payment/ads surface |
+| Review filter never tells the user in real time if they were filtered | Prevents reviewers from gaming disclosed filter criteria; matches spec 6.3 and Yelp's own documented rationale | — Pending (reviews are Phase 3) |
+| Ad auction and organic ranking kept as architecturally separate systems | Spec 6.1 — blending the two is exactly the ambiguity behind Yelp's real-world extortion lawsuits; cheaper to separate now than retrofit later | — Pending (ads are Phase 2+) |
+| Bootstrap budget: self-hosted/free-tier infra until Phase 2 revenue | User confirmed cost-minimization priority for a pre-revenue solo/small-team build | ✓ Good — local Docker Postgres+PostGIS, no paid services in Phase 1 |
+| Web only for Phase 1, React Native deferred | Discuss-phase decision (01-CONTEXT.md D-01) — get a stable API/data model before committing to a second client | ✓ Good — kept Phase 1 scope tight |
+| Category attributes as flexible jsonb + static TS config (not DB table) | 01-CONTEXT.md D-02 / 01-RESEARCH.md — no admin UI exists yet to justify a DB-driven config; Zod schemas per category give type safety without a migration per new attribute | ✓ Good |
+| Menu tab is photos-only, no structured MenuItem entity | 01-CONTEXT.md D-03 — real menu data (name/price) was out of scope for v1; avoids building a data model with no real seed data to populate it | ✓ Good |
+| Seed data manually curated (no scraping/OSM) | 01-CONTEXT.md D-04 — avoids ToS risk; 107 real Colombo businesses across all 16 leaf categories proved sufficient to avoid an empty directory | ✓ Good |
+| Worktree isolation disabled for single-plan-per-wave phases | Phase 1's 4 waves each had exactly one plan — no parallel-write risk to protect against, and sequential execution on the main tree avoids the git-worktree-manifest/merge-back machinery entirely | ✓ Good — simplified execution with no loss of safety |
 
 ## Evolution
 
@@ -142,4 +149,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-13 after initialization*
+*Last updated: 2026-09-13 after Phase 1*
