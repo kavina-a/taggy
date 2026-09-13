@@ -1,9 +1,9 @@
 ---
 phase: 2
 slug: search-discovery-accounts
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: approved
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-09-13
 ---
 
@@ -39,7 +39,7 @@ created: 2026-09-13
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
 | 02-01 | TBD | 0 | SRCH-01 | — | N/A | integration | `npx vitest run lib/search/run-search-query.test.ts` | ❌ W0 | ⬜ pending |
-| 02-02 | TBD | 0 | SRCH-02 | — | N/A | component | `npx vitest run components/search/search-result-card.test.tsx` | ❌ W0 | ⬜ pending |
+| 02-02 | TBD | 0 | SRCH-02 | — | N/A | component | `npx vitest run components/directory/business-card.test.tsx` | ❌ W0 | ⬜ pending |
 | 02-03 | TBD | 0 | SRCH-03 | — | N/A | unit+integration | `npx vitest run lib/search/run-search-query.test.ts` | ❌ W0 (same file as SRCH-01) | ⬜ pending |
 | 02-04 | TBD | 0 | SRCH-04 | — | N/A | unit | `npx vitest run lib/search/run-search-query.test.ts` | ❌ W0 (same file) | ⬜ pending |
 | 02-05 | TBD | 0 | SRCH-05 | — | N/A | unit | `npx vitest run lib/search/geo-decay.test.ts` | ❌ W0 | ⬜ pending |
@@ -82,11 +82,16 @@ created: 2026-09-13
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 60s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 60s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+Verified by gsd-plan-checker against the 9 approved plans (02-01..02-09): 0 blockers,
+1 warning (SRCH-02 test path reconciled above — `business-card.test.tsx` supersedes the
+originally-locked `search-result-card.test.tsx`, since the UI-SPEC directed extending the
+existing card rather than duplicating it).
+
+**Approval:** approved 2026-09-14
