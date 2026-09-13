@@ -9,12 +9,12 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 
 ### Listings
 
-- [ ] **LIST-01**: Business listing exists with name, categories (up to 3 primary + unlimited secondary), description, structured address (district/DS-division + free text, no ZIP), lat/lng
+- [x] **LIST-01**: Business listing exists with name, categories (up to 3 primary + unlimited secondary), description, structured address (district/DS-division + free text, no ZIP), lat/lng
 - [ ] **LIST-02**: Business listing has structured hours (7-day, split shifts, holiday overrides) with "Open now"/"Closed" computed state
 - [ ] **LIST-03**: Business listing has category-conditional attributes (jsonb; e.g. restaurants: delivery/takeout/outdoor seating; home services: license verified/free estimates)
 - [ ] **LIST-04**: Business listing supports photo gallery and, for restaurants, a distinct menu tab with pinned menu photos
 - [ ] **LIST-05**: Category taxonomy seeded with Sri Lanka-relevant leaf categories (Appendix A), including locally-distinct ones (tuk repair, tutoring, wedding vendors, tailoring)
-- [ ] **LIST-06**: Unclaimed businesses seeded from a real Colombo starter dataset so search isn't empty at launch (spec Phase 0)
+- [x] **LIST-06**: Unclaimed businesses seeded from a real Colombo starter dataset so search isn't empty at launch (spec Phase 0)
 
 ### Search & Discovery
 
@@ -68,7 +68,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 ### Localization
 
 - [ ] **LOC-01**: `language_pref` field exists on user accounts (en|si|ta) and drives a language switcher; English ships complete for v1, Sinhala/Tamil structurally supported for incremental translation
-- [ ] **LOC-02**: Address model uses district/DS-division + free text + lat/lng as source of truth, never a US-style ZIP/postal search
+- [x] **LOC-02**: Address model uses district/DS-division + free text + lat/lng as source of truth, never a US-style ZIP/postal search
 
 ## v2 Requirements
 
@@ -131,7 +131,7 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | LIST-01, LIST-02, LIST-03, LIST-04, LIST-05, LIST-06 | Phase 1 | Pending |
-| LOC-02 | Phase 1 | Pending |
+| LOC-02 | Phase 1 | Complete |
 | SRCH-01, SRCH-02, SRCH-03, SRCH-04, SRCH-05, SRCH-06 | Phase 2 | Pending |
 | AUTH-01, AUTH-02, AUTH-03 | Phase 2 | Pending |
 | LOC-01 | Phase 2 | Pending |
@@ -153,8 +153,10 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 | DEAL-01 | v2 (spec Phase 2+) | Deferred |
 
 **Coverage:**
+
 - v1 requirements: 33 total (corrected from the initial definition pass's count of 30 —
   every individually-listed `XXX-NN` id above was recounted directly)
+
 - Mapped to roadmap phases: 33
 - Unmapped: 0 ✓
 
