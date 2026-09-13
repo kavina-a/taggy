@@ -6,14 +6,14 @@ current_phase: 1
 current_phase_name: Business Directory Foundation
 status: verifying
 stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-09-13T17:17:07.568Z"
+last_updated: "2026-09-13T17:35:55.385Z"
 last_activity: 2026-09-13
 last_activity_desc: Phase 1 execution started
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
   percent: 20
 ---
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P02 | 15min | 3 tasks | 16 files |
 | Phase 01 P03 | 11min | 3 tasks | 13 files |
 | Phase 01 P04 | 25min | 3 tasks | 6 files |
+| Phase 01 P05 | 15min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 01, Plan 03]: AttributeBadges skips enum fields left at a non-informative default (none/all/other) rather than always rendering a badge for every set field.
 - [Phase 01]: Distributed 94 new seed businesses across all 16 leaf categories (restaurant largest at 20, every other leaf >= 5) rather than an even split, per CONTEXT.md D-04's discretion note.
 - [Phase 01]: Implemented directory pagination as one global take/skip Prisma query (fixed 24/page, driven only by ?page=), then grouped that page's results in-memory by category-taxonomy group — not a separate paginated query per group.
+- [Phase ?]: [Phase 01-05]: Included the shadcn breadcrumb gap-closure fix in the same plan as the blocking secondaryCategories render fix, since it reuses only existing static taxonomy data in the same file. — Small, presentational, same-file addition; avoids reopening the phase for a separate deferred plan.
 
 ### Pending Todos
 
@@ -109,6 +111,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-13T17:17:07.564Z
+Last session: 2026-09-13T17:35:35.608Z
 Stopped at: Completed 01-04-PLAN.md
 Resume file: None
