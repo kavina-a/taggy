@@ -10,7 +10,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 ### Listings
 
 - [x] **LIST-01**: Business listing exists with name, categories (up to 3 primary + unlimited secondary), description, structured address (district/DS-division + free text, no ZIP), lat/lng
-- [ ] **LIST-02**: Business listing has structured hours (7-day, split shifts, holiday overrides) with "Open now"/"Closed" computed state
+- [x] **LIST-02**: Business listing has structured hours (7-day, split shifts, holiday overrides) with "Open now"/"Closed" computed state
 - [ ] **LIST-03**: Business listing has category-conditional attributes (jsonb; e.g. restaurants: delivery/takeout/outdoor seating; home services: license verified/free estimates)
 - [ ] **LIST-04**: Business listing supports photo gallery and, for restaurants, a distinct menu tab with pinned menu photos
 - [ ] **LIST-05**: Category taxonomy seeded with Sri Lanka-relevant leaf categories (Appendix A), including locally-distinct ones (tuk repair, tutoring, wedding vendors, tailoring)
