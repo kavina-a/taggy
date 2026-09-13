@@ -31,6 +31,24 @@ export function BusinessPageView({ business, openNow }: BusinessPageViewProps) {
             </Badge>
           ))}
         </div>
+        {business.secondaryCategories.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm leading-normal text-muted-foreground">
+              Also listed under
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              {business.secondaryCategories.map((category) => (
+                <Badge
+                  key={category}
+                  variant="outline"
+                  data-testid="secondary-category-badge"
+                >
+                  {category}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
       <Separator />

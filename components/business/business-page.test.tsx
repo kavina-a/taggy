@@ -9,7 +9,7 @@ const mockBusiness: BusinessDetail = {
   name: "Test Cafe",
   description: "A cozy neighbourhood cafe serving coffee and pastries.",
   primaryCategories: ["cafe-bakery", "retail-shopping"],
-  secondaryCategories: [],
+  secondaryCategories: ["beauty-spa", "grocery-convenience"],
   district: "Colombo 07",
   addressFreeText: "123 Test Road, Cinnamon Gardens",
   latitude: 6.9061,
@@ -42,6 +42,18 @@ describe("BusinessPageView", () => {
         );
       }),
     ).toBeInTheDocument();
+  });
+
+  it("renders secondary categories as a distinct badge group", () => {
+    render(<BusinessPageView business={mockBusiness} openNow={null} />);
+
+    for (const category of mockBusiness.secondaryCategories) {
+      expect(screen.getByText(category)).toBeInTheDocument();
+    }
+
+    expect(screen.getAllByTestId("secondary-category-badge")).toHaveLength(
+      mockBusiness.secondaryCategories.length,
+    );
   });
 
   it("renders no Open now/Closed badge when openNow is null", () => {
