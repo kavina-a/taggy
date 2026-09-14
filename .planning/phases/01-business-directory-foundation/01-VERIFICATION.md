@@ -1,147 +1,139 @@
 ---
 phase: 01-business-directory-foundation
-verified: 2026-09-13T17:22:11Z
-status: gaps_found
-score: 4/5 must-haves verified
+verified: 2026-09-13T23:10:00Z
+status: passed
+score: 5/5 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
-gaps:
-  - truth: "A user can open a business profile page showing its name, up to 3 primary + unlimited secondary categories, description, and a district/DS-division + free-text address (no ZIP) with an accurate lat/lng map pin."
-    status: partial
-    reason: >
-      Primary categories, name, description, address, and the Leaflet map pin all render
-      correctly and are backed by real seeded data. However, `secondaryCategories` — an
-      explicit half of this ROADMAP success criterion and of LIST-01's requirement text
-      ("categories (up to 3 primary + unlimited secondary)") — is fetched into
-      `BusinessDetail` and stored in Postgres for all 107 seeded businesses (confirmed
-      non-empty for all 107 records), but is never rendered anywhere on the business page.
-      `components/business/business-page.tsx` only maps over `business.primaryCategories`
-      when rendering category badges; `business.secondaryCategories` is computed in
-      `app/business/[slug]/page.tsx` but dropped on the floor before reaching the view.
-      The component test suite doesn't catch this because its mock `BusinessDetail` uses
-      `secondaryCategories: []`, so the gap is invisible to `npx vitest run`.
-    artifacts:
-      - path: "components/business/business-page.tsx"
-        issue: "Header section renders `business.primaryCategories.map(...)` only — no rendering of `business.secondaryCategories` anywhere in the file"
-      - path: "components/business/business-page.test.tsx"
-        issue: "Mock `BusinessDetail` sets `secondaryCategories: []`, so no test exercises secondary-category rendering either way"
-    missing:
-      - "Render `business.secondaryCategories` on the business profile page (e.g. as a visually distinct badge group below/beside the primary category badges), so the explicit ROADMAP Success Criterion #1 and LIST-01 requirement text are both fully satisfied"
-      - "Add a component test asserting secondary categories are visible, using a mock with non-empty `secondaryCategories` (mirroring the real seed data, which has non-empty secondary categories for every one of the 107 businesses)"
+re_verification:
+  previous_status: gaps_found
+  previous_score: 4/5
+  gaps_closed:
+    - "A user can open a business profile page showing its name, up to 3 primary + unlimited secondary categories, description, and a district/DS-division + free-text address (no ZIP) with an accurate lat/lng map pin."
+  gaps_remaining: []
+  regressions: []
 ---
 
 # Phase 1: Business Directory Foundation Verification Report
 
 **Phase Goal:** A real, structured, browsable directory of Colombo businesses exists — the
 foundation every later phase (search, reviews, photos) is built on top of.
-**Verified:** 2026-09-13T17:22:11Z
-**Status:** gaps_found
-**Re-verification:** No — initial verification
+**Verified:** 2026-09-13T23:10:00Z
+**Status:** passed
+**Re-verification:** Yes — after gap closure (plan 01-05)
 
 ## Goal Achievement
 
 ### Observable Truths
 
-Truths merged from ROADMAP.md Success Criteria (authoritative) and the 4 plans' `must_haves.truths`.
+Truths merged from ROADMAP.md Success Criteria (authoritative) and the 5 plans' `must_haves.truths`.
+The single truth marked FAILED in the prior verification (01-VERIFICATION.md, 2026-09-13T17:22:11Z)
+is re-checked here at full 3-level depth per the re-verification protocol; the other 4 truths,
+which were already VERIFIED and are unaffected by plan 01-05's file changes, receive a regression
+check (existence + basic sanity) rather than a full re-derivation.
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | A user can open a business profile page showing its name, up to 3 primary + unlimited secondary categories, description, and a district/DS-division + free-text address (no ZIP) with an accurate lat/lng map pin (ROADMAP SC1 / LIST-01 / LOC-02) | ✗ FAILED (partial) | Name/description/address/map pin/primary categories all verified live (`curl`-equivalent via Playwright e2e + component tests + live DB query). `secondaryCategories` is fetched (`app/business/[slug]/page.tsx:30`) but never rendered in `components/business/business-page.tsx` — confirmed by full-file read and `grep -rn secondaryCategories` across non-generated source, which shows zero rendering call sites. All 107 live seeded businesses have non-empty `secondaryCategories` (`jq` query), so this is not a hypothetical gap — real data is silently dropped from the UI. ZIP rejection: `businessSeedSchema.strict()` + passing test confirms LOC-02. |
-| 2 | A user can see a business's structured 7-day hours with split shifts and holiday overrides, plus a live "Open now"/"Closed" state (ROADMAP SC2 / LIST-02) | ✓ VERIFIED | `lib/hours/compute-open-now.ts` read line-by-line; algorithm checks `[yesterday, today]`, overrides take precedence, midnight-crossing math (`+24h` when `crossesMidnight`) confirmed correct by manual trace of the hardest test case (yesterday's override crossing into today). 7 unit tests in `compute-open-now.test.ts` pass (`npx vitest run`, independently re-run). Live seed data contains a real midnight-crossing shift (6 nightlife/restaurant businesses, e.g. `ministry-of-crab`) and a real holiday override (`upalis-by-nawaloka`, 2026-12-25). `HoursAccordion` renders split shifts comma-joined and a green/gray (never red) badge, wired into `app/business/[slug]/page.tsx` via `computeOpenNow(...)` server-side with hardcoded `Asia/Colombo` zone. E2e test independently re-run and passes. |
-| 3 | A user can view category-conditional attributes and browse a photo gallery, with restaurants showing a dedicated pinned menu tab (ROADMAP SC3 / LIST-03 / LIST-04) | ✓ VERIFIED | `lib/categories/category-config.ts` defines 16 leaf categories, each with a `.strict()` Zod attribute schema; `AttributeBadges` uses `safeParse` and is wired into `business-page.tsx`. `PhotoGallery` gates the Menu tab strictly on `primaryCategories.includes("restaurant")` (confirmed in source), with correct empty states ("No photos yet" / "Menu not available yet") matching UI-SPEC copy verbatim. `photo-gallery.test.tsx` (4 cases) and `category-config.test.ts` (6 cases) independently re-run and pass. |
-| 4 | The directory already contains real, seeded Colombo businesses spanning the Sri Lanka-relevant category taxonomy (tuk repair, tutoring, wedding vendors, tailoring), so the app isn't empty at first use (ROADMAP SC4 / LIST-05 / LIST-06) | ✓ VERIFIED | Live DB query (`npx tsx prisma/scripts/count-businesses.ts`) independently returns 107. `jq` confirms 107 unique slugs, all 16 leaf categories present with restaurant largest (20) and every other leaf ≥ 5, all coordinates within the Colombo bounding box (0 out-of-box entries). `prisma/seed.ts` independently reviewed: fail-fast pre-write validation (schema + per-category attributes + slug-uniqueness) wrapped in a single `prisma.$transaction`, matching plan 01-04's Task 2 exactly. |
-| 5 | Directory index groups businesses by top-level category with server-side pagination (plan 01-04 must_have, supporting SC4) | ✓ VERIFIED | `app/directory/page.tsx` groups by `categoryTaxonomy` group via `CATEGORY_LOOKUP`, uses a fixed `PAGE_SIZE = 24` with Prisma `take`/`skip` driven only by `?page=` (client cannot control page size), invalid `page` values fall back to 1. E2e test asserts a level-2 category-group heading is visible before clicking through — independently re-run, passes. |
+| 1 | A user can open a business profile page showing its name, up to 3 primary + unlimited secondary categories, description, and a district/DS-division + free-text address (no ZIP) with an accurate lat/lng map pin (ROADMAP SC1 / LIST-01 / LOC-02) | ✓ VERIFIED (gap closed) | Read `components/business/business-page.tsx` directly (not the SUMMARY): lines 63-80 render a conditional block `business.secondaryCategories.length > 0 && (...)` containing an "Also listed under" caption and a `business.secondaryCategories.map(...)` producing `<Badge variant="outline" data-testid="secondary-category-badge">{category}</Badge>` for every secondary category — visually distinct from the primary badges' `variant="secondary"` at lines 56-62. `components/business/business-page.test.tsx`'s mock `secondaryCategories` is now `["beauty-spa", "grocery-convenience"]` (non-empty, mirrors real seed shape), and a new test ("renders secondary categories as a distinct badge group", lines 48-58) asserts both category texts and `getAllByTestId("secondary-category-badge")` length. Independently re-ran `npx vitest run components/business/business-page.test.tsx` — 9/9 pass. Primary categories, name, description, address, and Leaflet map pin remain rendered exactly as previously verified (regression-checked: same JSX, unchanged). ZIP rejection unaffected: `businessSeedSchema.strict()` untouched by this plan. |
+| 2 | A user can see a business's structured 7-day hours with split shifts and holiday overrides, plus a live "Open now"/"Closed" state (ROADMAP SC2 / LIST-02) | ✓ VERIFIED (regression check) | `HoursAccordion` render call (business-page.tsx lines 119-128) is unchanged by plan 01-05's diff (which only touched the header/breadcrumb sections). `npx vitest run` (full suite) independently re-run: 32/32 pass, including all `compute-open-now.test.ts` and `hours-accordion` coverage. No regression. |
+| 3 | A user can view category-conditional attributes and browse a photo gallery, with restaurants showing a dedicated pinned menu tab (ROADMAP SC3 / LIST-03 / LIST-04) | ✓ VERIFIED (regression check) | `AttributeBadges` and `PhotoGallery` render call sites (business-page.tsx lines 134-154) unchanged by this plan's diff. Full suite re-run (32/32) includes `photo-gallery.test.tsx` and `category-config.test.ts` with no failures. No regression. |
+| 4 | The directory already contains real, seeded Colombo businesses spanning the Sri Lanka-relevant category taxonomy (tuk repair, tutoring, wedding vendors, tailoring), so the app isn't empty at first use (ROADMAP SC4 / LIST-05 / LIST-06) | ✓ VERIFIED (regression check) | `prisma/seed.ts` and `prisma/seed-data/businesses.json` are untouched by plan 01-05 (files_modified in 01-05-PLAN.md frontmatter lists only `business-page.tsx`, `business-page.test.tsx`, `category-config.ts`). No regression possible; prior live-DB verification (107 businesses, 107 unique slugs, all 16 categories represented) stands. |
+| 5 | Directory index groups businesses by top-level category with server-side pagination (plan 01-04 must_have, supporting SC4) | ✓ VERIFIED (regression check) | `app/directory/page.tsx` untouched by plan 01-05. No regression. |
 
-**Score:** 4/5 truths verified (1 partial fail — secondary categories never rendered)
+**Score:** 5/5 truths verified (gap from prior verification fully closed, no regressions introduced)
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `prisma/schema.prisma` | Business/BusinessHours/BusinessHoursOverride/BusinessPhoto models, dual-column geo | ✓ VERIFIED | All 4 models present exactly as specified; migration files present |
-| `lib/types/business.ts` | Shared types incl. `BusinessDetail.secondaryCategories` | ✓ VERIFIED (data), ⚠️ downstream gap | Type includes the field; the field is populated but not consumed by the view layer (see Truth 1 gap) |
-| `lib/validation/business.schema.ts` | `businessSeedSchema` (Zod `.strict()`) | ✓ VERIFIED | `.strict()` confirmed; ZIP-rejection test passes |
-| `prisma/seed.ts` | Idempotent, transactional, fail-fast seed runner | ✓ VERIFIED | `prisma.$transaction` wraps all writes; `validateAll()` pre-write pass; live re-run confirms stable count |
-| `prisma/seed-data/businesses.json` | 100-300 real Colombo businesses | ✓ VERIFIED | 107 entries, 107 unique slugs, all in Colombo bounding box |
-| `app/directory/page.tsx` | Category-grouped, paginated index | ✓ VERIFIED | Grouping + `take`/`skip` pagination confirmed in source |
-| `app/business/[slug]/page.tsx` | Business profile route | ✓ VERIFIED (wiring), ⚠️ incomplete data use | Fetches and maps all `BusinessDetail` fields including `secondaryCategories`, but the mapped value is dropped by the presentational component |
-| `components/business/business-page.tsx` | Presentational business page view | ⚠️ INCOMPLETE | Renders name/description/address/map/hours/attributes/photos correctly; does not render `secondaryCategories` anywhere |
-| `components/business/business-map.tsx` | Client Leaflet map pin | ✓ VERIFIED | `MapContainer`/`Marker` at `[latitude, longitude]`, `data-testid="business-map"` present |
-| `lib/hours/compute-open-now.ts` | Overnight/holiday-safe open-now algorithm | ✓ VERIFIED | Manually traced against RESEARCH.md's hardest case; matches |
-| `components/business/hours-accordion.tsx` | 7-day hours + status badge | ✓ VERIFIED | Correct badge colors (green/neutral-gray, never red), split-shift grouping, dynamic aria-label |
-| `lib/categories/category-config.ts` | 16-leaf taxonomy + attribute schemas | ✓ VERIFIED | All 16 leaves present, all 4 SL-specific categories present, no orphaned schema |
-| `components/business/attribute-badges.tsx` | Category-conditional badges | ✓ VERIFIED | `safeParse`-based, never throws on stale data |
-| `components/business/photo-gallery.tsx` | Gallery + restaurant Menu tab | ✓ VERIFIED | Menu tab strictly gated on `primaryCategories.includes("restaurant")`; blur placeholders on every tile |
-| `prisma/scripts/count-businesses.ts` | Standalone count script | ✓ VERIFIED | Ran independently, printed `107` |
+| `components/business/business-page.tsx` | Presentational business page view rendering both category tiers + breadcrumb | ✓ VERIFIED | Full file read directly: primary categories (56-62), secondary categories (63-80), breadcrumb (33-50), plus unchanged hours/attributes/photos/map sections |
+| `components/business/business-page.test.tsx` | Non-empty `secondaryCategories` mock + assertions for both new features | ✓ VERIFIED | Mock is `["beauty-spa", "grocery-convenience"]`; 9 tests, including 2 new ones (secondary-category badges, breadcrumb trail), all pass |
+| `lib/categories/category-config.ts` | `getCategoryLabel(slug)` export | ✓ VERIFIED | `grep` confirms `const categoryLabelBySlug = new Map(...)` (line 78) and `export function getCategoryLabel(slug: string): string \| undefined` (line 85), populated once from `categoryTaxonomy` |
+| `components/ui/breadcrumb.tsx` (shadcn primitive) | Wired into a real page | ✓ VERIFIED — no longer orphaned | Previously flagged as unused (⚠️ Warning in prior verification); now imported and rendered in `business-page.tsx` (`Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbPage`, `BreadcrumbSeparator` all used) |
+| All other Phase 1 artifacts (schema, seed, hours, category taxonomy, photo gallery, etc.) | — | ✓ VERIFIED (regression check) | Untouched by plan 01-05; prior verification's findings stand (see 01-VERIFICATION.md history in re_verification frontmatter above) |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|-----|-----|--------|---------|
-| `components/directory/business-card.tsx` | `app/business/[slug]/page.tsx` | `Link href=/business/${slug}` | ✓ WIRED | Confirmed in source and by passing e2e click-through |
-| `app/business/[slug]/page.tsx` | `prisma/schema.prisma` | `prisma.business.findUnique` with hours/overrides/photos relations | ✓ WIRED | Confirmed in source |
-| `app/business/[slug]/page.tsx` | `lib/hours/compute-open-now.ts` | `computeOpenNow(...)` server-side | ✓ WIRED | Confirmed, uses `DateTime.now().setZone("Asia/Colombo")` |
-| `components/business/business-page.tsx` | `components/business/hours-accordion.tsx` | `<HoursAccordion .../>` | ✓ WIRED | Confirmed |
-| `components/business/business-page.tsx` | `lib/categories/category-config.ts` | `attributeSchemaByCategory[...]` via `AttributeBadges` | ✓ WIRED | Confirmed |
-| `components/business/photo-gallery.tsx` | `lib/types/business.ts` | filters by `isMenuPhoto`, gated on `restaurant` | ✓ WIRED | Confirmed |
-| `prisma/seed.ts` | `prisma/schema.prisma` | `prisma.$transaction` wrapping all upserts | ✓ WIRED | Confirmed |
-| `app/directory/page.tsx` | `lib/categories/category-config.ts` | groups by `categoryTaxonomy` | ✓ WIRED | Confirmed |
-| `app/business/[slug]/page.tsx` | `components/business/business-page.tsx` | `business.secondaryCategories` value | ✗ NOT WIRED | Value is computed and passed down inside `BusinessDetail` but the presentational component never reads/renders `business.secondaryCategories` |
+| `app/business/[slug]/page.tsx` | `components/business/business-page.tsx` | `business.secondaryCategories` value | ✓ WIRED (previously NOT_WIRED) | The value is now read and rendered inside a conditional JSX block — confirmed by direct source read, not by test pass alone |
+| `components/business/business-page.tsx` | `lib/categories/category-config.ts#getCategoryLabel` | breadcrumb category segment text | ✓ WIRED | `getCategoryLabel(business.primaryCategories[0]) ?? business.primaryCategories[0]` at line 42-43, falls back safely if lookup misses |
+| `components/business/business-page.tsx` | `components/ui/breadcrumb.tsx` | `<Breadcrumb><BreadcrumbList>...` | ✓ WIRED | Rendered as the first child of the top-level `<article>`, above `<header>` |
+| All other Phase 1 key links (business-card→business page, business page→Prisma, business page→hours/attributes/photos) | — | — | ✓ WIRED (regression check) | Unaffected by this plan's diff; prior verification stands |
 
 ### Data-Flow Trace (Level 4)
 
 | Artifact | Data Variable | Source | Produces Real Data | Status |
 |----------|---------------|--------|---------------------|--------|
-| `app/directory/page.tsx` | `businesses` | `prisma.business.findMany` (live Postgres, 107 rows) | Yes | ✓ FLOWING |
-| `app/business/[slug]/page.tsx` | `business` | `prisma.business.findUnique` (live Postgres) | Yes | ✓ FLOWING |
-| `components/business/business-page.tsx` | `business.primaryCategories` | Prop from real Prisma row | Yes | ✓ FLOWING |
-| `components/business/business-page.tsx` | `business.secondaryCategories` | Prop from real Prisma row (non-empty for all 107 businesses) | Computed but never read by any JSX in the component | ✗ DISCONNECTED (data flows to the component but is never consumed/rendered) |
+| `components/business/business-page.tsx` | `business.secondaryCategories` | Prop from real Prisma row (non-empty for all 107 seeded businesses) | Yes — now rendered | ✓ FLOWING (previously ✗ DISCONNECTED) |
+| `components/business/business-page.tsx` | `business.primaryCategories[0]` (breadcrumb) | Prop from real Prisma row, passed through `getCategoryLabel` | Yes | ✓ FLOWING |
 
 ### Behavioral Spot-Checks
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| Unit/component suite | `npx vitest run` | 5 files, 30/30 tests passed | ✓ PASS |
-| E2e smoke path | `npx playwright test e2e/directory-to-business.spec.ts` | 1/1 passed | ✓ PASS |
-| Live seed count | `npx tsx prisma/scripts/count-businesses.ts` | `107` | ✓ PASS |
-| Seed data integrity | `jq` unique-slug / bounding-box checks | 107 unique slugs, 0 out-of-bounds coordinates | ✓ PASS |
-| `computeOpenNow` overnight+override logic | Manual trace of yesterday's-override-crossing-midnight test case | Traced start/end shift math by hand, matches expected `true` | ✓ PASS |
+| Component suite (targeted file) | `npx vitest run components/business/business-page.test.tsx` | 9/9 tests passed (independently re-run in this verification pass) | ✓ PASS |
+| Unit/component suite (full) | `npx vitest run` | 5 files, 32/32 tests passed (independently re-run in this verification pass) | ✓ PASS |
+| Source-level confirmation of secondary-category rendering | Direct read of `components/business/business-page.tsx` lines 63-80 | Conditional block present, maps `secondaryCategories`, renders `variant="outline"` badges with `data-testid="secondary-category-badge"` | ✓ PASS |
+| Breadcrumb no longer orphaned | `grep -rn "Breadcrumb" --include="*.tsx"` across the repo (excl. `components/ui/breadcrumb.tsx` itself) | Only consumer is `components/business/business-page.tsx`; all 6 imported primitives (`Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbPage`, `BreadcrumbSeparator`) are used | ✓ PASS |
+| Debt-marker scan | `grep -n "TBD\|FIXME\|XXX\|TODO\|HACK\|PLACEHOLDER"` on the 3 files this plan modified | No matches | ✓ PASS |
+| E2e smoke path (orchestrator-reported, re-checked for conflict) | `e2e/directory-to-business.spec.ts` read directly | No assertion in the e2e spec conflicts with or is invalidated by the new breadcrumb/secondary-category markup (it asserts h1/h3/map/open-now/attribute-badge only) | ✓ PASS (no conflict) |
 
 ### Requirements Coverage
 
 | Requirement | Source Plan | Description | Status | Evidence |
 |-------------|-------------|-------------|--------|----------|
-| LIST-01 | 01-01 | Name, categories (primary+secondary), description, address, lat/lng | ⚠️ PARTIAL | Primary categories/name/description/address/lat-lng all render; secondary categories do not (see gap above) |
-| LOC-02 | 01-01 | Address model never accepts/exposes ZIP | ✓ SATISFIED | `.strict()` Zod schema, passing test |
-| LIST-06 | 01-01, 01-04 | Seeded starter dataset so search isn't empty | ✓ SATISFIED | 107 live businesses, idempotent transactional seed |
-| LIST-02 | 01-02 | Structured hours + computed open/closed state | ✓ SATISFIED | `computeOpenNow` correct on overnight + holiday-override cases, live-wired |
-| LIST-03 | 01-03 | Category-conditional attributes (jsonb) | ✓ SATISFIED | 16 strict per-category Zod schemas, `AttributeBadges` wired |
-| LIST-04 | 01-03 | Photo gallery + restaurant menu tab | ✓ SATISFIED | `PhotoGallery` with correctly-gated Menu tab |
-| LIST-05 | 01-03, 01-04 | SL-relevant category taxonomy incl. tuk repair/tutoring/wedding vendors/tailoring | ✓ SATISFIED | All 4 present in `categoryTaxonomy` and represented in live seed data (≥5 each) |
+| LIST-01 | 01-01, 01-05 | Name, categories (primary+secondary), description, address, lat/lng | ✓ SATISFIED (moved from PARTIAL) | Primary + secondary categories both render; name/description/address/map pin unchanged and previously verified |
+| LOC-02 | 01-01 | Address model never accepts/exposes ZIP | ✓ SATISFIED | `.strict()` Zod schema, passing test (unchanged by 01-05) |
+| LIST-06 | 01-01, 01-04 | Seeded starter dataset so search isn't empty | ✓ SATISFIED | 107 live businesses, idempotent transactional seed (unchanged by 01-05) |
+| LIST-02 | 01-02 | Structured hours + computed open/closed state | ✓ SATISFIED | `computeOpenNow` correct on overnight + holiday-override cases, live-wired (unchanged by 01-05) |
+| LIST-03 | 01-03 | Category-conditional attributes (jsonb) | ✓ SATISFIED | 16 strict per-category Zod schemas, `AttributeBadges` wired (unchanged by 01-05) |
+| LIST-04 | 01-03 | Photo gallery + restaurant menu tab | ✓ SATISFIED | `PhotoGallery` with correctly-gated Menu tab (unchanged by 01-05) |
+| LIST-05 | 01-03, 01-04 | SL-relevant category taxonomy incl. tuk repair/tutoring/wedding vendors/tailoring | ✓ SATISFIED | All 4 present in `categoryTaxonomy` and represented in live seed data (≥5 each) (unchanged by 01-05) |
 
-No orphaned requirements: all 7 phase requirement IDs (LIST-01..06, LOC-02) appear in at least one plan's `requirements:` frontmatter, and every ID maps to verified (or partially verified) implementation evidence above.
+Cross-referenced against `.planning/REQUIREMENTS.md`: all 7 requirement IDs assigned to Phase 1
+(LIST-01 through LIST-06, LOC-02) are marked `[x]` complete in REQUIREMENTS.md and every ID
+appears in at least one plan's `requirements:` frontmatter (01-01 through 01-05). No orphaned
+requirements found.
 
 ### Anti-Patterns Found
 
 | File | Line | Pattern | Severity | Impact |
 |------|------|---------|----------|--------|
-| `components/business/business-page.tsx` | header section | Silently drops `business.secondaryCategories` (data present, prop available, never rendered) | 🛑 Blocker | Directly contradicts ROADMAP Success Criterion #1 and LIST-01's requirement text |
-| (none) | — | No `TODO`/`FIXME`/`XXX`/`HACK`/`PLACEHOLDER` debt markers found in any phase-modified source file | — | Clean |
-| UI-SPEC `breadcrumb` component | not used anywhere | shadcn `breadcrumb` primitive was generated (`components/ui/breadcrumb.tsx`) per UI-SPEC's Registry Safety inventory ("Directory > Category > Business Name navigation trail") but is never imported/rendered by `business-page.tsx` or any other component | ⚠️ Warning | Minor UI-SPEC deviation — not listed as a `must_haves` truth in any plan, so does not block the phase goal, but is an unused registered component and a locked-spec item silently skipped with no entry in any SUMMARY's "Deviations from Plan" section |
+| (none in files modified by plan 01-05) | — | No `TODO`/`FIXME`/`XXX`/`HACK`/`PLACEHOLDER` debt markers found in `business-page.tsx`, `business-page.test.tsx`, or `category-config.ts` | — | Clean |
+| (resolved) | — | The prior ⚠️ Warning ("shadcn `breadcrumb` primitive generated but never wired into any page") is now resolved — the breadcrumb is imported and fully rendered in `business-page.tsx` | — | No longer applicable |
 
 ### Human Verification Required
 
-None. All must-have truths and gaps in this phase are programmatically verifiable (component/unit tests, live database queries, and e2e smoke tests) — no visual, real-time, or subjective judgment call is needed to confirm or refute the secondary-categories gap.
+None. The single gap from the prior verification (secondary categories not rendered) was
+programmatically verifiable and has been confirmed closed by direct source inspection (not
+SUMMARY-trusting) plus an independent re-run of the full test suite. No remaining item in this
+phase requires visual, real-time, or subjective human judgment.
 
 ### Gaps Summary
 
-Phase 1 is substantially complete and of high quality: the hours/open-now algorithm was correctly implemented against both of RESEARCH.md's flagged pitfalls (verified independently, not just trusted from SUMMARY.md), the category taxonomy and attribute schemas are complete and correctly gated, the photo gallery/menu-tab logic is correctly restaurant-gated, the seed pipeline is genuinely transactional and idempotent (independently re-verified against a live 107-row database, not just re-reading the SUMMARY's claim), and the directory index's grouping/pagination is real and server-controlled.
+The single BLOCKING gap identified in the initial verification (2026-09-13T17:22:11Z) —
+`business.secondaryCategories` fetched and seeded but never rendered on the business profile
+page — is now closed. Direct inspection of `components/business/business-page.tsx` (not the
+SUMMARY's claim) confirms the render call site exists, is correctly gated on non-empty arrays,
+uses a visually distinct `variant="outline"` badge style, and is exercised by a new passing test
+using non-empty mock data mirroring the real seed shape. The paired non-blocking WARNING (unused
+shadcn breadcrumb primitive) was also resolved in the same plan — the breadcrumb is now wired
+into the business page using the phase's existing static category taxonomy, with a documented,
+non-scope-creeping decision to render the category segment as plain text rather than a link
+(Phase 1 has no category-filtered directory route).
 
-However, one concrete, verifiable gap blocks a clean pass: **secondary categories are stored, seeded (non-empty for all 107 real businesses), and fetched into the view layer's own `BusinessDetail` prop — but are never rendered anywhere on the business profile page.** This is not a hypothetical or cosmetic miss: it is half of ROADMAP Success Criterion #1's literal wording ("up to 3 primary + unlimited secondary categories") and of LIST-01's own requirement text. The component test suite didn't catch this because its mock business object conveniently uses an empty `secondaryCategories: []` array, so the missing render path was never exercised by any test — a textbook case of "task completed" (categories are shown) without "goal achieved" (both category tiers are shown, as specified).
+All 5 truths (merged from ROADMAP Success Criteria and all 5 plans' must-haves) are now verified.
+All 7 phase-scoped requirement IDs (LIST-01 through LIST-06, LOC-02) are SATISFIED. The full test
+suite (32/32) was independently re-run during this verification pass, not merely trusted from the
+SUMMARY. No regressions were introduced to the 4 previously-verified truths, since plan 01-05's
+diff was scoped to exactly 3 files and did not touch any other phase artifact.
 
-This is a narrow, well-scoped gap: the data model, seed data, and fetch/type plumbing are all already correct; only the presentational rendering in `components/business/business-page.tsx` (and an accompanying test case with non-empty mock data) needs to be added. Recommend a small closure plan targeting exactly this component before advancing to Phase 2.
+Phase 1 goal is achieved: a real, structured, browsable directory of Colombo businesses exists,
+with both category tiers now visible on every business profile page, ready for Phase 2
+(Search + Accounts) to build on top of.
 
 ---
 
-*Verified: 2026-09-13T17:22:11Z*
+*Verified: 2026-09-13T23:10:00Z*
 *Verifier: Claude (gsd-verifier)*
