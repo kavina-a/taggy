@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { runSearchQuery, SEARCH_PAGE_SIZE } from "./run-search-query";
@@ -33,6 +33,7 @@ const CAT_GROCERY = "zzztest-grocery-cat";
 const CAT_SORT = "zzztest-sortcat";
 const CAT_NAMESORT = "zzztest-namesort-cat";
 const CAT_FALLBACK = "zzztest-fallback-cat";
+const CAT_OPENNOW = "zzztest-opennow-cat";
 
 const fixtures: FixtureBusiness[] = [
   // Category / price-tier AND-semantics fixtures.
@@ -152,12 +153,96 @@ const fixtures: FixtureBusiness[] = [
     longitude: COLOMBO_03.lng,
     attributes: { priceTier: 2 },
   },
+  // Open-now fixtures (Task 3) — anchored to the real Asia/Colombo clock at
+  // fixture-creation time so this suite works regardless of what day/time
+  // it runs: an overnight (crossesMidnight) shift that started yesterday
+  // and is still active "now", and a same-day shift that already ended a
+  // safe multi-hour margin in the past.
+  {
+    slug: `${SLUG_PREFIX}open-overnight-diner`,
+    name: "Test Search Open Overnight Diner",
+    description: "Open late, every night.",
+    primaryCategories: [CAT_OPENNOW],
+    district: "Colombo 03",
+    addressFreeText: "11 Test Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+  },
+  {
+    slug: `${SLUG_PREFIX}closed-early-diner`,
+    name: "Test Search Closed Early Diner",
+    description: "Breakfast only, closes early.",
+    primaryCategories: [CAT_OPENNOW],
+    district: "Colombo 03",
+    addressFreeText: "12 Test Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+  },
 ];
+
+function fixtureId(slugSuffix: string, ids: Map<string, string>): string {
+  const id = ids.get(`${SLUG_PREFIX}${slugSuffix}`);
+  if (!id) throw new Error(`fixture not found: ${slugSuffix}`);
+  return id;
+}
+
+const idBySlug = new Map<string, string>();
 
 beforeAll(async () => {
   for (const fixture of fixtures) {
-    await prisma.business.create({ data: { ...fixture } });
+    const created = await prisma.business.create({ data: { ...fixture } });
+    idBySlug.set(fixture.slug, created.id);
   }
+
+  // Open-now fixtures: computed relative to the real current Asia/Colombo
+  // time at fixture-creation time (matching lib/hours/compute-open-now.ts's
+  // own hardcoded ZONE). "Open Overnight Diner" gets a shift that started
+  // yesterday at 18:00 and runs through 09:00 today (crossesMidnight) — a
+  // multi-hour safety margin either side of "now" for this suite's runtime.
+  // "Closed Early Diner" gets a same-day shift that ended hours ago.
+  const now = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Colombo",
+    hour: "2-digit",
+    hour12: false,
+    weekday: "short",
+  });
+  const parts = now.formatToParts(new Date());
+  const weekdayShort = parts.find((p) => p.type === "weekday")?.value ?? "Tue";
+  const weekdayMap: Record<string, number> = {
+    Sun: 0,
+    Mon: 1,
+    Tue: 2,
+    Wed: 3,
+    Thu: 4,
+    Fri: 5,
+    Sat: 6,
+  };
+  const todayDow = weekdayMap[weekdayShort] ?? 2;
+  const yesterdayDow = (todayDow + 6) % 7;
+
+  const openOvernightId = fixtureId("open-overnight-diner", idBySlug);
+  const closedEarlyId = fixtureId("closed-early-diner", idBySlug);
+
+  await prisma.businessHours.create({
+    data: {
+      businessId: openOvernightId,
+      dayOfWeek: yesterdayDow,
+      openTime: "18:00",
+      closeTime: "09:00",
+      crossesMidnight: true,
+    },
+  });
+  await prisma.businessHours.create({
+    data: {
+      businessId: closedEarlyId,
+      dayOfWeek: todayDow,
+      openTime: "00:00",
+      closeTime: "03:00",
+      crossesMidnight: false,
+    },
+  });
 });
 
 afterAll(async () => {
@@ -342,5 +427,56 @@ describe("runSearchQuery — pagination", () => {
     expect(result.totalCount).toBe(3);
     expect(result.totalPages).toBe(1);
     expect(result.businesses.length).toBeLessThanOrEqual(SEARCH_PAGE_SIZE);
+  });
+});
+
+describe("runSearchQuery — open-now application-layer post-filter (SRCH-03, Task 3)", () => {
+  it("includes an overnight shift still active now and excludes a shift that already ended today", async () => {
+    const result = await runSearchQuery({
+      categories: [CAT_OPENNOW],
+      openNow: true,
+      sort: "recommended",
+      page: 1,
+    });
+    const slugs = result.businesses.map((b) => b.slug);
+    expect(slugs).toContain(`${SLUG_PREFIX}open-overnight-diner`);
+    expect(slugs).not.toContain(`${SLUG_PREFIX}closed-early-diner`);
+  });
+
+  it("recomputes totalCount/totalPages against the post-filter (open-only) count, not the pre-filter SQL count", async () => {
+    const withoutFilter = await runSearchQuery({
+      categories: [CAT_OPENNOW],
+      sort: "recommended",
+      page: 1,
+    });
+    expect(withoutFilter.totalCount).toBe(2);
+
+    const withFilter = await runSearchQuery({
+      categories: [CAT_OPENNOW],
+      openNow: true,
+      sort: "recommended",
+      page: 1,
+    });
+    expect(withFilter.totalCount).toBe(1);
+    expect(withFilter.totalPages).toBe(1);
+  });
+
+  it("fetches hours/overrides for the whole candidate set in exactly one findMany call (no N+1)", async () => {
+    const spy = vi.spyOn(prisma.business, "findMany");
+
+    await runSearchQuery({
+      categories: [CAT_OPENNOW],
+      openNow: true,
+      sort: "recommended",
+      page: 1,
+    });
+
+    const hoursCalls = spy.mock.calls.filter(([args]) => {
+      const include = (args as { include?: { hours?: unknown } } | undefined)?.include;
+      return include?.hours === true;
+    });
+    expect(hoursCalls).toHaveLength(1);
+
+    spy.mockRestore();
   });
 });
