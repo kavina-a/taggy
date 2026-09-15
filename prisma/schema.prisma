@@ -22,6 +22,7 @@ model Business {
   latitude            Float
   longitude           Float
   location            Unsupported("geography(Point,4326)")?
+  searchable          Unsupported("tsvector")?
   attributes          Json      @default("{}")
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
@@ -30,6 +31,7 @@ model Business {
   photos              BusinessPhoto[]
 
   @@index([district])
+  @@index([searchable], type: Gin, map: "business_searchable_gin_idx")
 }
 
 model BusinessHours {
@@ -68,4 +70,27 @@ model BusinessPhoto {
   createdAt   DateTime @default(now())
 
   @@index([businessId])
+}
+
+model User {
+  id                   String   @id @default(cuid())
+  phone                String   @unique
+  name                 String?
+  email                String?  @unique
+  languagePref         String   @default("en")
+  hasSeenProfilePrompt Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model OtpChallenge {
+  id           String    @id @default(cuid())
+  phone        String
+  codeHash     String
+  expiresAt    DateTime
+  attemptCount Int       @default(0)
+  consumedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([phone, expiresAt])
 }
