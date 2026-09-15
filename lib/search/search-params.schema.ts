@@ -31,6 +31,11 @@ export const searchParamsSchema = z
     openNow: z.enum(["true", "false"]).optional(),
     radiusKm: z.coerce.number().positive().optional(),
     rating: ratingThresholdSchema.default("any"),
+    // Category-conditional boolean attribute filters (SRCH-03), e.g.
+    // "delivery:true,wifi:true" — see lib/search/attrs-param.ts for the
+    // parser. A single fixed key since the underlying attribute keys are
+    // category-dependent and can't be enumerated in this .strict() schema.
+    attrs: z.string().max(500).optional(),
     sort: sortOptionSchema.default("recommended"),
     page: z.coerce.number().int().positive().default(1),
   })

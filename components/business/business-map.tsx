@@ -8,7 +8,10 @@ import L from "leaflet";
 // under most bundlers (webpack/Turbopack rewrite the URLs) — point them at
 // the CDN copies that ship alongside the installed leaflet version instead
 // of the broken relative defaults. Must happen once per client render.
-const DEFAULT_ICON = L.icon({
+// Exported so components/search/search-results-map.tsx (multi-pin search
+// results map) can reuse the identical marker-icon fix rather than
+// duplicating this CDN-URL workaround a second time.
+export const DEFAULT_ICON = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   iconRetinaUrl:
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
