@@ -10,6 +10,17 @@ beforeAll(() => {
   Element.prototype.releasePointerCapture = vi.fn();
 });
 
+// DropdownMenuTrigger opens on pointerdown (not click) in Radix, so tests
+// open it via a keyboard Enter press instead — both a faithful keyboard-
+// accessibility interaction and reliable under jsdom's fireEvent.click,
+// which never dispatches pointerdown.
+function openMenu() {
+  fireEvent.keyDown(
+    screen.getByRole("button", { name: /Sort by[\s\S]*Recommended|Sort by[\s\S]*Distance/ }),
+    { key: "Enter" },
+  );
+}
+
 describe("SortDropdown", () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -23,7 +34,7 @@ describe("SortDropdown", () => {
 
   it("renders exactly the 4 sort options in order when opened", () => {
     render(<SortDropdown sort="recommended" onSortChange={vi.fn()} />);
-    fireEvent.click(screen.getByRole("button", { name: /Sort by.*Recommended/s }));
+    openMenu();
 
     const items = screen.getAllByRole("menuitem");
     expect(items.map((el) => el.textContent)).toEqual([
@@ -37,7 +48,7 @@ describe("SortDropdown", () => {
   it("selecting an option calls onSortChange with that option's value", () => {
     const onSortChange = vi.fn();
     render(<SortDropdown sort="recommended" onSortChange={onSortChange} />);
-    fireEvent.click(screen.getByRole("button", { name: /Sort by.*Recommended/s }));
+    openMenu();
     fireEvent.click(screen.getByText("Highest Rated"));
     expect(onSortChange).toHaveBeenCalledWith("highest_rated");
   });
