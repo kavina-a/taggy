@@ -108,4 +108,51 @@ describe("BusinessPageView", () => {
     // No photos in the mock -> gallery renders its empty state.
     expect(screen.getByText("No photos yet")).toBeInTheDocument();
   });
+
+  it("shows a guest login prompt instead of the composer when currentUserId is null", () => {
+    render(<BusinessPageView business={mockBusiness} openNow={null} />);
+
+    expect(screen.getByRole("link", { name: /Log in to write a review/i })).toHaveAttribute(
+      "href",
+      "/login",
+    );
+    expect(screen.queryByRole("button", { name: "Submit review" })).not.toBeInTheDocument();
+  });
+
+  it("shows the review composer directly for a logged-in user with no existing review", () => {
+    render(
+      <BusinessPageView business={mockBusiness} openNow={null} currentUserId="user_1" />,
+    );
+
+    expect(screen.getByRole("button", { name: "Submit review" })).toBeInTheDocument();
+    expect(screen.getByRole("radiogroup", { name: "Your rating" })).toBeInTheDocument();
+  });
+
+  it("renders the Reviews section heading and passed-in reviews", () => {
+    render(
+      <BusinessPageView
+        business={mockBusiness}
+        openNow={null}
+        reviews={[
+          {
+            id: "rev_1",
+            userId: "user_2",
+            userName: "Kamal",
+            userAccountCreatedAt: "2025-01-01T00:00:00.000Z",
+            userReviewCount: 2,
+            rating: 5,
+            text: "Excellent coffee and a lovely quiet corner to work from in the mornings.",
+            visitDate: null,
+            visibilityStatus: "recommended",
+            editedAt: null,
+            createdAt: "2026-09-01T00:00:00.000Z",
+            photos: [],
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { level: 2, name: "Reviews" })).toBeInTheDocument();
+    expect(screen.getByText("Kamal")).toBeInTheDocument();
+  });
 });
