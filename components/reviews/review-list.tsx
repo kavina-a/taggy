@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { ReviewCard } from "./review-card";
 import { ReviewSortDropdown } from "./review-sort-dropdown";
-import { sortReviews, type ReviewSortOption, type SortableReview } from "@/lib/reviews/sort-reviews";
+import { sortReviews, type ReviewSortOption } from "@/lib/reviews/sort-reviews";
 import type { ReviewListItem } from "@/lib/types/review";
 
 export interface ReviewListProps {
@@ -19,25 +19,6 @@ export interface ReviewListProps {
   /** REV-04: the REAL not_recommended count — 0 means the disclosure is omitted entirely. */
   notRecommendedCount: number;
   currentUserId: string | null;
-}
-
-function toSortable(review: ReviewListItem): SortableReview {
-  return {
-    id: review.id,
-    rating: review.rating,
-    createdAt: review.createdAt,
-    userAccountCreatedAt: review.userAccountCreatedAt,
-    userReviewCount: review.userReviewCount,
-  };
-}
-
-// REV-05: apply the same pure sortReviews() the server used for the initial
-// blended order to whichever review set (main list or the disclosure's
-// filtered list) is currently displayed, for the currently-selected option.
-function applySort(reviews: ReviewListItem[], sort: ReviewSortOption): ReviewListItem[] {
-  const order = sortReviews(reviews.map(toSortable), sort);
-  const byId = new Map(reviews.map((r) => [r.id, r]));
-  return order.map((entry) => byId.get(entry.id)!);
 }
 
 // REV-04: the disclosure link is NEVER hidden or its count faked — omitted
@@ -57,9 +38,17 @@ export function ReviewList({
   const [filteredReviews, setFilteredReviews] = useState<ReviewListItem[] | null>(null);
   const [loadingFiltered, setLoadingFiltered] = useState(false);
 
-  const sortedReviews = useMemo(() => applySort(initialReviews, sort), [initialReviews, sort]);
+  // REV-05: apply the same pure sortReviews() the server used for the
+  // initial blended order to whichever review set (main list or the
+  // disclosure's filtered list) is currently displayed, for the
+  // currently-selected option. Generic sortReviews<T>() returns the full
+  // ReviewListItem shape back out directly — no separate reorder step.
+  const sortedReviews = useMemo(
+    () => sortReviews(initialReviews, sort),
+    [initialReviews, sort],
+  );
   const sortedFiltered = useMemo(
-    () => (filteredReviews ? applySort(filteredReviews, sort) : null),
+    () => (filteredReviews ? sortReviews(filteredReviews, sort) : null),
     [filteredReviews, sort],
   );
 

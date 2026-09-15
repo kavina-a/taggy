@@ -81,11 +81,16 @@ function newestFirst(a: SortableReview, b: SortableReview): number {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 }
 
-export function sortReviews(
-  reviews: SortableReview[],
+// Generic over any T extending SortableReview (e.g. lib/types/review.ts's
+// richer ReviewListItem) so callers get their full item shape back out,
+// never just the bare {id, rating, createdAt, ...} ranking-input subset —
+// no separate "reorder the original array by returned id" step needed at
+// any call site.
+export function sortReviews<T extends SortableReview>(
+  reviews: T[],
   option: ReviewSortOption,
   now: Date = new Date(),
-): SortableReview[] {
+): T[] {
   const copy = [...reviews];
 
   switch (option) {
