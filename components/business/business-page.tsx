@@ -14,8 +14,14 @@ import { BusinessMapDynamic } from "@/components/business/business-map-dynamic";
 import { HoursAccordion } from "@/components/business/hours-accordion";
 import { AttributeBadges } from "@/components/business/attribute-badges";
 import { PhotoGallery } from "@/components/business/photo-gallery";
+import {
+  ReviewComposer,
+  type ExistingReviewForComposer,
+} from "@/components/reviews/review-composer";
+import { ReviewList } from "@/components/reviews/review-list";
 import { getCategoryLabel } from "@/lib/categories/category-config";
 import type { BusinessDetail } from "@/lib/types/business";
+import type { ReviewListItem } from "@/lib/types/review";
 
 export interface BusinessPageViewProps {
   business: BusinessDetail;
@@ -23,9 +29,24 @@ export interface BusinessPageViewProps {
   // always passes a real boolean from computeOpenNow; kept nullable so this
   // presentational component stays independently testable).
   openNow: boolean | null;
+  // Review props are all optional/defaulted so this component's pre-Phase-3
+  // test contract (a bare `business`/`openNow` render) keeps passing
+  // unmodified — additive per this codebase's established BusinessCard
+  // hasSearchContext convention.
+  reviews?: ReviewListItem[];
+  notRecommendedCount?: number;
+  currentUserId?: string | null;
+  existingReview?: ExistingReviewForComposer | null;
 }
 
-export function BusinessPageView({ business, openNow }: BusinessPageViewProps) {
+export function BusinessPageView({
+  business,
+  openNow,
+  reviews = [],
+  notRecommendedCount = 0,
+  currentUserId = null,
+  existingReview = null,
+}: BusinessPageViewProps) {
   const directionsHref = `https://www.google.com/maps?q=${business.latitude},${business.longitude}`;
 
   return (
@@ -150,6 +171,40 @@ export function BusinessPageView({ business, openNow }: BusinessPageViewProps) {
         <PhotoGallery
           photos={business.photos}
           primaryCategories={business.primaryCategories}
+        />
+      </section>
+
+      <Separator />
+
+      <section aria-labelledby="write-review-heading" className="flex flex-col gap-2">
+        <h2 id="write-review-heading" className="text-xl leading-[1.2] font-semibold">
+          Write a Review
+        </h2>
+        {currentUserId === null ? (
+          // AUTH-02: guest browsing/reading is always fully supported; login
+          // is required only to write a review. Reuses the existing /login
+          // flow rather than a second auth UI (D-05 precedent).
+          <div id="write-a-review" className="flex flex-col gap-2 rounded-lg bg-secondary/60 p-4">
+            <p className="text-base leading-normal text-foreground">
+              Have you been here? Share your experience.
+            </p>
+            <Button asChild className="min-h-11 w-fit bg-brand-accent text-white hover:bg-brand-accent/90">
+              <Link href="/login">Log in to write a review</Link>
+            </Button>
+          </div>
+        ) : (
+          <ReviewComposer businessId={business.id} existingReview={existingReview} />
+        )}
+      </section>
+
+      <Separator />
+
+      <section>
+        <ReviewList
+          businessSlug={business.slug}
+          initialReviews={reviews}
+          notRecommendedCount={notRecommendedCount}
+          currentUserId={currentUserId}
         />
       </section>
     </article>

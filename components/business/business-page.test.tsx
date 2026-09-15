@@ -1,5 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+
+// ReviewComposer (rendered for a logged-in currentUserId) calls useRouter()
+// for router.refresh() after submit — not exercised by these tests, but the
+// hook must resolve to something under jsdom's non-app-router test render.
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
+
 import { BusinessPageView } from "./business-page";
 import { getCategoryLabel } from "@/lib/categories/category-config";
 import type { BusinessDetail } from "@/lib/types/business";
