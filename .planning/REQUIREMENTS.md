@@ -23,7 +23,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 - [x] **SRCH-03**: Filters: category, price tier, open now, distance radius, rating threshold, category-conditional attributes
 - [x] **SRCH-04**: Sort options: Recommended (default), Highest Rated, Most Reviewed, Distance
 - [x] **SRCH-05**: "Recommended" sort blends text/category relevance, geo-decay, and a Bayesian/Wilson-score-adjusted rating (never a naive average) — implemented so a future ad-auction layer can interleave without touching this score (spec 6.1)
-- [ ] **SRCH-06**: Home/discovery page shows rails (trending near you, top rated this month, new businesses, category shortcuts)
+- [x] **SRCH-06**: Home/discovery page shows rails (trending near you, top rated this month, new businesses, category shortcuts)
 
 ### Reviews
 
