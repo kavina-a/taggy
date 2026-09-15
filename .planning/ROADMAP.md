@@ -125,7 +125,19 @@ Plans:
   4. Not-recommended reviews remain readable behind an explicit "X reviews not currently recommended" link on the business page and are excluded only from the public average/default view, never deleted or hidden without access.
   5. The default review list on the business page blends recency, reviewer credibility, and helpfulness votes, with an explicit Newest/Highest/Lowest override always available; every review also passes a profanity/hate-speech/PII check before publishing, and the filter logs signals (history, burst/timing, text similarity) usable for a future advertiser-parity audit.
 
-**Plans**: TBD
+**Plans**: 1/2 chunks complete (executed directly from this roadmap + REQUIREMENTS.md,
+skipping the discuss/research/plan-checker ceremony per the user's 2026-09-15 instruction —
+no PLAN.md/CONTEXT.md/RESEARCH.md artifacts, only SUMMARY.md)
+
+- [x] 03-backend — Review/ReviewPhoto data model, Business.avgRating/reviewCount, MOD-01
+      content classifier, REV-03/REV-06 rules-based filter engine, review create/edit/read
+      API routes (response-shape secrecy enforced), real rating data wired into search
+      ranking/sort/filter. Covers REV-01, REV-02, REV-03, REV-06, MOD-01.
+      See `.planning/phases/03-reviews-ratings/03-backend-SUMMARY.md`.
+- [ ] 03-ui — REV-04 (business-page review list + "X reviews not currently recommended"
+      disclosure link) and REV-05 (default recency/credibility/helpfulness review ordering
+      with Newest/Highest/Lowest override) — not yet started.
+
 **UI hint**: yes
 
 ### Phase 4: Voting, Owner Response & Reporting
@@ -168,8 +180,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Business Directory Foundation | 5/5 | Complete    | 2026-09-13 |
-| 2. Search, Discovery & Accounts | 9/9 | Complete   | 2026-09-15 |
-| 3. Reviews & Ratings | 0/TBD | Not started | - |
+| 2. Search, Discovery & Accounts | 9/9 | Complete    | 2026-09-15 |
+| 3. Reviews & Ratings | 1/2 chunks | In progress | - |
 | 4. Voting, Owner Response & Reporting | 0/TBD | Not started | - |
 | 5. Rich Content — Photos, Q&A & Collections | 0/TBD | Not started | - |
 

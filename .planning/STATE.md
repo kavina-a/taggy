@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2
-current_phase_name: Search, Discovery & Accounts
-status: verifying
-stopped_at: Completed 02-09-PLAN.md (Phase 2 complete)
-last_updated: "2026-09-15T01:59:14.034Z"
-last_activity: 2026-09-13
-last_activity_desc: Phase 2 execution started
+current_phase: 3
+current_phase_name: Reviews & Ratings
+status: executing
+stopped_at: Completed 03-backend chunk (Review/Rating API + filter engine); REV-04/REV-05 UI chunk remaining
+last_updated: "2026-09-15T05:36:00.000Z"
+last_activity: 2026-09-15
+last_activity_desc: Phase 3 backend chunk (reviews/ratings data model, MOD-01/REV-03 filter engine, API routes, search-ranking wiring) complete
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 14
-  completed_plans: 14
+  total_plans: 15
+  completed_plans: 15
   percent: 40
 ---
 
@@ -25,22 +25,22 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 
 **Core value:** The free consumer review/search product must stay trustworthy and useful —
 that trust is the asset every business-side revenue stream is sold against.
-**Current focus:** Phase 2 — Search, Discovery & Accounts
+**Current focus:** Phase 3 — Reviews & Ratings (backend chunk complete, UI chunk remaining)
 
 ## Current Position
 
-Phase: 2 (Search, Discovery & Accounts) — EXECUTING
-Plan: 9 of 9
-Status: Phase complete — ready for verification
-Last activity: 2026-09-13 — Phase 2 execution started
+Phase: 3 — Reviews & Ratings
+Plan: 03-backend chunk complete (REV-01, REV-02, REV-03, REV-06, MOD-01) — REV-04/REV-05 UI chunk remaining
+Status: Phase 3 in progress — backend data/API layer done, review-list/disclosure-link UI pending
+Last activity: 2026-09-15 — Phase 3 backend chunk (reviews/ratings) complete
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5
+- Total plans completed: 15
 - Average duration: N/A
 - Total execution time: 0 hours
 
@@ -49,6 +49,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 | 5 | - | - |
+| 2 | 9 | - | - |
+| 3 | 1 | - | - |
 
 **Recent Trend:**
 
@@ -70,6 +72,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-search-discovery-accounts P07 | 7min | 2 tasks | 4 files |
 | Phase 02 P08 | 22min | 3 tasks | 22 files |
 | Phase 02-search-discovery-accounts P09 | 8min | 2 tasks | 3 files |
+| Phase 03-reviews-ratings P01 (backend) | 25min | 8 commits | 22 files |
 
 ## Accumulated Context
 
@@ -118,10 +121,18 @@ Recent decisions affecting current work:
 - [Phase 2]: getBooleanAttributeFields derives a category's boolean-typed attribute keys via schema.partial().safeParse({}) rather than reaching into Zod internals, since several category schemas have a required non-defaulted priceTier field
 - [Phase ?]: [Phase 2, Plan 09]: e2e/guest-browsing.spec.ts uses one sequential test visiting all 5 guest-facing URLs in a single fresh Playwright context, matching the plan's literal wording, rather than 5 independent isolated tests
 - [Phase ?]: [Phase 2, Plan 09]: Fixed app/login/page.tsx to call router.refresh() after router.push post-login/post-profile-dismiss, since Next.js's client Router Cache kept the session-aware header stale on the already-visited home route -- caught by the new cross-cutting e2e smoke test
+- [Phase 3]: Executed the Phase 3 backend chunk directly from ROADMAP.md/REQUIREMENTS.md, skipping the discuss/research/plan-checker ceremony per the user's explicit 2026-09-15 instruction (logged in PROJECT.md Key Decisions) — no upstream PLAN.md/CONTEXT.md/RESEARCH.md artifacts exist for this chunk, only this SUMMARY.
+- [Phase 3, backend]: Combined 'new account (<24h)' and 'first-ever review' into ONE weak signal (low_reviewer_history) in the REV-03 filter engine, not two, so a genuinely new user's honest first review isn't automatically filtered on its own.
+- [Phase 3, backend]: Review filter decision rule: 1+ strong signal (text similarity >0.8) OR 2+ weak signals (low reviewer history, burst-posting >3/hour) tips a review to not_recommended.
+- [Phase 3, backend]: Replaced run-search-query.ts's RATING_SCORE_NEUTRAL placeholder with a Bayesian-shrunk rating term (5 phantom reviews at the same neutral prior) rather than a naive avgRating/5, to satisfy SRCH-05's already-validated 'never a naive average' requirement now that real rating data exists.
+- [Phase 3, backend]: Hand-edited the add_reviews migration to drop Prisma's auto-generated DROP INDEX (Business_location_gist, business_name_trgm_idx) and invalid DROP DEFAULT (on the generated searchable tsvector column) statements — third occurrence of this exact migration-safety trap after 01-01 and 02-01.
+- [Phase 3, backend]: 50-character minimum review text length, matching REQUIREMENTS.md's own literal wording.
 
 ### Pending Todos
 
-None yet.
+- Phase 3 UI chunk (REV-04, REV-05): review-composer form, business-page review list with default recency+credibility ordering (VOTE-01 helpfulness component deferred to Phase 4), and the "X reviews not currently recommended" disclosure link consuming GET /api/businesses/[slug]/reviews?includeFiltered=true.
+- No file-upload infrastructure exists yet — both review API routes only accept already-uploaded photo URL strings; the UI chunk needs an upload path before REV-01's optional-photos is fully usable.
+- Route-handler-level automated test coverage is a gap for this chunk's new API routes (and Phase 2's) — recommend the UI chunk's Playwright e2e suite exercise the review create/edit/filter-disclosure flow through real HTTP requests.
 
 ### Blockers/Concerns
 
@@ -139,6 +150,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T01:59:14.025Z
-Stopped at: Completed 02-09-PLAN.md (Phase 2 complete)
-Resume file: None
+Last session: 2026-09-15T05:36:00.000Z
+Stopped at: Completed 03-backend chunk (Review/Rating API + filter engine); REV-04/REV-05 UI chunk remaining
+Resume file: .planning/phases/03-reviews-ratings/03-backend-SUMMARY.md

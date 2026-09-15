@@ -27,12 +27,12 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 
 ### Reviews
 
-- [ ] **REV-01**: Logged-in user can write one review per business (rating 1-5 required first, then text with enforced minimum length, optional photos) — DB-level unique constraint on (user, business)
-- [ ] **REV-02**: User can edit their own review at any time; edits re-run the review filter
-- [ ] **REV-03**: Every review runs synchronously through a rules-based filter at publish time, setting `visibility_status` to `recommended` or `not_recommended` — the author is never told in real time whether they were filtered (spec 6.3)
+- [x] **REV-01**: Logged-in user can write one review per business (rating 1-5 required first, then text with enforced minimum length, optional photos) — DB-level unique constraint on (user, business)
+- [x] **REV-02**: User can edit their own review at any time; edits re-run the review filter
+- [x] **REV-03**: Every review runs synchronously through a rules-based filter at publish time, setting `visibility_status` to `recommended` or `not_recommended` — the author is never told in real time whether they were filtered (spec 6.3)
 - [ ] **REV-04**: Filtered ("not_recommended") reviews remain readable via an explicit "X reviews not currently recommended" disclosure link and are excluded only from the public average/default view, never deleted or hidden without access
 - [ ] **REV-05**: Default review display order blends recency, reviewer credibility (account history), and helpfulness votes — with explicit Newest/Highest/Lowest override always available (spec 6.2)
-- [ ] **REV-06**: Review filter logic logs enough data (reviewer history signals, burst/timing, text-similarity) to support a future advertiser-parity audit, even before any advertisers exist
+- [x] **REV-06**: Review filter logic logs enough data (reviewer history signals, burst/timing, text-similarity) to support a future advertiser-parity audit, even before any advertisers exist
 
 ### Voting & Owner Response
 
@@ -58,7 +58,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 
 ### Moderation (basic)
 
-- [ ] **MOD-01**: Real-time profanity/hate-speech/PII classifier runs on every review and photo before publish
+- [x] **MOD-01**: Real-time profanity/hate-speech/PII classifier runs on every review and photo before publish
 - [ ] **MOD-02**: One-tap Report/Flag on any review, photo, or business with a reason picker; reporter gets confirmation only, no visibility into outcome
 
 ### Business Claim (minimal, owner-response only)
@@ -135,8 +135,9 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 | SRCH-01, SRCH-02, SRCH-03, SRCH-04, SRCH-05, SRCH-06 | Phase 2 | Pending |
 | AUTH-01, AUTH-02, AUTH-03 | Phase 2 | Pending |
 | LOC-01 | Phase 2 | Complete |
-| REV-01, REV-02, REV-03, REV-04, REV-05, REV-06 | Phase 3 | Pending |
-| MOD-01 | Phase 3 | Pending |
+| REV-01, REV-02, REV-03, REV-06 | Phase 3 (backend chunk) | Complete |
+| REV-04, REV-05 | Phase 3 (UI chunk) | Pending |
+| MOD-01 | Phase 3 | Complete |
 | VOTE-01, VOTE-02 | Phase 4 | Pending |
 | CLAIM-01 | Phase 4 | Pending |
 | MOD-02 | Phase 4 | Pending |
