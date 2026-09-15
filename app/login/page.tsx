@@ -27,12 +27,19 @@ export default function LoginPage() {
       setProfileUser(user);
       return;
     }
+    // router.refresh() re-fetches the Server Component tree (including
+    // app/layout.tsx's session-aware header) so it reflects the just-issued
+    // session cookie — router.push() alone can reuse Next's client-side
+    // Router Cache for a previously-visited "/" and keep showing the guest
+    // "Log in" CTA after a successful login.
     router.push("/");
+    router.refresh();
   }
 
   function handleProfileDismiss() {
     setProfileUser(null);
     router.push("/");
+    router.refresh();
   }
 
   return (
