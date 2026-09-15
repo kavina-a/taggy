@@ -54,7 +54,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 
 - [x] **AUTH-01**: Consumer signup/login via phone OTP (primary) with optional email
 - [ ] **AUTH-02**: Guest browsing is fully supported — no login required to search, browse, or read reviews; login required only to write reviews, message, or bookmark
-- [ ] **AUTH-03**: Progressive profile — signup does not require a full profile before browsing
+- [x] **AUTH-03**: Progressive profile — signup does not require a full profile before browsing
 
 ### Moderation (basic)
 

@@ -6,14 +6,14 @@ current_phase: 2
 current_phase_name: Search, Discovery & Accounts
 status: executing
 stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-09-15T00:54:38.561Z"
+last_updated: "2026-09-15T01:05:10.961Z"
 last_activity: 2026-09-13
 last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 14
-  completed_plans: 9
+  completed_plans: 10
   percent: 20
 ---
 
@@ -30,7 +30,7 @@ that trust is the asset every business-side revenue stream is sold against.
 ## Current Position
 
 Phase: 2 (Search, Discovery & Accounts) — EXECUTING
-Plan: 5 of 9
+Plan: 6 of 9
 Status: Ready to execute
 Last activity: 2026-09-13 — Phase 2 execution started
 
@@ -65,6 +65,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-search-discovery-accounts P02 | 26min | 3 tasks | 6 files |
 | Phase 02-search-discovery-accounts P03 | 15min | 2 tasks | 8 files |
 | Phase 02-search-discovery-accounts P04 | 9min | 3 tasks | 6 files |
+| Phase 02-search-discovery-accounts P05 | 10min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,8 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 02, Plan 03]: Verify route does not re-normalize the incoming phone with libphonenumber-js -- the plan's contract only specifies that normalization step for the send route (E.164 normalization authority); client resubmits the same phone string the send flow returned/normalized
 - [Phase ?]: [Phase 02, Plan 04]: BusinessCard's new search-context metadata block only renders when hasSearchContext is true (at least one new optional prop passed), reconciling 'renders exactly as before' vs 'reviewCount undefined renders No reviews yet' without contradiction
 - [Phase ?]: [Phase 02, Plan 04]: Used @testing-library/react's fireEvent instead of installing @testing-library/user-event (not in 02-RESEARCH.md's audited package list) for SearchBar tests
+- [Phase ?]: [Phase 02, Plan 05]: OtpEntryForm owns its resend logic directly (calls /api/auth/otp/send itself, manages its own cooldown) instead of a parent-threaded resend callback
+- [Phase ?]: [Phase 02, Plan 05]: ProgressiveProfileDialog's Skip for now renders as an accessible role=link (anchor + preventDefault) matching UI-SPEC's 'text link, equal visual weight' description literally
 
 ### Pending Todos
 
@@ -123,6 +126,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T00:54:15.016Z
+Last session: 2026-09-15T01:04:30.772Z
 Stopped at: Completed 02-02-PLAN.md
 Resume file: None
