@@ -1,12 +1,15 @@
 import { Prisma, type Business, type BusinessPhoto } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { computeOpenNow } from "@/lib/hours/compute-open-now";
+import type { BusinessHoursRow, BusinessHoursOverrideRow } from "@/lib/types/business";
 
 // The single shared search-ranking engine (02-RESEARCH.md Pattern 2): text
 // relevance (tsvector) + geo-decay + an honestly-neutral rating term (D-02),
-// filter composition, and all 4 sort options. This is the one place
-// Prisma's query builder cannot reach (no tsvector/ST_Distance support) —
-// every dynamic value below is bound exclusively via Prisma.sql/Prisma.join
-// tagged-template parameter binding (T-02-01), never string concatenation.
+// filter composition, all 4 sort options, and the open-now application-layer
+// post-filter (Pattern 5). This is the one place Prisma's query builder
+// cannot reach (no tsvector/ST_Distance support) — every dynamic value below
+// is bound exclusively via Prisma.sql/Prisma.join tagged-template parameter
+// binding (T-02-01), never string concatenation.
 
 export const SEARCH_PAGE_SIZE = 24;
 
@@ -193,6 +196,41 @@ function applySort(items: EnrichedBusiness[], filters: SearchFilters): EnrichedB
   return [...items].sort((a, b) => b.score - a.score);
 }
 
+// Pattern 5 / Pitfall 5: hours/overrides for the whole candidate set are
+// fetched in exactly one batched findMany, never one query per business.
+// computeOpenNow (Phase 1) is reused verbatim, never re-derived in SQL.
+async function filterOpenNow(items: EnrichedBusiness[]): Promise<EnrichedBusiness[]> {
+  if (items.length === 0) return items;
+
+  const ids = items.map((b) => b.id);
+  const hoursRows = await prisma.business.findMany({
+    where: { id: { in: ids } },
+    include: { hours: true, hoursOverrides: true },
+  });
+  const hoursById = new Map(hoursRows.map((b) => [b.id, b]));
+
+  return items.filter((item) => {
+    const row = hoursById.get(item.id);
+    if (!row) return false;
+
+    const hours: BusinessHoursRow[] = row.hours.map((h) => ({
+      dayOfWeek: h.dayOfWeek,
+      openTime: h.openTime,
+      closeTime: h.closeTime,
+      crossesMidnight: h.crossesMidnight,
+    }));
+    const overrides: BusinessHoursOverrideRow[] = row.hoursOverrides.map((o) => ({
+      date: o.date.toISOString().slice(0, 10),
+      isClosed: o.isClosed,
+      openTime: o.openTime,
+      closeTime: o.closeTime,
+      crossesMidnight: o.crossesMidnight,
+    }));
+
+    return computeOpenNow(hours, overrides);
+  });
+}
+
 export async function runSearchQuery(filters: SearchFilters): Promise<SearchResult> {
   const candidateRows = await fetchCandidateRows(filters);
   const candidateIds = candidateRows.map((r) => r.id);
@@ -211,11 +249,18 @@ export async function runSearchQuery(filters: SearchFilters): Promise<SearchResu
     include: { photos: { take: 1 } },
   });
 
-  const enriched: EnrichedBusiness[] = rawBusinesses.map((b) => ({
+  let enriched: EnrichedBusiness[] = rawBusinesses.map((b) => ({
     ...b,
     distanceKm: distanceById.get(b.id) ?? null,
     score: scoreById.get(b.id) ?? 0,
   }));
+
+  if (filters.openNow === true) {
+    // Open-now filtering happens on the full candidate set, before sort and
+    // pagination, so totalCount/totalPages stay honest for the filtered
+    // result rather than reflecting the pre-filter SQL candidate count.
+    enriched = await filterOpenNow(enriched);
+  }
 
   const sorted = applySort(enriched, filters);
   const totalCount = sorted.length;
