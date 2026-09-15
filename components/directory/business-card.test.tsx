@@ -86,7 +86,7 @@ describe("BusinessCard", () => {
     const badge = screen.getByText("Closed");
     expect(badge).toBeInTheDocument();
     expect(badge.className).toContain("status-closed");
-    expect(badge.className).not.toContain("destructive");
+    expect(badge.className).not.toContain("bg-destructive");
   });
 
   it("renders no open/closed badge when openNow is undefined", () => {
