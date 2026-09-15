@@ -32,7 +32,10 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     },
     orderBy: { createdAt: "desc" },
     include: {
-      user: { select: { name: true } },
+      // createdAt/_count feed REV-05's reviewer-credibility sort term
+      // (lib/reviews/sort-reviews.ts) — never rendered verbatim in the UI,
+      // only used as a ranking input.
+      user: { select: { name: true, createdAt: true, _count: { select: { reviews: true } } } },
       photos: { select: { id: true, url: true, caption: true } },
     },
   });
@@ -42,6 +45,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       id: r.id,
       userId: r.userId,
       userName: r.user.name,
+      userAccountCreatedAt: r.user.createdAt,
+      userReviewCount: r.user._count.reviews,
       rating: r.rating,
       text: r.text,
       visitDate: r.visitDate,
