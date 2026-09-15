@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Search, Discovery & Accounts
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-09-13T18:36:17.976Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-09-15T00:11:46.947Z"
 last_activity: 2026-09-13
 last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 14
-  completed_plans: 5
+  completed_plans: 6
   percent: 20
 ---
 
@@ -30,8 +30,8 @@ that trust is the asset every business-side revenue stream is sold against.
 ## Current Position
 
 Phase: 2 (Search, Discovery & Accounts) — EXECUTING
-Plan: 1 of 9
-Status: Executing Phase 2
+Plan: 2 of 9
+Status: Ready to execute
 Last activity: 2026-09-13 — Phase 2 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P03 | 11min | 3 tasks | 13 files |
 | Phase 01 P04 | 25min | 3 tasks | 6 files |
 | Phase 01 P05 | 15min | 2 tasks | 3 files |
+| Phase 02-search-discovery-accounts P01 | 42min | 3 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Distributed 94 new seed businesses across all 16 leaf categories (restaurant largest at 20, every other leaf >= 5) rather than an even split, per CONTEXT.md D-04's discretion note.
 - [Phase 01]: Implemented directory pagination as one global take/skip Prisma query (fixed 24/page, driven only by ?page=), then grouped that page's results in-memory by category-taxonomy group — not a separate paginated query per group.
 - [Phase ?]: [Phase 01-05]: Included the shadcn breadcrumb gap-closure fix in the same plan as the blocking secondaryCategories render fix, since it reuses only existing static taxonomy data in the same file. — Small, presentational, same-file addition; avoids reopening the phase for a separate deferred plan.
+- [Phase ?]: [Phase 02, Plan 01]: Removed Prisma's auto-generated DROP INDEX on Business_location_gist from the add_search_and_auth migration scaffold, since Prisma's diff treats the hand-added GiST index as unmanaged drift and would have deleted it, regressing Phase 2's geo-decay search ranking
+- [Phase ?]: [Phase 02, Plan 01]: Added dotenv/config to vitest.setup.ts (global test setup) so process.env secrets from .env (OTP_HMAC_SECRET, SESSION_SECRET) resolve inside Vitest, matching the existing dotenv/config pattern in lib/prisma.ts and prisma7.config.ts
 
 ### Pending Todos
 
@@ -111,6 +114,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-13T17:35:35.608Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-09-15T00:11:46.940Z
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None

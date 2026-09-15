@@ -52,7 +52,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 
 ### Auth
 
-- [ ] **AUTH-01**: Consumer signup/login via phone OTP (primary) with optional email
+- [x] **AUTH-01**: Consumer signup/login via phone OTP (primary) with optional email
 - [ ] **AUTH-02**: Guest browsing is fully supported — no login required to search, browse, or read reviews; login required only to write reviews, message, or bookmark
 - [ ] **AUTH-03**: Progressive profile — signup does not require a full profile before browsing
 
@@ -67,7 +67,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 
 ### Localization
 
-- [ ] **LOC-01**: `language_pref` field exists on user accounts (en|si|ta) and drives a language switcher; English ships complete for v1, Sinhala/Tamil structurally supported for incremental translation
+- [x] **LOC-01**: `language_pref` field exists on user accounts (en|si|ta) and drives a language switcher; English ships complete for v1, Sinhala/Tamil structurally supported for incremental translation
 - [x] **LOC-02**: Address model uses district/DS-division + free text + lat/lng as source of truth, never a US-style ZIP/postal search
 
 ## v2 Requirements
@@ -134,7 +134,7 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 | LOC-02 | Phase 1 | Complete |
 | SRCH-01, SRCH-02, SRCH-03, SRCH-04, SRCH-05, SRCH-06 | Phase 2 | Pending |
 | AUTH-01, AUTH-02, AUTH-03 | Phase 2 | Pending |
-| LOC-01 | Phase 2 | Pending |
+| LOC-01 | Phase 2 | Complete |
 | REV-01, REV-02, REV-03, REV-04, REV-05, REV-06 | Phase 3 | Pending |
 | MOD-01 | Phase 3 | Pending |
 | VOTE-01, VOTE-02 | Phase 4 | Pending |
