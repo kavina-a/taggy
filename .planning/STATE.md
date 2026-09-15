@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Search, Discovery & Accounts
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-09-15T00:11:46.947Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-09-15T00:38:54.003Z"
 last_activity: 2026-09-13
 last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 14
-  completed_plans: 6
+  completed_plans: 7
   percent: 20
 ---
 
@@ -30,7 +30,7 @@ that trust is the asset every business-side revenue stream is sold against.
 ## Current Position
 
 Phase: 2 (Search, Discovery & Accounts) — EXECUTING
-Plan: 2 of 9
+Plan: 3 of 9
 Status: Ready to execute
 Last activity: 2026-09-13 — Phase 2 execution started
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P04 | 25min | 3 tasks | 6 files |
 | Phase 01 P05 | 15min | 2 tasks | 3 files |
 | Phase 02-search-discovery-accounts P01 | 42min | 3 tasks | 18 files |
+| Phase 02-search-discovery-accounts P02 | 26min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 01-05]: Included the shadcn breadcrumb gap-closure fix in the same plan as the blocking secondaryCategories render fix, since it reuses only existing static taxonomy data in the same file. — Small, presentational, same-file addition; avoids reopening the phase for a separate deferred plan.
 - [Phase ?]: [Phase 02, Plan 01]: Removed Prisma's auto-generated DROP INDEX on Business_location_gist from the add_search_and_auth migration scaffold, since Prisma's diff treats the hand-added GiST index as unmanaged drift and would have deleted it, regressing Phase 2's geo-decay search ranking
 - [Phase ?]: [Phase 02, Plan 01]: Added dotenv/config to vitest.setup.ts (global test setup) so process.env secrets from .env (OTP_HMAC_SECRET, SESSION_SECRET) resolve inside Vitest, matching the existing dotenv/config pattern in lib/prisma.ts and prisma7.config.ts
+- [Phase ?]: [Phase 02, Plan 02]: Test fixtures for run-search-query.test.ts use invented category slugs/query words (e.g. zzztest-restaurant-cat, bravinoxa, vexonflorp) isolated from the real 107-row seed dataset, self-cleaning via a test-search-* slug prefix
+- [Phase ?]: [Phase 02, Plan 02]: Open-now integration test fixtures anchored to the real Asia/Colombo clock at fixture-creation time (multi-hour safety margins) since SearchFilters' locked contract has no now-override param
+- [Phase ?]: [Phase 02, Plan 02]: Implemented radiusKm (SRCH-03 distance-radius filter) via ST_DWithin even though not individually enumerated in the plan's behavior list, since it is part of the exported SearchFilters contract 02-04/02-08 will import directly
 
 ### Pending Todos
 
@@ -114,6 +118,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T00:11:46.940Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-09-15T00:38:53.995Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

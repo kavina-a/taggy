@@ -83,7 +83,7 @@ Plans:
   4. The home/discovery page shows rails such as trending nearby, top rated this month, new businesses, and category shortcuts.
   5. Any user can search, browse, and read everything with zero login prompts; when they do sign up it's via phone OTP (email optional), with no forced full-profile step, and they can set a language preference (English complete; Sinhala/Tamil structurally supported).
 
-**Plans**: 1/9 plans executed
+**Plans**: 2/9 plans executed
 Plans:
 **Wave 1**
 
@@ -91,7 +91,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Search Engine Core: ranked tsvector+geo-decay+neutral-rating query, filters, sort, open-now post-filter
+- [x] 02-02-PLAN.md — Search Engine Core: ranked tsvector+geo-decay+neutral-rating query, filters, sort, open-now post-filter
 - [ ] 02-03-PLAN.md — Auth Core: OTP send/verify, rate limiting, iron-session
 
 **Wave 3** *(blocked on Wave 2 completion)*
@@ -168,7 +168,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Business Directory Foundation | 5/5 | Complete    | 2026-09-13 |
-| 2. Search, Discovery & Accounts | 1/9 | In Progress|  |
+| 2. Search, Discovery & Accounts | 2/9 | In Progress|  |
 | 3. Reviews & Ratings | 0/TBD | Not started | - |
 | 4. Voting, Owner Response & Reporting | 0/TBD | Not started | - |
 | 5. Rich Content — Photos, Q&A & Collections | 0/TBD | Not started | - |
