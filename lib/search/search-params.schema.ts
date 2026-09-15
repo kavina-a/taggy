@@ -8,10 +8,10 @@ export const sortOptionSchema = z.enum([
   "distance",
 ]);
 
-// SRCH-03's rating-threshold filter chips. Per 02-RESEARCH.md Pitfall 1 /
-// D-02, this is accepted and validated here but never turned into a WHERE
-// clause in lib/search/run-search-query.ts — no real rating data exists
-// until Phase 3.
+// SRCH-03's rating-threshold filter chips, wired to a real WHERE clause in
+// lib/search/run-search-query.ts (Business.avgRating) since Phase 3 —
+// see lib/search/search-filters-from-params.ts for the string->number
+// conversion this schema's validated string values feed into.
 const ratingThresholdSchema = z.enum(["any", "3", "4", "4.5"]);
 
 // `.strict()` (project convention, lib/validation/business.schema.ts /

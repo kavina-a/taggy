@@ -22,8 +22,8 @@ export interface FilterState {
 // stops at 1/3/5/10/25 km)".
 export const RADIUS_STOPS: number[] = [1, 3, 5, 10, 25];
 
-// Rating chips above "Any" are locked disabled per 02-RESEARCH.md Pitfall 1
-// / D-02 — no real rating data exists until Phase 3.
+// Rating threshold chips (SRCH-03) — wired to a real Business.avgRating
+// WHERE clause in lib/search/run-search-query.ts since Phase 3.
 export const RATING_OPTIONS: RatingThreshold[] = ["any", "3", "4", "4.5"];
 
 export const PRICE_TIERS: number[] = [1, 2, 3, 4];

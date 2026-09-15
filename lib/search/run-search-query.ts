@@ -22,6 +22,11 @@ export interface SearchFilters {
   attributeFilters?: Record<string, string | boolean>;
   openNow?: boolean;
   radiusKm?: number;
+  // SRCH-03 rating-threshold filter (Phase 3 — real avgRating data now
+  // exists). A business with no recommended reviews yet (avgRating null)
+  // never matches any threshold above "any", same as a genuine low score
+  // failing the bar — "no data" is not "passes".
+  minRating?: number;
   sort: "recommended" | "highest_rated" | "most_reviewed" | "distance";
   page: number;
 }
@@ -52,11 +57,21 @@ const W_RATING = 0.15;
 const GEO_OFFSET_KM = 1;
 const GEO_SCALE_KM = 5;
 
-// D-02: the rating term is a hardcoded neutral scalar until Phase 3 adds
-// real avg_rating/review_count columns — never a fabricated average.
-// TODO(Phase 3): replace with a real Bayesian-shrinkage expression once
-// review data exists.
+// Phase 3: real avgRating/reviewCount columns now exist (REV-01+). A
+// business with zero recommended reviews still uses this same neutral
+// scalar it always used under D-02 — "no data yet" must never be scored as
+// a below-average business, only a genuinely low average should be.
 const RATING_SCORE_NEUTRAL = 0.5;
+
+// SRCH-05 explicitly requires a Bayesian/Wilson-score-ADJUSTED rating,
+// "never a naive average" — a single 5-star review must not outrank a
+// business with 50 reviews averaging 4.8. RATING_PRIOR_WEIGHT "phantom"
+// reviews at the neutral score are blended in before normalizing, so the
+// adjusted score converges toward the true average only as reviewCount
+// grows (classic Bayesian/Laplace shrinkage — the simplest correct
+// implementation of this requirement, not a full Wilson-score interval,
+// which needs a binary positive/negative signal this 1-5 rating isn't).
+const RATING_PRIOR_WEIGHT = 5;
 
 // pg_trgm similarity threshold for the zero-tsvector-match fallback pass.
 const TRIGRAM_SIMILARITY_THRESHOLD = 0.3;
@@ -105,10 +120,13 @@ function buildFilterConditions(filters: SearchFilters, originPoint: Prisma.Sql):
     conditions.push(Prisma.sql`ST_DWithin("location", ${originPoint}, ${filters.radiusKm * 1000})`);
   }
 
-  // Rating threshold (SRCH-03) is deliberately NOT translated into a WHERE
-  // clause here — 02-RESEARCH.md Pitfall 1 / D-02: no real rating data
-  // exists in Phase 2, so every threshold above "any" would silently return
-  // zero results if wired to a nonexistent avgRating column.
+  // SRCH-03 rating-threshold filter (Phase 3 — real avgRating column now
+  // exists). NULL avgRating (no recommended reviews yet) never satisfies
+  // `>=` in SQL, so a not-yet-rated business is correctly excluded rather
+  // than needing a separate NULL-handling branch here.
+  if (filters.minRating != null) {
+    conditions.push(Prisma.sql`"avgRating" >= ${filters.minRating}::float`);
+  }
 
   return conditions;
 }
@@ -133,7 +151,12 @@ async function runRankedCandidateQuery(
         + ${W_GEO} * CASE WHEN ${originPoint} IS NOT NULL
             THEN POWER(0.5::float, GREATEST(0, (ST_Distance("location", ${originPoint}) / 1000.0) - ${GEO_OFFSET_KM}::float) / ${GEO_SCALE_KM}::float)
             ELSE 0.5::float END
-        + ${W_RATING} * ${RATING_SCORE_NEUTRAL}::float
+        + ${W_RATING} * CASE WHEN "reviewCount" > 0
+            THEN (
+              "reviewCount"::float * (COALESCE("avgRating", 0)::float / 5.0)
+              + ${RATING_PRIOR_WEIGHT}::float * ${RATING_SCORE_NEUTRAL}::float
+            ) / ("reviewCount"::float + ${RATING_PRIOR_WEIGHT}::float)
+            ELSE ${RATING_SCORE_NEUTRAL}::float END
       ) AS "score"
     FROM "Business"
     WHERE ${whereClause}
@@ -185,11 +208,22 @@ function applySort(items: EnrichedBusiness[], filters: SearchFilters): EnrichedB
   if (filters.sort === "distance" && filters.originLat != null && filters.originLng != null) {
     return [...items].sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity));
   }
-  if (filters.sort === "highest_rated" || filters.sort === "most_reviewed") {
-    // 02-RESEARCH.md Pitfall 2: no real rating/review-count data exists yet
-    // — a stable, deterministic secondary key (name ASC) instead of an
-    // unstable/insertion-order-adjacent result.
-    return [...items].sort((a, b) => a.name.localeCompare(b.name));
+  if (filters.sort === "highest_rated") {
+    // Businesses with no recommended reviews yet (avgRating null) always
+    // sort last — never coerced to 0, which would be indistinguishable
+    // from a genuine 0-star average. Ties (including all-null, e.g. two
+    // brand-new businesses) fall back to a stable name-ASC secondary key.
+    return [...items].sort((a, b) => {
+      if (a.avgRating == null && b.avgRating == null) return a.name.localeCompare(b.name);
+      if (a.avgRating == null) return 1;
+      if (b.avgRating == null) return -1;
+      return b.avgRating - a.avgRating || a.name.localeCompare(b.name);
+    });
+  }
+  if (filters.sort === "most_reviewed") {
+    return [...items].sort(
+      (a, b) => b.reviewCount - a.reviewCount || a.name.localeCompare(b.name),
+    );
   }
   // "recommended", or "distance" requested without an origin point (falls
   // back to recommended ordering per this plan's behavior contract).

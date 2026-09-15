@@ -168,22 +168,17 @@ export function FilterFields({ filters, onChange }: FilterFieldsProps) {
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 text-base font-medium">Rating</legend>
         <div className="flex gap-2">
-          {RATING_OPTIONS.map((option) => {
-            const disabled = option !== "any";
-            return (
-              <button
-                key={option}
-                type="button"
-                disabled={disabled}
-                title={disabled ? "Ratings launch in a future update" : undefined}
-                aria-pressed={filters.rating === option}
-                onClick={() => onChange({ rating: option })}
-                className={chipClass(filters.rating === option)}
-              >
-                {option === "any" ? "Any" : `${option}+`}
-              </button>
-            );
-          })}
+          {RATING_OPTIONS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={filters.rating === option}
+              onClick={() => onChange({ rating: option })}
+              className={chipClass(filters.rating === option)}
+            >
+              {option === "any" ? "Any" : `${option}+`}
+            </button>
+          ))}
         </div>
       </fieldset>
     </div>

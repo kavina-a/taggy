@@ -45,22 +45,18 @@ describe("FilterSidebar", () => {
     expect(screen.queryByText("Delivery")).not.toBeInTheDocument();
   });
 
-  it("renders 'Any' enabled and the three above-Any rating chips visibly disabled with an explanatory title", () => {
+  it("renders 'Any' and the three above-Any rating chips all enabled (Phase 3 — real rating data exists)", () => {
     render(<FilterSidebar filters={DEFAULT_FILTER_STATE} onChange={vi.fn()} />);
-    expect(screen.getByRole("button", { name: "Any" })).not.toBeDisabled();
-
-    for (const label of ["3+", "4+", "4.5+"]) {
-      const chip = screen.getByRole("button", { name: label });
-      expect(chip).toBeDisabled();
-      expect(chip).toHaveAttribute("title", "Ratings launch in a future update");
+    for (const label of ["Any", "3+", "4+", "4.5+"]) {
+      expect(screen.getByRole("button", { name: label })).not.toBeDisabled();
     }
   });
 
-  it("clicking a disabled rating chip never calls onChange", () => {
+  it("clicking a rating chip calls onChange with the selected threshold", () => {
     const onChange = vi.fn();
     render(<FilterSidebar filters={DEFAULT_FILTER_STATE} onChange={onChange} />);
     fireEvent.click(screen.getByRole("button", { name: "4+" }));
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ rating: "4" }));
   });
 
   it("toggling 'Open now' calls onChange with openNow true", () => {

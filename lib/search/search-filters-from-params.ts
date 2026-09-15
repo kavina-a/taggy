@@ -9,11 +9,6 @@ import { parseAttrsParam } from "./attrs-param";
 // into a query filter (02-RESEARCH.md's "no duplicated ranking logic"
 // convention, extended to filter-param parsing).
 //
-// `rating` is intentionally read but never forwarded into SearchFilters —
-// 02-RESEARCH.md Pitfall 1 / CONTEXT.md D-02: no real rating data exists
-// until Phase 3, so every threshold above "any" would silently return zero
-// results if wired to a nonexistent avgRating column. The UI (FilterFields)
-// already renders those chips as disabled rather than functional.
 export function buildSearchFiltersFromParams(parsed: SearchParams): SearchFilters {
   const categories = parsed.category
     ? parsed.category.split(",").filter(Boolean)
@@ -35,6 +30,7 @@ export function buildSearchFiltersFromParams(parsed: SearchParams): SearchFilter
     attributeFilters: parseAttrsParam(parsed.attrs),
     openNow: parsed.openNow === "true" ? true : undefined,
     radiusKm: parsed.radiusKm,
+    minRating: parsed.rating === "any" ? undefined : Number(parsed.rating),
     sort: parsed.sort,
     page: parsed.page,
   };
