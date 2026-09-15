@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Search, Discovery & Accounts
-status: executing
-stopped_at: Completed 02-07-PLAN.md
-last_updated: "2026-09-15T01:48:17.570Z"
+status: verifying
+stopped_at: Completed 02-09-PLAN.md (Phase 2 complete)
+last_updated: "2026-09-15T01:59:14.034Z"
 last_activity: 2026-09-13
 last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 14
-  completed_plans: 13
-  percent: 20
+  completed_plans: 14
+  percent: 40
 ---
 
 # Project State
@@ -31,7 +31,7 @@ that trust is the asset every business-side revenue stream is sold against.
 
 Phase: 2 (Search, Discovery & Accounts) — EXECUTING
 Plan: 9 of 9
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-13 — Phase 2 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-search-discovery-accounts P06 | 12min | 2 tasks | 5 files |
 | Phase 02-search-discovery-accounts P07 | 7min | 2 tasks | 4 files |
 | Phase 02 P08 | 22min | 3 tasks | 22 files |
+| Phase 02-search-discovery-accounts P09 | 8min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,8 @@ Recent decisions affecting current work:
 - [Phase 2]: Category-conditional attribute filters use a single fixed 'attrs' URL query key (key:true,key2:true) since search-params.schema.ts's .strict() schema can't enumerate category-dependent attribute keys ahead of time
 - [Phase 2]: URL updates during filter/sort changes use raw history.replaceState instead of next/navigation's router.replace, avoiding a full Server Component RSC round-trip on every filter tap
 - [Phase 2]: getBooleanAttributeFields derives a category's boolean-typed attribute keys via schema.partial().safeParse({}) rather than reaching into Zod internals, since several category schemas have a required non-defaulted priceTier field
+- [Phase ?]: [Phase 2, Plan 09]: e2e/guest-browsing.spec.ts uses one sequential test visiting all 5 guest-facing URLs in a single fresh Playwright context, matching the plan's literal wording, rather than 5 independent isolated tests
+- [Phase ?]: [Phase 2, Plan 09]: Fixed app/login/page.tsx to call router.refresh() after router.push post-login/post-profile-dismiss, since Next.js's client Router Cache kept the session-aware header stale on the already-visited home route -- caught by the new cross-cutting e2e smoke test
 
 ### Pending Todos
 
@@ -136,6 +139,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T01:47:07.453Z
-Stopped at: Completed 02-07-PLAN.md
+Last session: 2026-09-15T01:59:14.025Z
+Stopped at: Completed 02-09-PLAN.md (Phase 2 complete)
 Resume file: None
