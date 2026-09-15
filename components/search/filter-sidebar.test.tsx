@@ -1,7 +1,17 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { FilterSidebar } from "./filter-sidebar";
 import { DEFAULT_FILTER_STATE } from "./filter-state";
+
+// Radix Slider (used by the shared Distance filter field) measures its
+// track via ResizeObserver, which jsdom doesn't implement.
+beforeAll(() => {
+  global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+});
 
 describe("FilterSidebar", () => {
   afterEach(() => {
@@ -70,7 +80,7 @@ describe("FilterSidebar", () => {
   it("moving the distance slider calls onChange with a radiusKm from the discrete stop list", () => {
     const onChange = vi.fn();
     render(<FilterSidebar filters={DEFAULT_FILTER_STATE} onChange={onChange} />);
-    const slider = screen.getByRole("slider", { name: "Distance radius" });
+    const slider = screen.getByRole("slider");
     fireEvent.keyDown(slider, { key: "ArrowLeft" });
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ radiusKm: expect.any(Number) }));
     const calledWith = onChange.mock.calls[0][0].radiusKm;

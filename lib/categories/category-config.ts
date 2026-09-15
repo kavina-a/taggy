@@ -86,6 +86,37 @@ export function getCategoryLabel(slug: string): string | undefined {
   return categoryLabelBySlug.get(slug);
 }
 
+// Returns the boolean-typed attribute keys for a leaf category slug, derived
+// by parsing an empty object through that category's Zod schema (same
+// safeParse-and-inspect technique components/business/attribute-badges.tsx
+// already uses) rather than reaching into Zod's internal schema shape —
+// works regardless of Zod's internal `_def`/`.def` representation across
+// versions. Used by the search filter UI (02-08) to render category-
+// conditional attribute checkboxes for boolean fields only, per
+// 02-UI-SPEC.md's "checkboxes" wording.
+export function getBooleanAttributeFields(categorySlug: string): string[] {
+  const schema = attributeSchemaByCategory[categorySlug];
+  if (!schema) return [];
+
+  // Several category schemas have a required (non-defaulted) `priceTier`
+  // field, so parsing `{}` directly would fail schema validation entirely.
+  // `.partial()` (available on every ZodObject built via `z.object(...)`,
+  // which every entry in attributeSchemaByCategory is) makes every field
+  // optional for this introspection-only parse without disturbing the
+  // schemas' own `.default()` behavior for the boolean fields we care about.
+  const partialSchema =
+    "partial" in schema && typeof schema.partial === "function"
+      ? (schema.partial() as typeof schema)
+      : schema;
+
+  const result = partialSchema.safeParse({});
+  if (!result.success) return [];
+
+  return Object.entries(result.data as Record<string, unknown>)
+    .filter(([, value]) => typeof value === "boolean")
+    .map(([key]) => key);
+}
+
 const priceTier = z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]);
 
 // Restaurants (Food & Dining) — per 01-RESEARCH.md Pattern 3's exact example.
