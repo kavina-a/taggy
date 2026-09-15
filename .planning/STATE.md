@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Search, Discovery & Accounts
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-09-15T01:05:10.961Z"
+stopped_at: Completed 02-06-PLAN.md
+last_updated: "2026-09-15T01:14:45.090Z"
 last_activity: 2026-09-13
 last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 14
-  completed_plans: 10
+  completed_plans: 11
   percent: 20
 ---
 
@@ -30,7 +30,7 @@ that trust is the asset every business-side revenue stream is sold against.
 ## Current Position
 
 Phase: 2 (Search, Discovery & Accounts) — EXECUTING
-Plan: 6 of 9
+Plan: 7 of 9
 Status: Ready to execute
 Last activity: 2026-09-13 — Phase 2 execution started
 
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-search-discovery-accounts P03 | 15min | 2 tasks | 8 files |
 | Phase 02-search-discovery-accounts P04 | 9min | 3 tasks | 6 files |
 | Phase 02-search-discovery-accounts P05 | 10min | 2 tasks | 8 files |
+| Phase 02-search-discovery-accounts P06 | 12min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,8 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 02, Plan 04]: Used @testing-library/react's fireEvent instead of installing @testing-library/user-event (not in 02-RESEARCH.md's audited package list) for SearchBar tests
 - [Phase ?]: [Phase 02, Plan 05]: OtpEntryForm owns its resend logic directly (calls /api/auth/otp/send itself, manages its own cooldown) instead of a parent-threaded resend callback
 - [Phase ?]: [Phase 02, Plan 05]: ProgressiveProfileDialog's Skip for now renders as an accessible role=link (anchor + preventDefault) matching UI-SPEC's 'text link, equal visual weight' description literally
+- [Phase ?]: [Phase 02, Plan 06]: POST /api/auth/logout redirects a plain form-POST submission back to / (303) instead of always returning bare JSON, so the header's no-JS logout control actually returns the user to guest browsing instead of stranding them on a raw JSON page; a fetch caller still gets the plan's literal {ok:true}
+- [Phase ?]: [Phase 02, Plan 06]: Interactive header controls (select/dropdown-menu/avatar) are composed directly inside the Server Component app/layout.tsx without a client wrapper, since those shadcn primitives are already 'use client' at the file level and no function prop crosses the server/client boundary; logout uses a plain <form> submit button instead of an onClick handler
 
 ### Pending Todos
 
@@ -126,6 +129,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T01:04:30.772Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-09-15T01:14:45.082Z
+Stopped at: Completed 02-06-PLAN.md
 Resume file: None
