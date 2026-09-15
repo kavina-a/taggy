@@ -45,23 +45,32 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
   fabricated "Top Rated" rail since no real ratings exist until Phase 3) — Phase 2
 - ✓ `language_pref` scaffolding + header switcher (persists preference only, no translated
   strings yet) — Phase 2
+- ✓ Write/edit reviews: star rating + text (min 50 chars), one review per user per business
+  (DB unique constraint), optional photos (URL-only, no upload infra yet), server-side
+  rules-based review filter (recommended vs not_recommended) that never informs the user
+  in real time whether their review was filtered — response shape structurally can't leak
+  the outcome — Phase 3
+- ✓ "X reviews not currently recommended" disclosure link — filtered reviews stay readable
+  via real live count + lazy-fetched expand, never silently hidden or deleted — Phase 3
+- ✓ Default review sort blends recency + reviewer credibility + a neutral (not fabricated)
+  helpfulness placeholder, with explicit Newest/Highest/Lowest override — Phase 3
+- ✓ Review filter logs structured signals (account age, burst-posting, text-similarity) as
+  real JSON for a future advertiser-parity audit — Phase 3
+- ✓ Basic automated moderation: profanity/hate-speech/PII pre-publish filter on review TEXT
+  — Phase 3 (photo-content moderation explicitly deferred to Phase 5's upload
+  infrastructure via a documented VERIFICATION.md override; no photo content/caption
+  exists yet to moderate, only third-party URL strings)
 
 ### Active
 
-- [ ] Business profile page: reviews, Q&A, "people also viewed", Consumer Alert banner
-      slot (even if alerts system itself is a later phase)
-- [ ] Write/edit reviews: star rating + text, one review per user per business, photo
-      attachment, server-side review filter (recommended vs not_recommended) that never
-      informs the user in real time whether their review was filtered
-- [ ] "X reviews not currently recommended" disclosure link — filtered reviews stay
-      readable, never silently hidden
+- [ ] Business profile page: Q&A, "people also viewed", Consumer Alert banner slot (even
+      if alerts system itself is a later phase)
 - [ ] Review voting (Useful/Funny/Cool as independent toggles) and one public owner
       response per review (once claim flow exists)
 - [ ] Photo uploads by any logged-in user, with basic automated moderation (NSFW/
       irrelevance) before going live
 - [ ] Q&A on business pages (ask/answer/vote)
 - [ ] Collections/bookmarks, including public shareable collections
-- [ ] Basic automated moderation pipeline: profanity/hate-speech/PII pre-publish filter
 - [ ] Business claim flow (search-and-claim or create) with phone-OTP or business-
       registration-document verification
 - [ ] Trilingual UI scaffolding (English first, Sinhala/Tamil structurally supported via
@@ -158,4 +167,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-15 after Phase 2*
+*Last updated: 2026-09-15 after Phase 3*
