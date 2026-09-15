@@ -17,7 +17,7 @@ test("guest can reach and see real content on every Phase 2 page with zero login
   await expect(
     page.getByRole("heading", { level: 1, name: "Find great local businesses in Colombo" }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Log in", exact: true })).toBeVisible();
 
   // 2. /search with no params (02-04/02-08)
   await page.goto("/search");
@@ -28,7 +28,7 @@ test("guest can reach and see real content on every Phase 2 page with zero login
       .first()
       .or(page.getByRole("heading", { level: 2, name: "No matches found" })),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Log in", exact: true })).toBeVisible();
 
   // 3. /search with a free-text query (02-04/02-08)
   await page.goto("/search?find_desc=cafe");
@@ -39,13 +39,13 @@ test("guest can reach and see real content on every Phase 2 page with zero login
       .first()
       .or(page.getByRole("heading", { level: 2, name: "No matches found" })),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Log in", exact: true })).toBeVisible();
 
   // 4. A known seeded business page (Phase 1, unchanged)
   await page.goto(`/business/${KNOWN_SLUG}`);
   await expect(page).toHaveURL(`/business/${KNOWN_SLUG}`);
   await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
-  await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Log in", exact: true })).toBeVisible();
 
   // 5. /login itself (02-05) — the phone-entry heading is the real page
   // content; the header's own "Log in" CTA also stays visible here since
@@ -55,5 +55,5 @@ test("guest can reach and see real content on every Phase 2 page with zero login
   await expect(
     page.getByRole("heading", { level: 1, name: "Log in or sign up" }),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Log in", exact: true })).toBeVisible();
 });

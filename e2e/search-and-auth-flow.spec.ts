@@ -44,8 +44,10 @@ test("home -> search -> filter -> business page -> OTP login -> logged-in header
   await expect(page.getByText(/Open now|Closed/)).toBeVisible();
   await expect(page.getByTestId("attribute-badge").first()).toBeVisible();
 
-  // 5. Navigate to /login via the header's "Log in" CTA.
-  await page.getByRole("link", { name: "Log in" }).click();
+  // 5. Navigate to /login via the header's "Log in" CTA (exact: true since
+  // Phase 3 added a second, business-page-scoped "Log in to write a
+  // review" link whose accessible name also contains "Log in").
+  await page.getByRole("link", { name: "Log in", exact: true }).click();
   await expect(page).toHaveURL("/login");
 
   // 6. Submit a test phone number, reading the devCode the send call
@@ -72,6 +74,6 @@ test("home -> search -> filter -> business page -> OTP login -> logged-in header
 
   // 9. The header now shows the logged-in avatar/dropdown instead of "Log in".
   await expect(page).toHaveURL("/");
-  await expect(page.getByRole("link", { name: "Log in" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Log in", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Account" })).toBeVisible();
 });
