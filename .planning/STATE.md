@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 3
-current_phase_name: Reviews & Ratings
-status: executing
-stopped_at: Completed 03-backend chunk (Review/Rating API + filter engine); REV-04/REV-05 UI chunk remaining
-last_updated: "2026-09-15T05:36:00.000Z"
+current_phase: 4
+current_phase_name: Voting, Owner Response & Reporting
+status: ready
+stopped_at: Completed 03-ui chunk (review composer, review list, REV-04 disclosure, REV-05 sort); Phase 3 (Reviews & Ratings) fully complete
+last_updated: "2026-09-15T15:29:49.634Z"
 last_activity: 2026-09-15
-last_activity_desc: Phase 3 backend chunk (reviews/ratings data model, MOD-01/REV-03 filter engine, API routes, search-ranking wiring) complete
+last_activity_desc: Phase 3 UI chunk (REV-04/REV-05 review UI, wired into the business page) complete — Phase 3 fully complete
 progress:
   total_phases: 5
-  completed_phases: 2
-  total_plans: 15
-  completed_plans: 15
-  percent: 40
+  completed_phases: 3
+  total_plans: 16
+  completed_plans: 16
+  percent: 60
 ---
 
 # Project State
@@ -25,22 +25,22 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 
 **Core value:** The free consumer review/search product must stay trustworthy and useful —
 that trust is the asset every business-side revenue stream is sold against.
-**Current focus:** Phase 3 — Reviews & Ratings (backend chunk complete, UI chunk remaining)
+**Current focus:** Phase 3 — Reviews & Ratings complete; ready to start Phase 4 (Voting, Owner Response & Reporting)
 
 ## Current Position
 
-Phase: 3 — Reviews & Ratings
-Plan: 03-backend chunk complete (REV-01, REV-02, REV-03, REV-06, MOD-01) — REV-04/REV-05 UI chunk remaining
-Status: Phase 3 in progress — backend data/API layer done, review-list/disclosure-link UI pending
-Last activity: 2026-09-15 — Phase 3 backend chunk (reviews/ratings) complete
+Phase: 3 — Reviews & Ratings (complete) — next: Phase 4 — Voting, Owner Response & Reporting
+Plan: 03-backend + 03-ui chunks both complete (REV-01 through REV-06, MOD-01)
+Status: Phase 3 fully complete — review composer, review list, REV-04 disclosure link, REV-05 sort all wired into the business page
+Last activity: 2026-09-15 — Phase 3 UI chunk (reviews/ratings) complete
 
-Progress: [████░░░░░░] 40%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 15
+- Total plans completed: 16
 - Average duration: N/A
 - Total execution time: 0 hours
 
@@ -50,7 +50,7 @@ Progress: [████░░░░░░] 40%
 |-------|-------|-------|----------|
 | 1 | 5 | - | - |
 | 2 | 9 | - | - |
-| 3 | 1 | - | - |
+| 3 | 2 | - | - |
 
 **Recent Trend:**
 
@@ -73,6 +73,7 @@ Progress: [████░░░░░░] 40%
 | Phase 02 P08 | 22min | 3 tasks | 22 files |
 | Phase 02-search-discovery-accounts P09 | 8min | 2 tasks | 3 files |
 | Phase 03-reviews-ratings P01 (backend) | 25min | 8 commits | 22 files |
+| Phase 03-reviews-ratings P02 (ui) | 19min | 17 commits | 21 files |
 
 ## Accumulated Context
 
@@ -127,12 +128,15 @@ Recent decisions affecting current work:
 - [Phase 3, backend]: Replaced run-search-query.ts's RATING_SCORE_NEUTRAL placeholder with a Bayesian-shrunk rating term (5 phantom reviews at the same neutral prior) rather than a naive avgRating/5, to satisfy SRCH-05's already-validated 'never a naive average' requirement now that real rating data exists.
 - [Phase 3, backend]: Hand-edited the add_reviews migration to drop Prisma's auto-generated DROP INDEX (Business_location_gist, business_name_trgm_idx) and invalid DROP DEFAULT (on the generated searchable tsvector column) statements — third occurrence of this exact migration-safety trap after 01-01 and 02-01.
 - [Phase 3, backend]: 50-character minimum review text length, matching REQUIREMENTS.md's own literal wording.
+- [Phase 3, ui]: Extended GET /api/businesses/[slug]/reviews with userAccountCreatedAt/userReviewCount so REV-05's blended sort has real reviewer-credibility inputs; still never exposes filterReason/filterSignals.
+- [Phase 3, ui]: lib/reviews/sort-reviews.ts's blend = exponential recency decay (30-day half-life) + log-scaled credibility (account age capped 1yr, review count capped ~10) + a weighted-but-zeroed HELPFULNESS_SCORE_NEUTRAL placeholder — Phase 4's VOTE-01/02 only needs to replace that one constant, never re-tune the other weights.
+- [Phase 3, ui]: Review photos render via a plain <img>, not next/image, since next.config.ts's images.remotePatterns is deliberately restricted to picsum.photos only (T-03-02) and review photo URLs are arbitrary reviewer-supplied strings (no upload infra yet).
+- [Phase 3, ui]: ReviewComposer's existing-review state starts collapsed behind an "Edit your review" button; a review card's own "Edit" link is a same-page anchor (#write-a-review) to that single composer instance, since REV-01's one-review-per-user-per-business constraint means there's only ever one editable review per user per business.
 
 ### Pending Todos
 
-- Phase 3 UI chunk (REV-04, REV-05): review-composer form, business-page review list with default recency+credibility ordering (VOTE-01 helpfulness component deferred to Phase 4), and the "X reviews not currently recommended" disclosure link consuming GET /api/businesses/[slug]/reviews?includeFiltered=true.
-- No file-upload infrastructure exists yet — both review API routes only accept already-uploaded photo URL strings; the UI chunk needs an upload path before REV-01's optional-photos is fully usable.
-- Route-handler-level automated test coverage is a gap for this chunk's new API routes (and Phase 2's) — recommend the UI chunk's Playwright e2e suite exercise the review create/edit/filter-disclosure flow through real HTTP requests.
+- No file-upload infrastructure exists yet — review API routes only accept already-uploaded photo URL strings; Phase 5's PHOTO-01/PHOTO-02 is the first phase planning real upload infra, which would also let ReviewCard's photo rendering move to next/image once uploaded photos live on a controlled domain.
+- Phase 4 (VOTE-01/02): replace lib/reviews/sort-reviews.ts's HELPFULNESS_SCORE_NEUTRAL placeholder with a real computed Useful/Funny/Cool score once voting exists; add vote-button UI to ReviewCard.
 
 ### Blockers/Concerns
 
@@ -150,6 +154,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T05:36:00.000Z
-Stopped at: Completed 03-backend chunk (Review/Rating API + filter engine); REV-04/REV-05 UI chunk remaining
-Resume file: .planning/phases/03-reviews-ratings/03-backend-SUMMARY.md
+Last session: 2026-09-15T15:29:49.634Z
+Stopped at: Completed 03-ui chunk (review composer, review list, REV-04 disclosure, REV-05 sort); Phase 3 (Reviews & Ratings) fully complete
+Resume file: .planning/phases/03-reviews-ratings/03-ui-SUMMARY.md
