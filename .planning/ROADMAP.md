@@ -26,7 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Business Directory Foundation** - Real, structured Colombo business listings exist and are fully browsable (completed 2026-09-13)
 - [x] **Phase 2: Search, Discovery & Accounts** - Users can search/filter/sort the directory and browse as guests or sign up via phone OTP (completed 2026-09-15)
-- [ ] **Phase 3: Reviews & Ratings** - Users can write and read trustworthy, filtered reviews that set each business's rating
+- [x] **Phase 3: Reviews & Ratings** - Users can write and read trustworthy, filtered reviews that set each business's rating (completed 2026-09-15)
 - [ ] **Phase 4: Voting, Owner Response & Reporting** - Users can vote on reviews, claimed owners can respond, and anyone can report bad content
 - [ ] **Phase 5: Rich Content — Photos, Q&A & Collections** - Users can add photos, ask/answer questions, and save businesses into shareable collections
 
@@ -125,7 +125,7 @@ Plans:
   4. Not-recommended reviews remain readable behind an explicit "X reviews not currently recommended" link on the business page and are excluded only from the public average/default view, never deleted or hidden without access.
   5. The default review list on the business page blends recency, reviewer credibility, and helpfulness votes, with an explicit Newest/Highest/Lowest override always available; every review also passes a profanity/hate-speech/PII check before publishing, and the filter logs signals (history, burst/timing, text similarity) usable for a future advertiser-parity audit.
 
-**Plans**: 1/2 chunks complete (executed directly from this roadmap + REQUIREMENTS.md,
+**Plans**: 2/2 chunks complete (executed directly from this roadmap + REQUIREMENTS.md,
 skipping the discuss/research/plan-checker ceremony per the user's 2026-09-15 instruction —
 no PLAN.md/CONTEXT.md/RESEARCH.md artifacts, only SUMMARY.md)
 
@@ -134,9 +134,11 @@ no PLAN.md/CONTEXT.md/RESEARCH.md artifacts, only SUMMARY.md)
       API routes (response-shape secrecy enforced), real rating data wired into search
       ranking/sort/filter. Covers REV-01, REV-02, REV-03, REV-06, MOD-01.
       See `.planning/phases/03-reviews-ratings/03-backend-SUMMARY.md`.
-- [ ] 03-ui — REV-04 (business-page review list + "X reviews not currently recommended"
-      disclosure link) and REV-05 (default recency/credibility/helpfulness review ordering
-      with Newest/Highest/Lowest override) — not yet started.
+- [x] 03-ui — StarRatingInput/ReviewComposer/ReviewCard/ReviewList/ReviewSortDropdown,
+      lib/reviews/sort-reviews.ts's tested blended/newest/highest/lowest ordering, the
+      never-hidden "X reviews not currently recommended" disclosure, and full business-page
+      wiring (guest login prompt vs. composer, server-side review fetch). Covers REV-04,
+      REV-05. See `.planning/phases/03-reviews-ratings/03-ui-SUMMARY.md`.
 
 **UI hint**: yes
 
@@ -181,7 +183,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Business Directory Foundation | 5/5 | Complete    | 2026-09-13 |
 | 2. Search, Discovery & Accounts | 9/9 | Complete    | 2026-09-15 |
-| 3. Reviews & Ratings | 1/2 chunks | In progress | - |
+| 3. Reviews & Ratings | 2/2 chunks | Complete    | 2026-09-15 |
 | 4. Voting, Owner Response & Reporting | 0/TBD | Not started | - |
 | 5. Rich Content — Photos, Q&A & Collections | 0/TBD | Not started | - |
 
