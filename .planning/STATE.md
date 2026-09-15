@@ -6,14 +6,14 @@ current_phase: 2
 current_phase_name: Search, Discovery & Accounts
 status: executing
 stopped_at: Completed 02-07-PLAN.md
-last_updated: "2026-09-15T01:23:01.847Z"
+last_updated: "2026-09-15T01:48:17.570Z"
 last_activity: 2026-09-13
 last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 14
-  completed_plans: 12
+  completed_plans: 13
   percent: 20
 ---
 
@@ -30,7 +30,7 @@ that trust is the asset every business-side revenue stream is sold against.
 ## Current Position
 
 Phase: 2 (Search, Discovery & Accounts) — EXECUTING
-Plan: 8 of 9
+Plan: 9 of 9
 Status: Ready to execute
 Last activity: 2026-09-13 — Phase 2 execution started
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-search-discovery-accounts P05 | 10min | 2 tasks | 8 files |
 | Phase 02-search-discovery-accounts P06 | 12min | 2 tasks | 5 files |
 | Phase 02-search-discovery-accounts P07 | 7min | 2 tasks | 4 files |
+| Phase 02 P08 | 22min | 3 tasks | 22 files |
 
 ## Accumulated Context
 
@@ -111,6 +112,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 02, Plan 06]: Interactive header controls (select/dropdown-menu/avatar) are composed directly inside the Server Component app/layout.tsx without a client wrapper, since those shadcn primitives are already 'use client' at the file level and no function prop crosses the server/client boundary; logout uses a plain <form> submit button instead of an onClick handler
 - [Phase ?]: [Phase 02, Plan 07]: DiscoveryRail's condensed card is a private inline RailCard render, not a reuse of BusinessCard's own output, since BusinessCard's hasSearchContext gating leaks a 'No reviews yet' line whenever priceTier/distanceKm/openNow is passed, which the one-metadata-line condensed-card spec excludes
 - [Phase ?]: [Phase 02, Plan 07]: Trending Near You uses a stable SHA-256 hash of businessId+"trending-v1" (Node crypto, no new dependency) instead of Math.random(), so the sample is identical across requests/dev-restarts
+- [Phase 2]: Category-conditional attribute filters use a single fixed 'attrs' URL query key (key:true,key2:true) since search-params.schema.ts's .strict() schema can't enumerate category-dependent attribute keys ahead of time
+- [Phase 2]: URL updates during filter/sort changes use raw history.replaceState instead of next/navigation's router.replace, avoiding a full Server Component RSC round-trip on every filter tap
+- [Phase 2]: getBooleanAttributeFields derives a category's boolean-typed attribute keys via schema.partial().safeParse({}) rather than reaching into Zod internals, since several category schemas have a required non-defaulted priceTier field
 
 ### Pending Todos
 
@@ -132,6 +136,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T01:23:01.839Z
+Last session: 2026-09-15T01:47:07.453Z
 Stopped at: Completed 02-07-PLAN.md
 Resume file: None

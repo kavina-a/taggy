@@ -83,7 +83,7 @@ Plans:
   4. The home/discovery page shows rails such as trending nearby, top rated this month, new businesses, and category shortcuts.
   5. Any user can search, browse, and read everything with zero login prompts; when they do sign up it's via phone OTP (email optional), with no forced full-profile step, and they can set a language preference (English complete; Sinhala/Tamil structurally supported).
 
-**Plans**: 7/9 plans executed
+**Plans**: 8/9 plans executed
 Plans:
 **Wave 1**
 
@@ -103,7 +103,7 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [x] 02-07-PLAN.md — Home Discovery Page (rails + category shortcuts)
-- [ ] 02-08-PLAN.md — Search Filters, Sort & Map
+- [x] 02-08-PLAN.md — Search Filters, Sort & Map
 
 **Wave 5 (integration)** *(blocked on Wave 4 completion)*
 
@@ -168,7 +168,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Business Directory Foundation | 5/5 | Complete    | 2026-09-13 |
-| 2. Search, Discovery & Accounts | 7/9 | In Progress|  |
+| 2. Search, Discovery & Accounts | 8/9 | In Progress|  |
 | 3. Reviews & Ratings | 0/TBD | Not started | - |
 | 4. Voting, Owner Response & Reporting | 0/TBD | Not started | - |
 | 5. Rich Content — Photos, Q&A & Collections | 0/TBD | Not started | - |
