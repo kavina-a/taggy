@@ -26,6 +26,13 @@ interface FixtureBusiness {
   latitude: number;
   longitude: number;
   attributes: Prisma.InputJsonValue;
+  // Phase 3: real rating aggregate fixtures (avgRating/reviewCount) for the
+  // highest_rated/most_reviewed sort + rating-threshold filter tests below.
+  // Seeded directly on the Business row rather than via real Review rows —
+  // these tests exercise run-search-query.ts's consumption of the columns,
+  // not Review/recompute-business-rating.ts (covered elsewhere).
+  avgRating?: number | null;
+  reviewCount?: number;
 }
 
 const CAT_RESTAURANT = "zzztest-restaurant-cat";
@@ -34,6 +41,7 @@ const CAT_SORT = "zzztest-sortcat";
 const CAT_NAMESORT = "zzztest-namesort-cat";
 const CAT_FALLBACK = "zzztest-fallback-cat";
 const CAT_OPENNOW = "zzztest-opennow-cat";
+const CAT_RATING = "zzztest-rating-cat";
 
 const fixtures: FixtureBusiness[] = [
   // Category / price-tier AND-semantics fixtures.
@@ -179,6 +187,62 @@ const fixtures: FixtureBusiness[] = [
     latitude: COLOMBO_03.lat,
     longitude: COLOMBO_03.lng,
     attributes: { priceTier: 2 },
+  },
+  // Real avgRating/reviewCount fixtures (Phase 3) — deliberately distinct on
+  // BOTH axes so highest_rated and most_reviewed produce different orders
+  // from each other, proving each sort reads its own column rather than
+  // both accidentally reading the same one.
+  {
+    slug: `${SLUG_PREFIX}high-rated-few-reviews`,
+    name: "Test Search High Rated Few Reviews",
+    description: "A diner.",
+    primaryCategories: [CAT_RATING],
+    district: "Colombo 03",
+    addressFreeText: "13 Test Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+    avgRating: 4.8,
+    reviewCount: 3,
+  },
+  {
+    slug: `${SLUG_PREFIX}mid-rated-many-reviews`,
+    name: "Test Search Mid Rated Many Reviews",
+    description: "A diner.",
+    primaryCategories: [CAT_RATING],
+    district: "Colombo 03",
+    addressFreeText: "14 Test Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+    avgRating: 4.0,
+    reviewCount: 50,
+  },
+  {
+    slug: `${SLUG_PREFIX}low-rated-diner`,
+    name: "Test Search Low Rated Diner",
+    description: "A diner.",
+    primaryCategories: [CAT_RATING],
+    district: "Colombo 03",
+    addressFreeText: "15 Test Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+    avgRating: 2.5,
+    reviewCount: 10,
+  },
+  {
+    slug: `${SLUG_PREFIX}no-reviews-diner`,
+    name: "Test Search No Reviews Diner",
+    description: "A diner.",
+    primaryCategories: [CAT_RATING],
+    district: "Colombo 03",
+    addressFreeText: "16 Test Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+    avgRating: null,
+    reviewCount: 0,
   },
 ];
 
@@ -334,6 +398,19 @@ describe("runSearchQuery — filter composition (SRCH-03)", () => {
     expect(slugs).toEqual([`${SLUG_PREFIX}kottu-palace`]);
   });
 
+  it("minRating excludes businesses below the threshold and businesses with no rating yet", async () => {
+    const result = await runSearchQuery({
+      categories: [CAT_RATING],
+      minRating: 4,
+      sort: "recommended",
+      page: 1,
+    });
+    const slugs = result.businesses.map((b) => b.slug).sort();
+    expect(slugs).toEqual(
+      [`${SLUG_PREFIX}high-rated-few-reviews`, `${SLUG_PREFIX}mid-rated-many-reviews`].sort(),
+    );
+  });
+
   it("returns all matching category rows when priceTiers is not restrictive", async () => {
     const result = await runSearchQuery({
       categories: [CAT_RESTAURANT],
@@ -399,6 +476,39 @@ describe("runSearchQuery — sort options (SRCH-04/SRCH-05)", () => {
       "Test Search Alpha Diner",
       "Test Search Beta Diner",
       "Test Search Gamma Diner",
+    ]);
+  });
+
+  it("sort=highest_rated orders by real Business.avgRating descending", async () => {
+    const result = await runSearchQuery({
+      categories: [CAT_RATING],
+      sort: "highest_rated",
+      page: 1,
+    });
+    const slugs = result.businesses.map((b) => b.slug);
+    expect(slugs).toEqual([
+      `${SLUG_PREFIX}high-rated-few-reviews`,
+      `${SLUG_PREFIX}mid-rated-many-reviews`,
+      `${SLUG_PREFIX}low-rated-diner`,
+      // Zero-review business (null avgRating) always sorts last, never
+      // treated as "rating 0" (which would be indistinguishable from a
+      // genuine 0-star average).
+      `${SLUG_PREFIX}no-reviews-diner`,
+    ]);
+  });
+
+  it("sort=most_reviewed orders by real Business.reviewCount descending (a different order than highest_rated)", async () => {
+    const result = await runSearchQuery({
+      categories: [CAT_RATING],
+      sort: "most_reviewed",
+      page: 1,
+    });
+    const slugs = result.businesses.map((b) => b.slug);
+    expect(slugs).toEqual([
+      `${SLUG_PREFIX}mid-rated-many-reviews`,
+      `${SLUG_PREFIX}low-rated-diner`,
+      `${SLUG_PREFIX}high-rated-few-reviews`,
+      `${SLUG_PREFIX}no-reviews-diner`,
     ]);
   });
 
