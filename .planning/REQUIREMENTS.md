@@ -19,7 +19,7 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 ### Search & Discovery
 
 - [x] **SRCH-01**: Search bar (free-text "what" + geo "where", defaulting to detected location) returns ranked business results
-- [ ] **SRCH-02**: Results page shows business cards (photo, name, category, price tier, rating+count, distance, snippet, open/closed badge) plus a map with pins
+- [x] **SRCH-02**: Results page shows business cards (photo, name, category, price tier, rating+count, distance, snippet, open/closed badge) plus a map with pins
 - [x] **SRCH-03**: Filters: category, price tier, open now, distance radius, rating threshold, category-conditional attributes
 - [x] **SRCH-04**: Sort options: Recommended (default), Highest Rated, Most Reviewed, Distance
 - [x] **SRCH-05**: "Recommended" sort blends text/category relevance, geo-decay, and a Bayesian/Wilson-score-adjusted rating (never a naive average) — implemented so a future ad-auction layer can interleave without touching this score (spec 6.1)
