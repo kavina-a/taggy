@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { OtpEntryForm } from "./otp-entry-form";
 
 describe("OtpEntryForm", () => {
@@ -17,12 +17,12 @@ describe("OtpEntryForm", () => {
 
   it("shows the (dev mode) caption only when a devCode prop is present", () => {
     const { rerender } = render(
-      <OtpEntryForm phone="+94771234567" devCode="123456" onVerified={onVerified} />,
+      <OtpEntryForm phone="+94771112222" devCode="998877" onVerified={onVerified} />,
     );
     expect(screen.getByText(/\(dev mode\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/123456/)).toBeInTheDocument();
+    expect(screen.getByText(/998877/)).toBeInTheDocument();
 
-    rerender(<OtpEntryForm phone="+94771234567" onVerified={onVerified} />);
+    rerender(<OtpEntryForm phone="+94771112222" onVerified={onVerified} />);
     expect(screen.queryByText(/\(dev mode\)/i)).not.toBeInTheDocument();
   });
 
@@ -88,7 +88,9 @@ describe("OtpEntryForm", () => {
     const resendButton = screen.getByRole("button", { name: /Resend code in/ });
     expect(resendButton).toBeDisabled();
 
-    vi.advanceTimersByTime(30_000);
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
 
     expect(screen.getByRole("button", { name: "Resend code" })).toBeEnabled();
   });
