@@ -24,11 +24,21 @@ model Business {
   location            Unsupported("geography(Point,4326)")?
   searchable          Unsupported("tsvector")?
   attributes          Json      @default("{}")
+  // Denormalized rating aggregates (REV-01+, Phase 3). Recomputed
+  // transactionally from `recommended`-status reviews only, every time a
+  // review's visibilityStatus changes (create/edit) — never from a naive
+  // average of ALL reviews, since not_recommended reviews must never affect
+  // the public rating (REV-04). `avgRating` is null (not 0) until the
+  // business has at least one recommended review, so callers can
+  // distinguish "no data yet" from "a genuine low score".
+  avgRating           Float?
+  reviewCount         Int       @default(0)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   hours               BusinessHours[]
   hoursOverrides      BusinessHoursOverride[]
   photos              BusinessPhoto[]
+  reviews             Review[]
 
   @@index([district])
   @@index([searchable], type: Gin, map: "business_searchable_gin_idx")
@@ -81,6 +91,61 @@ model User {
   hasSeenProfilePrompt Boolean  @default(false)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+  reviews              Review[]
+}
+
+// visibilityStatus per REV-03: every review is synchronously classified at
+// publish/edit time. "not_recommended" reviews are NEVER deleted (REV-04) —
+// they stay fully queryable, just excluded from Business.avgRating/
+// reviewCount and the default review list. The author response is
+// deliberately shape-identical regardless of outcome (spec 6.3) — this enum
+// value must never appear in any API response the review's own author
+// receives from the create/edit endpoints.
+enum ReviewVisibilityStatus {
+  recommended
+  not_recommended
+}
+
+model Review {
+  id                String                  @id @default(cuid())
+  businessId        String
+  business          Business                @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating            Int
+  text              String
+  visitDate         DateTime?
+  visibilityStatus  ReviewVisibilityStatus
+  // Human-readable summary of why the filter landed where it did — internal/
+  // audit use only (REV-06), never exposed to any public API caller or the
+  // review's own author.
+  filterReason      String?
+  // Structured signal data (reviewer history state, burst/timing pattern,
+  // text-similarity score, etc.) captured on every classification run so a
+  // future advertiser-parity audit (REV-06) has real data to work with —
+  // deliberately richer than filterReason's human summary.
+  filterSignals     Json                    @default("{}")
+  editedAt          DateTime?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  photos            ReviewPhoto[]
+
+  // REV-01: one review per user per business, enforced at the DB level —
+  // never only in application code.
+  @@unique([userId, businessId])
+  @@index([businessId, visibilityStatus])
+  @@index([userId, createdAt])
+}
+
+model ReviewPhoto {
+  id        String   @id @default(cuid())
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+
+  @@index([reviewId])
 }
 
 model OtpChallenge {
