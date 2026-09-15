@@ -36,13 +36,18 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
   (photos only) — Phase 1
 - ✓ Seed dataset of real Colombo businesses (107, all 16 leaf categories incl. tuk repair/
   tutoring/wedding vendors/tailoring) so the directory isn't empty at launch — Phase 1
+- ✓ Consumer accounts with phone-OTP-first auth (dev-stub SMS transport), guest browsing
+  with zero login prompts anywhere, progressive profile — Phase 2
+- ✓ Search & discovery: search bar (what/where via geolocation or district), map + list
+  results, category/price/open-now/attribute filters, 4 sort options, "Recommended" sort
+  (Postgres tsvector relevance + geo-decay + neutral rating term, architecturally isolated
+  from a future ad layer), home discovery rails (Trending/New/Category Shortcuts — no
+  fabricated "Top Rated" rail since no real ratings exist until Phase 3) — Phase 2
+- ✓ `language_pref` scaffolding + header switcher (persists preference only, no translated
+  strings yet) — Phase 2
 
 ### Active
 
-- [ ] Consumer accounts with phone-OTP-first auth, guest browsing with no login wall
-- [ ] Search & discovery: search bar (what/where), map + list results, category/price/
-      distance/attribute filters, "Recommended" sort (Bayesian-adjusted rating + geo-decay
-      + text relevance, no paid blending into organic score)
 - [ ] Business profile page: reviews, Q&A, "people also viewed", Consumer Alert banner
       slot (even if alerts system itself is a later phase)
 - [ ] Write/edit reviews: star rating + text, one review per user per business, photo
@@ -130,6 +135,10 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
 | Menu tab is photos-only, no structured MenuItem entity | 01-CONTEXT.md D-03 — real menu data (name/price) was out of scope for v1; avoids building a data model with no real seed data to populate it | ✓ Good |
 | Seed data manually curated (no scraping/OSM) | 01-CONTEXT.md D-04 — avoids ToS risk; 107 real Colombo businesses across all 16 leaf categories proved sufficient to avoid an empty directory | ✓ Good |
 | Worktree isolation disabled for single-plan-per-wave phases | Phase 1's 4 waves each had exactly one plan — no parallel-write risk to protect against, and sequential execution on the main tree avoids the git-worktree-manifest/merge-back machinery entirely | ✓ Good — simplified execution with no loss of safety |
+| Search: Postgres native full-text search (tsvector/GIN + pg_trgm), not OpenSearch | 02-CONTEXT.md D-01 — bootstrap-budget-appropriate at ~107 businesses; query layer structured so a future OpenSearch swap doesn't require a data-model rewrite | ✓ Good |
+| No "Top Rated" home rail until real ratings exist (Phase 3) | 02-CONTEXT.md D-09, extends D-02's no-fabricated-ratings principle to discovery rails, not just search ranking | ✓ Good |
+| Auth: iron-session httpOnly cookies + dev-stub OTP transport, no framework | 02-CONTEXT.md D-03/D-04 — real SMS provider deferred until there's a reason to pay for it; avoids a heavy auth framework dependency for a phone-OTP-only surface | ✓ Good |
+| Starting Phase 3: skip the full discuss/research/UI-spec/plan-checker ceremony, implement directly from ROADMAP + original spec context | User's explicit instruction (2026-09-15) — the original spec supplied at project init is already deep enough that the multi-document planning pipeline is redundant overhead for the remaining phases | — Pending |
 
 ## Evolution
 
@@ -149,4 +158,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-13 after Phase 1*
+*Last updated: 2026-09-15 after Phase 2*
