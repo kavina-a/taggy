@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-current_phase: 4
-current_phase_name: Voting, Owner Response & Reporting
-status: ready
-stopped_at: Completed 03-ui chunk (review composer, review list, REV-04 disclosure, REV-05 sort); Phase 3 (Reviews & Ratings) fully complete
-last_updated: "2026-09-15T15:29:49.634Z"
-last_activity: 2026-09-15
-last_activity_desc: Phase 3 UI chunk (REV-04/REV-05 review UI, wired into the business page) complete — Phase 3 fully complete
+milestone: v2.0
+milestone_name: Yelp Parity Redesign
+status: planning
+last_updated: "2026-09-24T10:58:06.519Z"
+last_activity: 2026-09-24
 progress:
-  total_phases: 5
-  completed_phases: 3
-  total_plans: 16
-  completed_plans: 16
-  percent: 60
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,22 +21,20 @@ See: .planning/PROJECT.md (updated 2026-09-13)
 
 **Core value:** The free consumer review/search product must stay trustworthy and useful —
 that trust is the asset every business-side revenue stream is sold against.
-**Current focus:** Phase 3 — Reviews & Ratings complete; ready to start Phase 4 (Voting, Owner Response & Reporting)
+**Current focus:** Phase 5 complete — Consumer MVP (phases 1–5) shipped
 
 ## Current Position
 
-Phase: 3 — Reviews & Ratings (complete) — next: Phase 4 — Voting, Owner Response & Reporting
-Plan: 03-backend + 03-ui chunks both complete (REV-01 through REV-06, MOD-01)
-Status: Phase 3 fully complete — review composer, review list, REV-04 disclosure link, REV-05 sort all wired into the business page
-Last activity: 2026-09-15 — Phase 3 UI chunk (reviews/ratings) complete
-
-Progress: [██████░░░░] 60%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-09-24 — Milestone v2.0 started
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 16
+- Total plans completed: 18
 - Average duration: N/A
 - Total execution time: 0 hours
 
@@ -51,6 +45,8 @@ Progress: [██████░░░░] 60%
 | 1 | 5 | - | - |
 | 2 | 9 | - | - |
 | 3 | 2 | - | - |
+| 4 | 1 | - | - |
+| 5 | 1 | - | - |
 
 **Recent Trend:**
 
@@ -74,6 +70,8 @@ Progress: [██████░░░░] 60%
 | Phase 02-search-discovery-accounts P09 | 8min | 2 tasks | 3 files |
 | Phase 03-reviews-ratings P01 (backend) | 25min | 8 commits | 22 files |
 | Phase 03-reviews-ratings P02 (ui) | 19min | 17 commits | 21 files |
+| Phase 04-voting-owner-response-reporting (implementation) | — | 1 chunk | schema + APIs + UI + e2e |
+| Phase 05-rich-content-photos-qa-collections (implementation) | — | 1 chunk | schema + APIs + UI + e2e |
 
 ## Accumulated Context
 
@@ -132,11 +130,25 @@ Recent decisions affecting current work:
 - [Phase 3, ui]: lib/reviews/sort-reviews.ts's blend = exponential recency decay (30-day half-life) + log-scaled credibility (account age capped 1yr, review count capped ~10) + a weighted-but-zeroed HELPFULNESS_SCORE_NEUTRAL placeholder — Phase 4's VOTE-01/02 only needs to replace that one constant, never re-tune the other weights.
 - [Phase 3, ui]: Review photos render via a plain <img>, not next/image, since next.config.ts's images.remotePatterns is deliberately restricted to picsum.photos only (T-03-02) and review photo URLs are arbitrary reviewer-supplied strings (no upload infra yet).
 - [Phase 3, ui]: ReviewComposer's existing-review state starts collapsed behind an "Edit your review" button; a review card's own "Edit" link is a same-page anchor (#write-a-review) to that single composer instance, since REV-01's one-review-per-user-per-business constraint means there's only ever one editable review per user per business.
+- [Phase 4]: Executed directly from ROADMAP.md/REQUIREMENTS.md, skipping discuss/research/plan-checker, matching Phase 3's 2026-09-15 instruction.
+- [Phase 4]: OtpChallenge.purpose namespaces login vs claim so proving control of a listing number cannot sign you in as that number.
+- [Phase 4]: Vote auth = any logged-in account except self-vote; no review-history gate.
+- [Phase 4]: computeHelpfulnessScore weights Useful=1.0, Funny/Cool=0.5, log-scaled and capped at 1.0 — replaces HELPFULNESS_SCORE_NEUTRAL without retuning recency/credibility.
+- [Phase 4]: toReporterConfirmation() always returns {ok:true}; duplicate reports upsert silently so a reporter cannot probe prior-report status.
+- [Phase 4]: Seed listed phones derived from slug hash in seed.ts, not added to the 107-row JSON.
+- [Phase 4]: Fourth Prisma migrate trap — stripped DROP INDEX on Business_location_gist / business_name_trgm_idx and searchable DROP DEFAULT before migrate deploy.
+- [Phase 5]: Executed directly from ROADMAP.md/REQUIREMENTS.md, skipping discuss/research/plan-checker.
+- [Phase 5]: Community photos stored as same-origin /uploads/{id}.ext — did not widen next.config images.remotePatterns.
+- [Phase 5]: classifyPhoto is a hard pre-insert gate (format, size, min 200px, max 4:1 aspect, NSFW lexical, classifyContent on caption).
+- [Phase 5]: One default collection per user via partial unique SQL index; name is the literal "My Saved Places".
+- [Phase 5]: Fifth Prisma migrate trap — same gist/trgm DROP INDEX + searchable DROP DEFAULT strip.
+- [Post-MVP leftovers]: Top Rated rail, review file uploads, pixel NSFW scan, optional email, si/ta chrome strings, people-also-viewed, Consumer Alert slot, owner listing editor, /moderation queue.
 
 ### Pending Todos
 
-- No file-upload infrastructure exists yet — review API routes only accept already-uploaded photo URL strings; Phase 5's PHOTO-01/PHOTO-02 is the first phase planning real upload infra, which would also let ReviewCard's photo rendering move to next/image once uploaded photos live on a controlled domain.
-- Phase 4 (VOTE-01/02): replace lib/reviews/sort-reviews.ts's HELPFULNESS_SCORE_NEUTRAL placeholder with a real computed Useful/Funny/Cool score once voting exists; add vote-button UI to ReviewCard.
+- Migrating ReviewCard photos to next/image is still blocked for arbitrary third-party URLs (T-03-02). Same-origin `/uploads` thumbs are fine.
+- Local seed/e2e may have claimed directory listings and created public "My Saved Places" rows. Re-seed if you need a clean claim/collection demo.
+- Full BIZ-01/BIZ-02 owner dashboard (analytics, BR documents) remains v2. TRUST-01 two-person moderation remains v2 — `/moderation` is a single-moderator inbox.
 
 ### Blockers/Concerns
 
@@ -154,6 +166,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-15T15:29:49.634Z
-Stopped at: Completed 03-ui chunk (review composer, review list, REV-04 disclosure, REV-05 sort); Phase 3 (Reviews & Ratings) fully complete
-Resume file: .planning/phases/03-reviews-ratings/03-ui-SUMMARY.md
+Last session: 2026-09-16T00:30:00.000Z
+Stopped at: Completed 05-implementation; Phase 5 and Consumer MVP milestone fully complete
+Resume file: .planning/phases/05-rich-content-photos-qa-collections/05-VERIFICATION.md

@@ -26,6 +26,35 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
 - **Strategy notes**: Full build specification captured in `.planning/research/` and this
   document; see spec sections referenced throughout for detail this file summarizes
 
+## Current Milestone: v2.0 Yelp Parity Redesign
+
+**Goal:** Restyle and rebuild the already-shipped Consumer MVP (Phases 1-5) to match
+yelp.com's layout, structure, design system, and page set — never its name, wordmark,
+logo, illustrations, or photos — per `docs/lankareview-full-yelp-clone-prompt.md` (full
+spec, from a live yelp.com crawl) and `docs/yelp-notes.md` (reference for exact wording/
+menus/layouts). Covers the spec's P0 tier only (§12 Phase 1 in the spec document — not to
+be confused with this project's own phase numbering, which continues from Phase 5).
+
+**Target features:**
+- Data foundation: new schema fields (guaranteed/responseTime/responseRate/eliteYear/
+  isTest), flag/delete `mu3…` test fixtures, replace all picsum.photos seed images with
+  local category-matched images, fix the raw-category-slug rendering bug, seed users +
+  reviews + photo tags + review votes + Q&A across all businesses, generateMetadata titles
+- Design system: red/teal/rating-tier color tokens, Poppins/Open Sans typography, shared
+  Header (transparent/white/minimal/legacy variants + category mega-nav), Footer,
+  StarRating display component, OpenStatus, pill buttons/chips, shared Modal + login-wall
+  modal, SectionLinkList, cookie banner
+- Home + Search rebuilt on the new design system
+- Business page shell + the already-functional review/vote/owner-response/photo/Q&A
+  features restyled onto it, plus a new Write a Review flow (business page as a normal
+  full page first; the intercepted modal-over-search route last)
+- Login/Signup restyle + a new multi-step Add/Claim wizard + 404 page + footer-linked stub
+  pages (phone OTP stays primary; Google OAuth added only if low-effort, Apple skipped)
+
+**Deferred to a later milestone:** the spec's P1/P2 tiers — city pages, questions-page
+restyle, user profile, projects/quote wizard, collections restyle, cost guides, the
+business-owner site + owner dashboard, talk/events/elite/locations/legal/corporate pages.
+
 ## Requirements
 
 ### Validated
@@ -52,8 +81,9 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
   the outcome — Phase 3
 - ✓ "X reviews not currently recommended" disclosure link — filtered reviews stay readable
   via real live count + lazy-fetched expand, never silently hidden or deleted — Phase 3
-- ✓ Default review sort blends recency + reviewer credibility + a neutral (not fabricated)
-  helpfulness placeholder, with explicit Newest/Highest/Lowest override — Phase 3
+- ✓ Default review sort blends recency + reviewer credibility + a real Useful-weighted
+  helpfulness score (Funny/Cool at 0.5, log-capped), with explicit Newest/Highest/Lowest
+  override — Phase 3 sort + Phase 4 vote wiring
 - ✓ Review filter logs structured signals (account age, burst-posting, text-similarity) as
   real JSON for a future advertiser-parity audit — Phase 3
 - ✓ Basic automated moderation: profanity/hate-speech/PII pre-publish filter on review TEXT
@@ -61,20 +91,32 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
   infrastructure via a documented VERIFICATION.md override; no photo content/caption
   exists yet to moderate, only third-party URL strings)
 
+- ✓ Independent Useful/Funny/Cool vote toggles on reviews; anyone logged in can vote
+  except on their own review — Phase 4
+- ✓ Minimal business claim via phone-OTP to the listed number, plus OTP-gated
+  create-new-listing; claimed owner can post exactly one public "Response from the owner"
+  per review — Phase 4 (full BR-document verification remains v2 / BIZ-01)
+- ✓ One-tap report/flag on review, photo, or business with a reason picker; reporter
+  receives confirmation only, never status or outcome — Phase 4
+- ✓ Community photo upload to a business page with a pre-publish classifyPhoto gate
+  (format/size/geometry/NSFW lexical/caption) — Phase 5. Files stored same-origin
+  under /uploads; next.config images.remotePatterns still picsum-only.
+- ✓ Q&A on business pages: ask/answer, upvote toggle, top-voted first, owner answers
+  labeled — Phase 5
+- ✓ Save to default "My Saved Places" or a named list; public shareable
+  /collections/[slug] links — Phase 5
+- ✓ Home "Top Rated this month" rail from live avgRating/reviewCount (hidden when empty)
+- ✓ Review photos via file upload (`POST /api/uploads` + classifyPhoto), not URL paste
+- ✓ Pixel NSFW scan on uploads (sharp raw pixels + skin-tone/edge heuristic)
+- ✓ Optional email on progressive profile (AUTH-01)
+- ✓ Sinhala/Tamil chrome strings driven by the language switcher
+- ✓ People also viewed + Consumer Alert banner on the business page
+- ✓ Claimed-owner listing editor (description/hours/address)
+- ✓ Moderator report queue at `/moderation` (`MODERATOR_PHONES`)
+
 ### Active
 
-- [ ] Business profile page: Q&A, "people also viewed", Consumer Alert banner slot (even
-      if alerts system itself is a later phase)
-- [ ] Review voting (Useful/Funny/Cool as independent toggles) and one public owner
-      response per review (once claim flow exists)
-- [ ] Photo uploads by any logged-in user, with basic automated moderation (NSFW/
-      irrelevance) before going live
-- [ ] Q&A on business pages (ask/answer/vote)
-- [ ] Collections/bookmarks, including public shareable collections
-- [ ] Business claim flow (search-and-claim or create) with phone-OTP or business-
-      registration-document verification
-- [ ] Trilingual UI scaffolding (English first, Sinhala/Tamil structurally supported via
-      `language_pref` even if translations land after English)
+- *(none — leftover consumer-site holes from PROJECT.md Active are closed)*
 
 ### Out of Scope (this milestone)
 
@@ -136,7 +178,7 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
 | Backend: Node.js/TypeScript | User's confirmed choice; single language across backend, easier context-switching for a small/solo team | ✓ Good — Prisma 7 + Next.js 16 route handlers proved productive in Phase 1 |
 | Mobile: React Native | User's confirmed choice; single codebase for iOS/Android, faster for a lean team | — Pending (deferred past Phase 1, web-only so far) |
 | Phase 1 scope = Consumer MVP only, no payments | Matches spec's own Section 18 phasing; avoid building monetization before there's a trustworthy free product to sell against | ✓ Good — Phase 1 shipped clean with zero payment/ads surface |
-| Review filter never tells the user in real time if they were filtered | Prevents reviewers from gaming disclosed filter criteria; matches spec 6.3 and Yelp's own documented rationale | — Pending (reviews are Phase 3) |
+| Review filter never tells the user in real time if they were filtered | Prevents reviewers from gaming disclosed filter criteria; matches spec 6.3 and Yelp's own documented rationale | ✓ Good — Phase 3 serializer + Phase 4 reporter confirmation both follow the same allowlist pattern |
 | Ad auction and organic ranking kept as architecturally separate systems | Spec 6.1 — blending the two is exactly the ambiguity behind Yelp's real-world extortion lawsuits; cheaper to separate now than retrofit later | — Pending (ads are Phase 2+) |
 | Bootstrap budget: self-hosted/free-tier infra until Phase 2 revenue | User confirmed cost-minimization priority for a pre-revenue solo/small-team build | ✓ Good — local Docker Postgres+PostGIS, no paid services in Phase 1 |
 | Web only for Phase 1, React Native deferred | Discuss-phase decision (01-CONTEXT.md D-01) — get a stable API/data model before committing to a second client | ✓ Good — kept Phase 1 scope tight |
@@ -147,7 +189,16 @@ If monetization ever degrades review-corpus quality or search trust, the whole m
 | Search: Postgres native full-text search (tsvector/GIN + pg_trgm), not OpenSearch | 02-CONTEXT.md D-01 — bootstrap-budget-appropriate at ~107 businesses; query layer structured so a future OpenSearch swap doesn't require a data-model rewrite | ✓ Good |
 | No "Top Rated" home rail until real ratings exist (Phase 3) | 02-CONTEXT.md D-09, extends D-02's no-fabricated-ratings principle to discovery rails, not just search ranking | ✓ Good |
 | Auth: iron-session httpOnly cookies + dev-stub OTP transport, no framework | 02-CONTEXT.md D-03/D-04 — real SMS provider deferred until there's a reason to pay for it; avoids a heavy auth framework dependency for a phone-OTP-only surface | ✓ Good |
-| Starting Phase 3: skip the full discuss/research/UI-spec/plan-checker ceremony, implement directly from ROADMAP + original spec context | User's explicit instruction (2026-09-15) — the original spec supplied at project init is already deep enough that the multi-document planning pipeline is redundant overhead for the remaining phases | — Pending |
+| Starting Phase 3: skip the full discuss/research/UI-spec/plan-checker ceremony, implement directly from ROADMAP + original spec context | User's explicit instruction (2026-09-15) — the original spec supplied at project init is already deep enough that the multi-document planning pipeline is redundant overhead for the remaining phases | ✓ Good — Phases 3, 4, and 5 all shipped this way |
+| Claim OTP is a separate `OtpChallenge.purpose` (`claim` vs `login`) on the existing table | Proving you control a listing's phone must not sign you in as that number | ✓ Good |
+| Vote auth = any logged-in account except self-vote; no review-history gate | AUTH-02 write-action set grew to votes/reports/claims; a new account can still react | ✓ Good |
+| Helpfulness score weights Useful=1.0, Funny/Cool=0.5, log-scaled and capped at 1.0 | Replaces HELPFULNESS_SCORE_NEUTRAL without retuning recency/credibility weights; viral votes cannot drown recency | ✓ Good |
+| Report API always returns `{ ok: true }` via a hard-coded serializer, even on duplicate upserts | MOD-02: reporter must not probe whether a prior report "worked" or see moderator status | ✓ Good |
+| Seed listed phones are derived from slug hash in seed.ts, not added to businesses.json | Keeps businessSeedSchema `.strict()` without rewriting 107 JSON rows | ✓ Good |
+| Prisma migrate `--create-only` then strip DROP INDEX / searchable DROP DEFAULT before deploy | Fifth occurrence of the unmanaged-index drift trap (01-01, 02-01, 03, 04, 05) | ✓ Good |
+| Community photos stored as same-origin `/uploads/{id}.ext` under public/uploads | Lets next/image serve them without widening images.remotePatterns (T-03-02 still picsum-only) | ✓ Good |
+| PHOTO-02 is file/geometry/caption rules, not a paid NSFW vision model | Bootstrap-budget "basic automated" gate; blocked photos never insert a BusinessPhoto row | ✓ Good |
+| One default collection per user via a partial unique SQL index | Prisma cannot express WHERE isDefault = true; app still get-or-creates "My Saved Places" | ✓ Good |
 
 ## Evolution
 
@@ -167,4 +218,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-15 after Phase 3*
+*Last updated: 2026-09-24 — Milestone v2.0 "Yelp Parity Redesign" started*
