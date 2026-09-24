@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Yelp Parity Redesign
-status: planning
-last_updated: "2026-09-24T10:58:06.519Z"
+status: ready
+last_updated: "2026-09-24T00:00:00.000Z"
 last_activity: 2026-09-24
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,18 +17,22 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-09-13)
+See: .planning/PROJECT.md (updated 2026-09-24)
 
 **Core value:** The free consumer review/search product must stay trustworthy and useful —
 that trust is the asset every business-side revenue stream is sold against.
-**Current focus:** Phase 5 complete — Consumer MVP (phases 1–5) shipped
+**Current focus:** Phase 6 — Data Foundation (v2.0 Yelp Parity Redesign roadmap created; ready to plan)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-09-24 — Milestone v2.0 started
+Phase: 6 of 10 (Data Foundation)
+Plan: — (not yet planned)
+Status: Ready to plan
+Last activity: 2026-09-24 — ROADMAP.md updated with v2.0 Phases 6-10 (Data Foundation, Design
+System, Home & Search, Business Page & Write a Review, Login/Signup/Claim); REQUIREMENTS.md
+traceability updated; 37/37 v2.0 requirements mapped
+
+Progress: [█████░░░░░] 50% (5 of 10 phases complete across both milestones; 0 of 5 v2.0 phases complete)
 
 ## Performance Metrics
 
@@ -47,6 +51,11 @@ Last activity: 2026-09-24 — Milestone v2.0 started
 | 3 | 2 | - | - |
 | 4 | 1 | - | - |
 | 5 | 1 | - | - |
+| 6 | - (TBD) | - | - |
+| 7 | - (TBD) | - | - |
+| 8 | - (TBD) | - | - |
+| 9 | - (TBD) | - | - |
+| 10 | - (TBD) | - | - |
 
 **Recent Trend:**
 
@@ -90,6 +99,23 @@ Recent decisions affecting current work:
 - Roadmap: MOD-01 (real-time content classifier) mapped to Phase 3 (Reviews) since that's the
   first UGC surface it protects; MOD-02 (report/flag) mapped to Phase 4 alongside owner
   claim/response since that's when the first non-review-author trust actions appear.
+
+- Roadmap (v2.0): The user pre-agreed the 5-phase Yelp Parity Redesign structure before
+  roadmapping — Data Foundation (6) → Design System (7) → Home & Search (8) → Business Page/
+  Reviews-Photos-QA Restyle & Write a Review (9) → Login/Signup/Claim (10), sequential
+  dependency chain, no reshuffling by the roadmapper. Numbering continues from Phase 5 (the
+  prior milestone's last phase) rather than restarting at 1.
+
+- Roadmap (v2.0): Design System (Phase 7) explicitly depends on Data Foundation (Phase 6)
+  completing first, per the user's explicit instruction — components need real seeded data to
+  build/preview against, not fixture/placeholder data.
+
+- Roadmap (v2.0): Phase 9 must build/verify the business page as a normal full page at
+  `/business/[slug]` before attempting the intercepted-route modal-over-search variant; the
+  modal variant is the last task in that phase's plan, not an early one.
+
+- Roadmap (v2.0): LOGINUI-03 (Google OAuth) is explicitly optional/stretch within Phase 10 —
+  add only if low-effort; Apple sign-in is out of scope entirely for this milestone.
 
 - [Phase 01]: Used shadcn's Vega preset (Radix, neutral, Inter, lucide-react) since shadcn CLI 4.21.0 replaced the old style/base-color prompts with named presets — Vega matches UI-SPEC's Inter + lucide-react + neutral requirements exactly.
 - [Phase 01]: Adopted Prisma 7's required @prisma/adapter-pg driver adapter and custom client output path since Prisma 7.10.0 removed the bundled Rust query engine and no longer generates into node_modules/@prisma/client by default.
@@ -149,6 +175,7 @@ Recent decisions affecting current work:
 - Migrating ReviewCard photos to next/image is still blocked for arbitrary third-party URLs (T-03-02). Same-origin `/uploads` thumbs are fine.
 - Local seed/e2e may have claimed directory listings and created public "My Saved Places" rows. Re-seed if you need a clean claim/collection demo.
 - Full BIZ-01/BIZ-02 owner dashboard (analytics, BR documents) remains v2. TRUST-01 two-person moderation remains v2 — `/moderation` is a single-moderator inbox.
+- Next action: run `/gsd-plan-phase 6` to begin planning Data Foundation (v2.0's first phase).
 
 ### Blockers/Concerns
 
@@ -166,6 +193,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-16T00:30:00.000Z
-Stopped at: Completed 05-implementation; Phase 5 and Consumer MVP milestone fully complete
-Resume file: .planning/phases/05-rich-content-photos-qa-collections/05-VERIFICATION.md
+Last session: 2026-09-24T00:00:00.000Z
+Stopped at: v2.0 Yelp Parity Redesign roadmap created (Phases 6-10); REQUIREMENTS.md
+traceability updated with all 37 v2.0 requirement mappings; ready to plan Phase 6.
+Resume file: .planning/ROADMAP.md

@@ -226,10 +226,13 @@ Explicitly excluded from the near-term roadmap (not the same as "later phase" ab
 
 ## Traceability
 
-Roadmap phases below are the authoritative breakdown from `/gsd-roadmapper` (see ROADMAP.md),
-derived as vertical MVP slices of the 33 v1 requirements. v2 requirements retain the spec's own
-Section 18 phase numbering as a label only (`spec Phase N`) — they are not part of this
-milestone's roadmap and are not yet assigned to concrete roadmap phases.
+Roadmap phases below are the authoritative breakdown from `/gsd-roadmapper` (see ROADMAP.md).
+Phases 1-5 are vertical MVP slices of the 33 v1 requirements (milestone v1.0, Consumer MVP).
+Phases 6-10 are the sequential breakdown of the 37 v2.0 "Yelp Parity Redesign" requirements,
+continuing this project's own phase numbering from Phase 5 (not to be confused with the spec's
+own internal `spec Phase N` labels used below for the separately-tracked, not-yet-roadmapped
+"v2 Requirements" section — those remain deferred labels only, not part of any milestone's
+roadmap yet).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
@@ -247,6 +250,11 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 | PHOTO-01, PHOTO-02 | Phase 5 | Complete |
 | QA-01 | Phase 5 | Complete |
 | COLL-01, COLL-02 | Phase 5 | Complete |
+| DATA-01, DATA-02, DATA-03, DATA-04, DATA-05, DATA-06, DATA-07, DATA-08, DATA-09, DATA-10 | Phase 6 | Pending |
+| DESIGN-01, DESIGN-02, DESIGN-03, DESIGN-04, DESIGN-05, DESIGN-06, DESIGN-07, DESIGN-08, DESIGN-09 | Phase 7 | Pending |
+| HOME-01, HOME-02, HOME-03, HOME-04, SEARCHUI-01, SEARCHUI-02, SEARCHUI-03 | Phase 8 | Pending |
+| BIZPAGE-01, BIZPAGE-02, BIZPAGE-03, BIZPAGE-04, BIZPAGE-05, WRITEREV-01 | Phase 9 | Pending |
+| LOGINUI-01, LOGINUI-02, LOGINUI-03, CLAIMUI-01, STUB-01 | Phase 10 | Pending |
 | BIZ-01, BIZ-02 | v2 (spec Phase 2) | Deferred |
 | ADS-01, ADS-02 | v2 (spec Phase 2) | Deferred |
 | SUB-01, SUB-02 | v2 (spec Phase 2) | Deferred |
@@ -260,12 +268,19 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 
 - v1 requirements: 33 total (corrected from the initial definition pass's count of 30 —
   every individually-listed `XXX-NN` id above was recounted directly)
-
 - Mapped to roadmap phases: 33
 - Unmapped: 0 ✓
 
-**Per-phase counts:** Phase 1: 7 · Phase 2: 10 · Phase 3: 7 · Phase 4: 4 · Phase 5: 5
+- v2.0 "Yelp Parity Redesign" requirements: 37 total (DATA-01..10, DESIGN-01..09,
+  HOME-01..04, SEARCHUI-01..03, BIZPAGE-01..05, WRITEREV-01, LOGINUI-01..03, CLAIMUI-01,
+  STUB-01)
+- Mapped to roadmap phases: 37
+- Unmapped: 0 ✓
+
+**Per-phase counts:** Phase 1: 7 · Phase 2: 10 · Phase 3: 7 · Phase 4: 4 · Phase 5: 5 ·
+Phase 6: 10 · Phase 7: 9 · Phase 8: 7 · Phase 9: 6 · Phase 10: 5
 
 ---
 *Requirements defined: 2026-09-13*
-*Last updated: 2026-09-16 after Phase 5 — PHOTO-01, PHOTO-02, QA-01, COLL-01, COLL-02 complete; Consumer MVP v1 requirements all mapped Complete*
+*Last updated: 2026-09-24 — v2.0 "Yelp Parity Redesign" roadmap created; Phases 6-10 added,
+37/37 v2.0 requirements mapped (Pending). v1 mappings (Phases 1-5) unchanged.*
