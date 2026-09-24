@@ -36,19 +36,19 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 
 ### Voting & Owner Response
 
-- [ ] **VOTE-01**: Reviews support three independent toggle vote types: Useful, Funny, Cool
-- [ ] **VOTE-02**: A claimed business's verified owner can post exactly one public response per review, labeled "Response from the owner"
+- [x] **VOTE-01**: Reviews support three independent toggle vote types: Useful, Funny, Cool
+- [x] **VOTE-02**: A claimed business's verified owner can post exactly one public response per review, labeled "Response from the owner"
 
 ### Photos & Q&A
 
-- [ ] **PHOTO-01**: Any logged-in user can upload a photo to a business page (not just reviewers)
-- [ ] **PHOTO-02**: Uploaded photos run through basic automated moderation (NSFW/irrelevance) before going live
-- [ ] **QA-01**: Any user can post a question on a business page; any user (including the owner) can answer; answers are votable and the top-voted answer surfaces first
+- [x] **PHOTO-01**: Any logged-in user can upload a photo to a business page (not just reviewers)
+- [x] **PHOTO-02**: Uploaded photos run through basic automated moderation (NSFW/irrelevance) before going live
+- [x] **QA-01**: Any user can post a question on a business page; any user (including the owner) can answer; answers are votable and the top-voted answer surfaces first
 
 ### Collections
 
-- [ ] **COLL-01**: Logged-in user can save a business to a default "My Saved Places" list or a named list
-- [ ] **COLL-02**: Collections can be made public with a shareable link
+- [x] **COLL-01**: Logged-in user can save a business to a default "My Saved Places" list or a named list
+- [x] **COLL-02**: Collections can be made public with a shareable link
 
 ### Auth
 
@@ -59,16 +59,119 @@ Requirements for the initial release (Consumer MVP — spec Section 18, Phase 1)
 ### Moderation (basic)
 
 - [x] **MOD-01**: Real-time profanity/hate-speech/PII classifier runs on every review and photo before publish
-- [ ] **MOD-02**: One-tap Report/Flag on any review, photo, or business with a reason picker; reporter gets confirmation only, no visibility into outcome
+- [x] **MOD-02**: One-tap Report/Flag on any review, photo, or business with a reason picker; reporter gets confirmation only, no visibility into outcome
 
 ### Business Claim (minimal, owner-response only)
 
-- [ ] **CLAIM-01**: A business owner can claim an unclaimed (or create a new) listing via phone-OTP verification to the listed number — sufficient to unlock owner-response rights; full Business Registration document verification and multi-staff logins are v2 (spec 7.1)
+- [x] **CLAIM-01**: A business owner can claim an unclaimed (or create a new) listing via phone-OTP verification to the listed number — sufficient to unlock owner-response rights; full Business Registration document verification and multi-staff logins are v2 (spec 7.1)
 
 ### Localization
 
 - [x] **LOC-01**: `language_pref` field exists on user accounts (en|si|ta) and drives a language switcher; English ships complete for v1, Sinhala/Tamil structurally supported for incremental translation
 - [x] **LOC-02**: Address model uses district/DS-division + free text + lat/lng as source of truth, never a US-style ZIP/postal search
+
+## v2.0 Requirements — Yelp Parity Redesign
+
+Requirements for restyling/rebuilding the completed Consumer MVP to match yelp.com's
+layout, structure, and page set — never its brand assets — per
+`docs/lankareview-full-yelp-clone-prompt.md` (§12 Phase 1 / P0 tier only). All backend
+capabilities below already exist and ship (Phases 1-5); these requirements are additive
+UI/data-quality work on top of them unless noted otherwise.
+
+### Data Foundation
+
+- [ ] **DATA-01**: Business schema has `guaranteed`, `responseTime`, `responseRate` fields
+- [ ] **DATA-02**: User schema has an `eliteYear` field
+- [ ] **DATA-03**: Business/Review/User records support an `isTest` flag; all `mu3…` test
+      fixtures are flagged/deleted and excluded from every UI surface
+- [ ] **DATA-04**: All seed business photos are local, category-matched images under
+      `/public/seed`, not `picsum.photos` URLs
+- [ ] **DATA-05**: The business page renders human-readable category labels everywhere,
+      never a raw slug
+- [ ] **DATA-06**: Every seeded business has 5-60 reviews with a realistic rating
+      distribution (skewed 3-5 stars), dates spread over 3 years, 80-400 word bodies, and
+      some reviews carrying 1-3 photos
+- [ ] **DATA-07**: Seeded reviews carry vote counts (Useful/Funny/Cool) and seeded photos
+      carry a tag (`food|inside|outside|menu|drink|video`)
+- [ ] **DATA-08**: Every seeded business has 0-5 Q&A threads with answers
+- [ ] **DATA-09**: 60+ seeded users exist with avatar, name, city, friend/review/photo
+      counts, and `eliteYear`
+- [ ] **DATA-10**: Business, search, and home pages emit `generateMetadata` titles matching
+      the spec's format (never the literal "localhost")
+
+### Design System
+
+- [ ] **DESIGN-01**: `globals.css` defines the spec's red/teal/rating-tier color tokens,
+      replacing the current orange `--brand-accent`
+- [ ] **DESIGN-02**: Headings/nav/buttons render in Poppins and body text in Open Sans via
+      `next/font`, with the existing Noto Sans Sinhala/Tamil fallback chain preserved
+- [ ] **DESIGN-03**: A shared `<Header>` component supports transparent/white/minimal/
+      legacy variants and a hover-triggered category mega-nav, replacing the current inline
+      plain header bar in `app/layout.tsx`
+- [ ] **DESIGN-04**: A shared `<Footer>` component with the spec's 5-column link layout
+      renders on every non-minimal page (currently missing entirely)
+- [ ] **DESIGN-05**: A `<StarRating>` display component renders rounded-square rating boxes
+      in tier colors with a formatted review-count label, usable anywhere a rating shows
+      (search cards, business page, reviews) — distinct from the existing
+      `star-rating-input.tsx` write-review picker
+- [ ] **DESIGN-06**: An `<OpenStatus>` component renders plain-text "Open"/"Closed" state,
+      replacing the current pill badges
+- [ ] **DESIGN-07**: Primary/secondary/gray-pill/filter-chip button and chip styles match
+      the spec's radius/color rules
+- [ ] **DESIGN-08**: A shared `<Modal>` component (focus trap, Esc/backdrop close) backs a
+      login-wall modal shown whenever a logged-out user attempts Save/Follow/Message/etc.
+- [ ] **DESIGN-09**: A `<SectionLinkList>` component (4-column link list with "Show more")
+      and a cookie-consent banner exist as shared components
+
+### Home & Search UI
+
+- [ ] **HOME-01**: Home page shows a full-bleed autoplay hero carousel with slide captions
+      and a red pill CTA linking to search
+- [ ] **HOME-02**: Home page shows a 3-column Recent Activity feed of review/photo/check-in
+      cards
+- [ ] **HOME-03**: Home page shows a categories grid using two-tone category icons (no
+      repeated icons)
+- [ ] **HOME-04**: Home page shows city chips with Top/Trending/Seasonal `SectionLinkList`s
+      for the selected city
+- [ ] **SEARCHUI-01**: Search results page shows a results column with a sticky map styled
+      per spec (numbered pins, hover-sync between row and pin)
+- [ ] **SEARCHUI-02**: Search results page shows the spec's filter chip row and full filter
+      panel (price, suggested, dietary, category, features, distance)
+- [ ] **SEARCHUI-03**: Search results page header shows the spec's "Top 10 Best {Query}
+      Near {City}" H1 and sort dropdown
+
+### Business Page & Write a Review
+
+- [ ] **BIZPAGE-01**: Business page header (photo-strip or round-logo variant) matches the
+      spec's layout with name, `StarRating`, claimed/category line, `OpenStatus`, and
+      action row
+- [ ] **BIZPAGE-02**: Business page sections (hours, amenities, about, Q&A, people-also-
+      viewed) render in the spec's layout and order, reusing existing data/APIs from
+      Phases 3-5 without re-implementing them
+- [ ] **BIZPAGE-03**: Recommended Reviews section matches the spec's layout (rating
+      breakdown bars, sort/language/rating filters, reaction buttons) using the existing
+      review/vote data
+- [ ] **BIZPAGE-04**: Photos section/lightbox matches the spec's tabbed grid + lightbox
+      layout
+- [ ] **BIZPAGE-05**: The business page is reachable as a normal full page at
+      `/business/[slug]` first; an intercepted-route modal-over-search variant is added
+      last, only after the full-page version works
+- [ ] **WRITEREV-01**: A Write a Review flow (landing + form) lets a user pick a star
+      rating, write a review with tag-chip prompts, and autosave a draft, matching the
+      spec's layout
+
+### Login, Signup & Claim
+
+- [ ] **LOGINUI-01**: `/login` is restyled to the spec's two-column layout with phone OTP
+      as the primary flow (unchanged auth mechanism)
+- [ ] **LOGINUI-02**: A new `/signup` page exists with the spec's form fields and layout
+- [ ] **LOGINUI-03** (stretch): "Continue with Google" is added to login/signup only if
+      low-effort to integrate; Apple sign-in is explicitly out of scope for this milestone
+- [ ] **CLAIMUI-01**: A multi-step `/claim` wizard (business name → email → phone OTP →
+      address/map → categories → hours → photos → done) replaces the current ad-hoc
+      `/businesses/new` flow, with a live business-page preview from step 2 onward
+- [ ] **STUB-01**: A styled 404 page and footer-linked stub pages (about, terms, privacy,
+      support, etc.) exist so no footer link 404s
 
 ## v2 Requirements
 
@@ -138,12 +241,12 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 | REV-01, REV-02, REV-03, REV-06 | Phase 3 (backend chunk) | Complete |
 | REV-04, REV-05 | Phase 3 (UI chunk) | Complete |
 | MOD-01 | Phase 3 | Complete |
-| VOTE-01, VOTE-02 | Phase 4 | Pending |
-| CLAIM-01 | Phase 4 | Pending |
-| MOD-02 | Phase 4 | Pending |
-| PHOTO-01, PHOTO-02 | Phase 5 | Pending |
-| QA-01 | Phase 5 | Pending |
-| COLL-01, COLL-02 | Phase 5 | Pending |
+| VOTE-01, VOTE-02 | Phase 4 | Complete |
+| CLAIM-01 | Phase 4 | Complete |
+| MOD-02 | Phase 4 | Complete |
+| PHOTO-01, PHOTO-02 | Phase 5 | Complete |
+| QA-01 | Phase 5 | Complete |
+| COLL-01, COLL-02 | Phase 5 | Complete |
 | BIZ-01, BIZ-02 | v2 (spec Phase 2) | Deferred |
 | ADS-01, ADS-02 | v2 (spec Phase 2) | Deferred |
 | SUB-01, SUB-02 | v2 (spec Phase 2) | Deferred |
@@ -165,4 +268,4 @@ milestone's roadmap and are not yet assigned to concrete roadmap phases.
 
 ---
 *Requirements defined: 2026-09-13*
-*Last updated: 2026-09-13 after roadmap creation — traceability reconciled against ROADMAP.md's 5-phase breakdown; requirement count corrected to 33*
+*Last updated: 2026-09-16 after Phase 5 — PHOTO-01, PHOTO-02, QA-01, COLL-01, COLL-02 complete; Consumer MVP v1 requirements all mapped Complete*
