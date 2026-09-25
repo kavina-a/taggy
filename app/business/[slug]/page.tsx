@@ -24,7 +24,7 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
   const { slug } = await params;
 
   const business = await prisma.business.findUnique({
-    where: { slug },
+    where: { slug, isTest: false },
     include: { hours: true, hoursOverrides: true, photos: true },
   });
 
