@@ -1,9 +1,9 @@
 ---
 phase: 6
 slug: data-foundation
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: approved
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-09-24
 ---
 
@@ -53,12 +53,15 @@ created: 2026-09-24
 
 ## Wave 0 Requirements
 
-- [ ] `prisma/seed-data/generators/generate-reviews.test.ts` — word-count, date-spread, rating-distribution assertions
-- [ ] `prisma/seed-data/generators/generate-qa.test.ts` — 0-5 threads per business
-- [ ] `lib/search/run-search-query.test.ts` — extend with an `isTest:true` fixture that must never appear in results
-- [ ] `lib/home/load-rails.test.ts` — same `isTest` exclusion assertion for rails
-- [ ] `components/business/business-page.test.tsx` — extend to assert rendered badge text uses `getCategoryLabel`, not the raw slug, for both primary and secondary category chips
-- [ ] `e2e/` — new spec asserting page `<title>` for `/`, `/search`, `/business/[slug]` is never the literal string `"localhost"` and matches the spec's format pattern
+All covered directly by tasks in the 7 approved PLAN.md files (confirmed by plan-checker
+2026-09-25) — no separate Wave 0 pass needed:
+
+- [x] `prisma/seed-data/generators/generate-reviews.test.ts` — word-count, date-spread, rating-distribution assertions (06-07)
+- [x] `prisma/seed-data/generators/generate-qa.test.ts` — 0-5 threads per business (06-04)
+- [x] `lib/search/run-search-query.test.ts` — extended with an `isTest:true` fixture that must never appear in results (06-02)
+- [x] `lib/home/load-rails.test.ts` — same `isTest` exclusion assertion for rails (06-02)
+- [x] `components/business/business-page.test.tsx` — extended to assert rendered badge text uses `getCategoryLabel`, not the raw slug, for both primary and secondary category chips (06-06)
+- [x] `e2e/data-foundation-metadata.spec.ts` — asserts page `<title>` for `/`, `/search`, `/business/[slug]` is never the literal string `"localhost"` and matches the spec's format pattern (06-06)
 
 ---
 
@@ -70,11 +73,11 @@ created: 2026-09-24
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 120s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 120s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-09-25 (gsd-plan-checker VERIFICATION PASSED)
