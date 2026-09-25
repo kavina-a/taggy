@@ -31,6 +31,12 @@ export const businessSeedSchema = z
     latitude: z.number().min(-90).max(90),
     longitude: z.number().min(-180).max(180),
     attributes: z.record(z.string(), z.unknown()).default({}),
+    // DATA-01: optional business-page signals. Real businesses.json rows
+    // don't set `isTest` here — Prisma's @default(false) already covers
+    // every business created through this seed path.
+    guaranteed: z.boolean().optional(),
+    responseTimeMinutes: z.number().int().positive().optional(),
+    responseRate: z.number().min(0).max(1).optional(),
     hours: z.array(hoursRowSchema).default([]),
     hoursOverrides: z.array(hoursOverrideRowSchema).default([]),
     photos: z.array(photoRowSchema).default([]),
