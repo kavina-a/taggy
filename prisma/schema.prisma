@@ -43,6 +43,14 @@ model Business {
   // TRUST-02 v1 slot: public Consumer Alert copy. Null = no banner.
   // Moderators set this from /moderation; it is never a reporter-facing field.
   consumerAlert       String?
+  // DATA-01: Yelp-parity business-page signals — seeded, not yet computed
+  // from any live source.
+  guaranteed          Boolean   @default(false)
+  responseTimeMinutes Int?
+  responseRate        Float?
+  // DATA-03: marks rows created by e2e/dev-fixture flows so they can be
+  // excluded from production-facing surfaces and cleaned up on demand.
+  isTest              Boolean   @default(false)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   hours               BusinessHours[]
@@ -84,18 +92,31 @@ model BusinessHoursOverride {
   @@unique([businessId, date])
 }
 
+// DATA-07: photo-gallery filter tag. Lowercase members match the existing
+// VoteKind/ReportReason enum casing convention.
+enum PhotoTag {
+  food
+  inside
+  outside
+  menu
+  drink
+  video
+}
+
 model BusinessPhoto {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   businessId       String
-  business         Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  business         Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
   url              String
   caption          String?
-  sortOrder        Int      @default(0)
-  isMenuPhoto      Boolean  @default(false)
+  sortOrder        Int       @default(0)
+  isMenuPhoto      Boolean   @default(false)
   // PHOTO-01: seed/gallery photos have no uploader; community uploads set this.
   uploadedByUserId String?
-  uploadedByUser   User?    @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
-  createdAt        DateTime @default(now())
+  uploadedByUser   User?     @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  createdAt        DateTime  @default(now())
+  // DATA-07: populated for every seeded photo; nullable for community uploads.
+  tag              PhotoTag?
 
   @@index([businessId])
   @@index([uploadedByUserId])
@@ -108,6 +129,20 @@ model User {
   email                String?  @unique
   languagePref         String   @default("en")
   hasSeenProfilePrompt Boolean  @default(false)
+  // DATA-02/DATA-09: Yelp-parity profile fields — seeded, not yet computed
+  // from any live source.
+  eliteYear            Int?
+  avatarUrl            String?
+  city                 String?
+  friendCount          Int      @default(0)
+  // Seed-time denormalized counters (no live recompute trigger exists yet —
+  // 06-04/06-07 set them directly from generated content counts; a future
+  // phase owns keeping them live on real user actions).
+  reviewCount          Int      @default(0)
+  photoCount           Int      @default(0)
+  // DATA-03: marks rows created by e2e/dev-fixture flows so they can be
+  // excluded from production-facing surfaces and cleaned up on demand.
+  isTest               Boolean  @default(false)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   reviews              Review[]
@@ -164,6 +199,9 @@ model Review {
   usefulCount       Int                     @default(0)
   funnyCount        Int                     @default(0)
   coolCount         Int                     @default(0)
+  // DATA-03: marks rows created by e2e/dev-fixture flows so they can be
+  // excluded from production-facing surfaces and cleaned up on demand.
+  isTest            Boolean                 @default(false)
 
   // REV-01: one review per user per business, enforced at the DB level —
   // never only in application code.
@@ -247,12 +285,16 @@ model Report {
 }
 
 model ReviewPhoto {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   reviewId  String
-  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  review    Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   url       String
   caption   String?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  // DATA-07: intentionally left unpopulated by seed data this phase (see
+  // 06-RESEARCH.md Open Question #1) — avoids a second migration if a
+  // future photo lightbox needs a unified BusinessPhoto+ReviewPhoto filter.
+  tag       PhotoTag?
 
   @@index([reviewId])
 }
