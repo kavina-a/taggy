@@ -1,10 +1,11 @@
 # LankaReview — Project Handoff
 
 > Portable status doc for any coding agent (Claude Code, Cursor, Copilot, etc.) to pick up
-> this project and continue implementing. Written 2026-09-15 after Phase 3 completed.
-> Source of truth for planning artifacts lives in `.planning/` (`PROJECT.md`,
-> `REQUIREMENTS.md`, `ROADMAP.md`, `STATE.md`, per-phase `SUMMARY.md`/`VERIFICATION.md`
-> files) — this doc is a synthesized snapshot, not a replacement for those.
+> this project and continue implementing. Written 2026-09-15 after Phase 3 completed;
+> updated 2026-09-16 after Phase 5 completed (Consumer MVP phases 1–5 done). Source of
+> truth for planning artifacts lives in `.planning/` (`PROJECT.md`, `REQUIREMENTS.md`,
+> `ROADMAP.md`, `STATE.md`, per-phase `SUMMARY.md`/`VERIFICATION.md` files) — this doc
+> is a synthesized snapshot, not a replacement for those.
 
 ---
 
@@ -73,7 +74,7 @@ setting unless you have a real reason for true parallelism.
 
 ---
 
-## 3. What's Built (Phases 1-3, all verified complete)
+## 3. What's Built (Phases 1-5, all verified complete)
 
 ### Phase 1 — Business Directory Foundation ✅
 Structured business listings: name, categories (primary+secondary, 16-leaf taxonomy
@@ -113,9 +114,9 @@ just excluded from the public average — always reachable via the "X reviews no
 currently recommended" disclosure link (`components/reviews/review-list.tsx`). Filter
 signals (account age, burst-posting, text-similarity) are logged as structured JSON
 (`filterSignals` column) for a future advertiser-parity audit. Default review sort
-blends recency + reviewer credibility + a currently-neutral helpfulness placeholder
-(`lib/reviews/sort-reviews.ts` — the `HELPFULNESS_SCORE_NEUTRAL` constant is exactly
-what Phase 4 replaces with real vote data), with Newest/Highest/Lowest override.
+blends recency + reviewer credibility + a Useful-weighted helpfulness score
+(`lib/reviews/sort-reviews.ts` — `computeHelpfulnessScore`, wired in Phase 4), with
+Newest/Highest/Lowest override.
 Text-only profanity/PII moderation gate (`lib/moderation/classify-content.ts`) —
 **photo moderation is NOT implemented** (formally accepted deviation, documented in
 `.planning/phases/03-reviews-ratings/03-VERIFICATION.md` — no photo caption/content
@@ -123,57 +124,55 @@ exists yet to moderate, only bare URLs; do this for real once Phase 5 adds uploa
 infra). Real `avgRating`/`reviewCount` are now wired into Phase 2's search ranking,
 replacing the placeholder neutral value.
 
-**Test count as of Phase 3 complete:** 187/189 vitest tests passing, 4/4 e2e specs
-passing, `npm run build` clean. **The 2 known-failing tests are pre-existing,
-documented, out-of-scope flakiness** — see Known Issues below, do not "fix" them as
+### Phase 4 — Voting, Owner Response & Reporting ✅
+Independent Useful/Funny/Cool toggles (`ReviewVote` unique on review+user+kind;
+`components/reviews/vote-buttons.tsx`; POST `/api/reviews/[id]/votes`). Anyone logged
+in can vote except on their own review; guests see login links. Helpfulness in blended
+sort is now real (`computeHelpfulnessScore`: Useful=1.0, Funny/Cool=0.5, log-capped).
+Minimal claim: OTP to the listing's phone with `OtpChallenge.purpose = "claim"` (cannot
+log you in as that number) then `claimedByUserId`. Create-new-listing at `/businesses/new`
+is OTP-gated create+claim. Claimed owner posts exactly one "Response from the owner"
+(`OwnerResponse.reviewId @unique`). One-tap report on review/photo/business; API always
+returns `{ ok: true }` via `toReporterConfirmation()` — never status or outcome. Seeded
+listings have deterministic phones from `seedPhoneForSlug`. **Do not add Business
+Registration document upload** — still v2 / BIZ-01.
+
+See `.planning/phases/04-voting-owner-response-reporting/04-implementation-SUMMARY.md`
+and `04-VERIFICATION.md`.
+
+### Phase 5 — Photos, Q&A & Collections ✅
+Logged-in users upload JPEG/PNG/WebP to a business gallery (`PhotoUploadForm`,
+`POST /api/businesses/[slug]/photos`). Files live at `/uploads/{id}.ext` (same-origin;
+**do not widen** `next.config.ts` `images.remotePatterns`). `classifyPhoto` blocks
+invalid/too-small/extreme-aspect/NSFW-caption/promotional photos **before** insert.
+Q&A: ask/answer APIs, upvote toggle, top-voted first, owner answers labeled "Owner".
+Save → default **My Saved Places** or a named list; `/saved` can make a list public at
+`/collections/[slug]` (private lists 404 for non-owners). Header **Saved** link.
+
+See `.planning/phases/05-rich-content-photos-qa-collections/05-implementation-SUMMARY.md`
+and `05-VERIFICATION.md`.
+
+**Test count as of Phase 5 complete:** 217/217 vitest tests passing, 6/6 e2e specs
+passing, `npm run build` clean. The two historically flaky open-now search tests
+passed in this run; they can still flake — see Known Issues, do not "fix" them as
 part of unrelated work without reading that section first.
 
 ---
 
-## 4. What's Left (Phases 4-5, not started)
+## 4. What's Left (Consumer MVP complete)
 
-### Phase 4 — Voting, Owner Response & Reporting
-**Goal:** Users can react to reviews, verified business owners can respond publicly, and
-anyone can report bad content.
-**Requirements:** VOTE-01, VOTE-02, CLAIM-01, MOD-02
+All five roadmap phases are done. Remaining Active items in PROJECT.md are **outside**
+this milestone's success criteria:
 
-1. **VOTE-01:** Useful/Funny/Cool as three independent toggle votes on any review
-   (anyone can vote, not just logged-in-with-history users — check REQUIREMENTS.md for
-   exact auth requirement). This is the direct trigger to go replace
-   `sort-reviews.ts`'s `HELPFULNESS_SCORE_NEUTRAL` constant with a real computed score —
-   that's a one-constant swap once real vote data exists, per Phase 3's own decision log.
-2. **CLAIM-01:** Minimal business claim — phone-OTP verification to the business's listed
-   number is sufficient to unlock owner-response rights. **Do NOT build full Business
-   Registration document upload/verification** — that's explicitly v2/out-of-scope per
-   REQUIREMENTS.md (`### Business Claim (minimal, owner-response only)` section — read
-   the exact wording there).
-3. **VOTE-02:** Once claimed, the verified owner can post exactly one public "Response
-   from the owner" reply per review.
-4. **MOD-02:** One-tap Report/Flag on any review, photo, or business with a reason
-   picker. Reporter gets a submission confirmation only — **no visibility into the
-   outcome** (same secrecy principle as REV-03's review filter — don't let reporting be
-   used to harass by revealing whether a report "worked").
+- "People also viewed" and a Consumer Alert banner slot on the business page
+- Sinhala/Tamil translated strings (`language_pref` already persists)
+- v2: business dashboard, ads, reservations, leads, BR-document verification, etc.
 
-### Phase 5 — Rich Content (Photos, Q&A & Collections)
-**Goal:** Business pages get richer via community contributions.
-**Requirements:** PHOTO-01, PHOTO-02, QA-01, COLL-01, COLL-02
+Review composer still takes photo **URLs**, not the new file uploader. Community
+gallery uploads are the PHOTO-01 surface.
 
-1. **PHOTO-01/02:** Any logged-in user (not just reviewers) can upload a photo to a
-   business page; real automated moderation (NSFW/irrelevance) before it goes live.
-   **This is the phase that should finally add real upload infrastructure** — once it
-   exists, go back and close Phase 3's accepted MOD-01 photo-moderation deviation for
-   real, and consider migrating `ReviewCard`'s photo rendering from plain `<img>` to
-   `next/image` (currently blocked because `next.config.ts`'s `images.remotePatterns` is
-   locked to `picsum.photos` only for security — widen it once photos live on a
-   controlled/owned domain, not arbitrary reviewer-supplied URLs).
-2. **QA-01:** Q&A on business pages — any user asks, any user (incl. owner) answers,
-   answers are votable, top-voted surfaces first.
-3. **COLL-01/02:** Save a business to a default or named list; make any collection public
-   via a shareable link.
-
-Full original requirement text (more precise than this summary) is in
-`.planning/REQUIREMENTS.md`. Full phase goals/success-criteria are in
-`.planning/ROADMAP.md`.
+Full original requirement text is in `.planning/REQUIREMENTS.md`. Full phase
+goals/success-criteria are in `.planning/ROADMAP.md`.
 
 ---
 
@@ -232,7 +231,7 @@ required to read or edit them.
    redesigned fixtures — don't attempt a quick patch without reading that file first, a
    previous attempt at a quick fix (vitest fake timers) didn't work for reasons not
    fully root-caused.
-2. **Prisma migration trap (hit 3 times already — 01-01, 02-01, 03-backend):** running
+2. **Prisma migration trap (hit 5 times — 01-01, 02-01, 03-backend, 04, 05):** running
    `npx prisma migrate dev` auto-generates `DROP INDEX`/`DROP DEFAULT` statements against
    hand-written raw SQL objects this project uses (the PostGIS `geography` column, its
    GiST index, the `sync_business_location` trigger, the generated `tsvector` column and
@@ -258,7 +257,7 @@ required to read or edit them.
 6. **Docker Postgres must be running** for almost anything to work locally —
    `docker compose up -d` (check `docker-compose.yml`). `.env`/`.env.example` have the
    connection string plus `OTP_HMAC_SECRET`/`SESSION_SECRET`.
-
+let
 ---
 
 ## 7. Key File Map
@@ -276,7 +275,12 @@ required to read or edit them.
 | Auth/session | `lib/session.ts`, `lib/otp/*`, `app/api/auth/**` |
 | Search | `lib/search/run-search-query.ts` |
 | Reviews | `lib/reviews/*`, `app/api/reviews/**` |
-| Moderation | `lib/moderation/classify-content.ts` |
+| Votes / owner response | `app/api/reviews/[id]/votes`, `app/api/reviews/[id]/owner-response` |
+| Claim / create listing | `app/api/businesses/[slug]/claim/**`, `app/api/listings/**`, `app/businesses/new` |
+| Photos | `lib/moderation/classify-photo.ts`, `lib/uploads/store-photo.ts`, `app/api/businesses/[slug]/photos` |
+| Q&A | `lib/qa/*`, `app/api/businesses/[slug]/questions`, `app/api/questions/[id]/answers`, `app/api/answers/[id]/votes` |
+| Collections | `lib/collections/ensure-default.ts`, `app/api/collections/**`, `app/saved`, `app/collections/[slug]` |
+| Moderation | `lib/moderation/classify-content.ts`, `lib/moderation/classify-photo.ts` |
 | Category taxonomy | `lib/categories/category-config.ts` |
 | Hours/open-now | `lib/hours/compute-open-now.ts` |
 | Design system reference | `.planning/phases/01-business-directory-foundation/01-UI-SPEC.md`, `.planning/phases/02-search-discovery-accounts/02-UI-SPEC.md` |
@@ -291,9 +295,10 @@ docker compose up -d          # start Postgres+PostGIS
 npm install
 npx prisma generate
 npm run dev                   # http://localhost:3000
-npm test                      # vitest — expect 187/189 (2 known flaky, see §6.1)
-npm run test:e2e              # playwright — expect all passing
+npm test                      # vitest — expect 217 (2 open-now tests can still flake, see §6.1)
+npm run test:e2e              # playwright — expect 6/6 passing
 ```
 
-Read `.planning/PROJECT.md` and `.planning/ROADMAP.md`'s Phase 4 section, then start
-implementing per §5 above.
+Consumer MVP phases 1–5 are complete. Next work is v2 / leftover Active items in
+`.planning/PROJECT.md` (people-also-viewed, Consumer Alert slot, Sinhala/Tamil strings),
+not another numbered roadmap phase.

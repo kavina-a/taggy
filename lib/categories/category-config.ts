@@ -86,6 +86,14 @@ export function getCategoryLabel(slug: string): string | undefined {
   return categoryLabelBySlug.get(slug);
 }
 
+export const leafCategorySlugs: string[] = categoryTaxonomy.flatMap((group) =>
+  group.categories.map((category) => category.slug),
+);
+
+export function isLeafCategorySlug(slug: string): boolean {
+  return categoryLabelBySlug.has(slug);
+}
+
 // Returns the boolean-typed attribute keys for a leaf category slug, derived
 // by parsing an empty object through that category's Zod schema (same
 // safeParse-and-inspect technique components/business/attribute-badges.tsx

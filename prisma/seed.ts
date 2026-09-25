@@ -2,6 +2,7 @@ import type { Prisma } from "../lib/generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import { businessSeedSchema, type BusinessSeedInput } from "../lib/validation/business.schema";
 import { attributeSchemaByCategory } from "../lib/categories/category-config";
+import { seedPhoneForSlug } from "../lib/businesses/seed-phone";
 import businessesData from "./seed-data/businesses.json" with { type: "json" };
 
 interface ValidatedRecord {
@@ -89,8 +90,8 @@ async function main() {
       // dataset never fails on a duplicate-key error (01-RESEARCH.md Pitfall 4).
       const upserted = await tx.business.upsert({
         where: { slug: business.slug },
-        update: { ...businessFields, attributes },
-        create: { ...businessFields, attributes },
+        update: { ...businessFields, attributes, phone: seedPhoneForSlug(business.slug) },
+        create: { ...businessFields, attributes, phone: seedPhoneForSlug(business.slug) },
       });
 
       // Delete-then-create the nested hours/hoursOverrides/photos relations so

@@ -9,6 +9,9 @@ function review(overrides: Partial<SortableReview> & { id: string }): SortableRe
     createdAt: "2026-08-01T00:00:00.000Z",
     userAccountCreatedAt: "2026-01-01T00:00:00.000Z",
     userReviewCount: 1,
+    usefulCount: 0,
+    funnyCount: 0,
+    coolCount: 0,
     ...overrides,
   };
 }
@@ -96,5 +99,24 @@ describe("sortReviews", () => {
     ];
 
     expect(() => sortReviews(reviews, "blended")).not.toThrow();
+  });
+
+  it("blended: a heavily-voted review outranks an otherwise identical unvoted review", () => {
+    const reviews = [
+      review({
+        id: "unvoted",
+        createdAt: "2026-09-01T00:00:00.000Z",
+        usefulCount: 0,
+      }),
+      review({
+        id: "voted",
+        createdAt: "2026-09-01T00:00:00.000Z",
+        usefulCount: 20,
+      }),
+    ];
+
+    const sorted = sortReviews(reviews, "blended", NOW);
+
+    expect(sorted.map((r) => r.id)).toEqual(["voted", "unvoted"]);
   });
 });

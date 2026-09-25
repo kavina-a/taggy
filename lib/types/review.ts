@@ -29,4 +29,15 @@ export interface ReviewListItem {
   editedAt: string | null;
   createdAt: string;
   photos: ReviewPhotoItem[];
+  usefulCount: number;
+  funnyCount: number;
+  coolCount: number;
+  /** Vote kinds the current viewer has toggled on — empty for guests. */
+  viewerVotes: Array<"useful" | "funny" | "cool">;
+  ownerResponse: {
+    id: string;
+    text: string;
+    createdAt: string;
+    editedAt: string | null;
+  } | null;
 }

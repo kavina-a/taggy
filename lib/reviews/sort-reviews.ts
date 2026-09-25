@@ -1,11 +1,8 @@
 // REV-05: default review-list ordering blends recency, reviewer credibility
-// (account age / review-count proxy), and a currently-neutral "helpfulness"
-// term — real Useful/Funny/Cool voting is Phase 4 (VOTE-01/02), so this term
-// stays honestly neutral until that data exists, matching Phase 2's
-// RATING_SCORE_NEUTRAL-before-real-ratings precedent (superseded once real
-// avgRating/reviewCount landed in the 03-backend chunk). Also provides the
-// explicit Newest/Highest/Lowest override (spec 6.2) as a pure client-side
-// re-sort of already-fetched review data — no new API sort param needed.
+// (account age / review-count proxy), and VOTE-01 helpfulness (Useful
+// weighted above Funny/Cool, log-scaled). Also provides the explicit
+// Newest/Highest/Lowest override (spec 6.2) as a pure client-side re-sort
+// of already-fetched review data — no new API sort param needed.
 //
 // A pure, DB-free module (like classifyReview / computeOpenNow) so it stays
 // independently unit-testable and can run identically on the server (initial
@@ -20,6 +17,10 @@ export interface SortableReview {
   userAccountCreatedAt: string;
   /** Reviewer's total review count across the platform (includes this one). */
   userReviewCount: number;
+  /** VOTE-01 denormalized totals — 0 when a review has no votes yet. */
+  usefulCount: number;
+  funnyCount: number;
+  coolCount: number;
 }
 
 export type ReviewSortOption = "blended" | "newest" | "highest" | "lowest";
@@ -38,17 +39,26 @@ const RECENCY_HALF_LIFE_DAYS = 30;
 const CREDIBILITY_MAX_ACCOUNT_AGE_DAYS = 365;
 const CREDIBILITY_REVIEW_COUNT_LOG_BASE = 11; // log10(11) normalizes ~10 reviews to 1.0
 
-// Blend weights — sum to 1.0. HELPFULNESS_WEIGHT is kept (not deleted) so
-// the day VOTE-01/02 lands, only HELPFULNESS_SCORE_NEUTRAL's replacement
-// with a real computed value is needed, not a re-tuning of the other terms.
+// Blend weights — sum to 1.0. Useful is the ranking-relevant vote;
+// Funny/Cool contribute at half weight inside computeHelpfulnessScore.
 const RECENCY_WEIGHT = 0.5;
 const CREDIBILITY_WEIGHT = 0.3;
 const HELPFULNESS_WEIGHT = 0.2;
 
-// Neutral placeholder — real Useful/Funny/Cool vote data doesn't exist yet
-// (Phase 4). Deliberately 0, not a guess, so it contributes nothing to the
-// blend rather than silently favoring/penalizing any review.
-const HELPFULNESS_SCORE_NEUTRAL = 0;
+// Helpfulness log-scale: ~10 useful-equivalent votes normalizes to 1.0,
+// matching the credibility term's log base so a viral review can't fully
+// drown recency. Useful counts 1.0; Funny and Cool count 0.5 each — Useful
+// is the ranking-relevant reaction, the other two are social flavor.
+const HELPFULNESS_LOG_BASE = 11;
+
+export function computeHelpfulnessScore(review: Pick<
+  SortableReview,
+  "usefulCount" | "funnyCount" | "coolCount"
+>): number {
+  const weighted =
+    review.usefulCount + 0.5 * review.funnyCount + 0.5 * review.coolCount;
+  return Math.min(1, Math.log10(weighted + 1) / Math.log10(HELPFULNESS_LOG_BASE));
+}
 
 function daysBetween(earlier: Date, later: Date): number {
   return Math.max(0, (later.getTime() - earlier.getTime()) / (1000 * 60 * 60 * 24));
@@ -73,7 +83,7 @@ function computeBlendedScore(review: SortableReview, now: Date): number {
   return (
     computeRecencyScore(review, now) * RECENCY_WEIGHT +
     computeCredibilityScore(review, now) * CREDIBILITY_WEIGHT +
-    HELPFULNESS_SCORE_NEUTRAL * HELPFULNESS_WEIGHT
+    computeHelpfulnessScore(review) * HELPFULNESS_WEIGHT
   );
 }
 

@@ -19,6 +19,7 @@ export interface ReviewListProps {
   /** REV-04: the REAL not_recommended count — 0 means the disclosure is omitted entirely. */
   notRecommendedCount: number;
   currentUserId: string | null;
+  isOwner?: boolean;
 }
 
 // REV-04: the disclosure link is NEVER hidden or its count faked — omitted
@@ -32,6 +33,7 @@ export function ReviewList({
   initialReviews,
   notRecommendedCount,
   currentUserId,
+  isOwner = false,
 }: ReviewListProps) {
   const [sort, setSort] = useState<ReviewSortOption>("blended");
   const [expanded, setExpanded] = useState(false);
@@ -88,6 +90,8 @@ export function ReviewList({
               key={review.id}
               review={review}
               isOwnReview={currentUserId !== null && review.userId === currentUserId}
+              currentUserId={currentUserId}
+              isOwner={isOwner}
             />
           ))}
         </div>
@@ -116,6 +120,8 @@ export function ReviewList({
                       key={review.id}
                       review={review}
                       isOwnReview={currentUserId !== null && review.userId === currentUserId}
+                      currentUserId={currentUserId}
+                      isOwner={isOwner}
                       variant="filtered"
                     />
                   ))}

@@ -103,6 +103,14 @@ describe("ReviewComposer", () => {
     });
   });
 
+  it("offers a file picker for photos instead of a URL paste field", () => {
+    render(<ReviewComposer businessId="biz_1" existingReview={null} />);
+
+    expect(screen.getByRole("button", { name: "Add photos" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Add photos")).toHaveAttribute("type", "file");
+    expect(screen.queryByPlaceholderText("https://...")).not.toBeInTheDocument();
+  });
+
   it("starts collapsed with an Edit button when an existing review is passed, and PATCHes on submit once expanded", async () => {
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: true,

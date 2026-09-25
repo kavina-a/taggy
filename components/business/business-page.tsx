@@ -19,24 +19,32 @@ import {
   type ExistingReviewForComposer,
 } from "@/components/reviews/review-composer";
 import { ReviewList } from "@/components/reviews/review-list";
+import { ClaimListingCard } from "@/components/business/claim-listing-card";
+import { ReportButton } from "@/components/reports/report-button";
+import { PhotoUploadForm } from "@/components/photos/photo-upload-form";
+import { QuestionList } from "@/components/qa/question-list";
+import { SaveBusinessButton } from "@/components/collections/save-business-button";
+import { OwnerListingEditor } from "@/components/business/owner-listing-editor";
+import { DiscoveryRail, type DiscoveryRailBusiness } from "@/components/home/discovery-rail";
 import { getCategoryLabel } from "@/lib/categories/category-config";
+import { en, type Messages } from "@/lib/i18n/messages";
 import type { BusinessDetail } from "@/lib/types/business";
 import type { ReviewListItem } from "@/lib/types/review";
+import type { QuestionListItem } from "@/lib/types/qa";
+import type { CollectionMembership } from "@/lib/types/collection";
 
 export interface BusinessPageViewProps {
   business: BusinessDetail;
-  // `null` = not computed (should not happen once app/business/[slug]/page.tsx
-  // always passes a real boolean from computeOpenNow; kept nullable so this
-  // presentational component stays independently testable).
   openNow: boolean | null;
-  // Review props are all optional/defaulted so this component's pre-Phase-3
-  // test contract (a bare `business`/`openNow` render) keeps passing
-  // unmodified — additive per this codebase's established BusinessCard
-  // hasSearchContext convention.
   reviews?: ReviewListItem[];
   notRecommendedCount?: number;
   currentUserId?: string | null;
   existingReview?: ExistingReviewForComposer | null;
+  isOwner?: boolean;
+  questions?: QuestionListItem[];
+  collectionMemberships?: CollectionMembership[];
+  relatedBusinesses?: DiscoveryRailBusiness[];
+  copy?: Messages;
 }
 
 export function BusinessPageView({
@@ -46,6 +54,11 @@ export function BusinessPageView({
   notRecommendedCount = 0,
   currentUserId = null,
   existingReview = null,
+  isOwner = false,
+  questions = [],
+  collectionMemberships = [],
+  relatedBusinesses = [],
+  copy = en,
 }: BusinessPageViewProps) {
   const directionsHref = `https://www.google.com/maps?q=${business.latitude},${business.longitude}`;
 
@@ -55,7 +68,7 @@ export function BusinessPageView({
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/directory">Directory</Link>
+              <Link href="/directory">{copy.business.directory}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -70,10 +83,27 @@ export function BusinessPageView({
         </BreadcrumbList>
       </Breadcrumb>
 
+      {business.consumerAlert ? (
+        <div
+          role="alert"
+          className="rounded-lg border border-destructive/40 bg-destructive/10 p-4"
+        >
+          <p className="text-sm font-semibold text-destructive">{copy.business.consumerAlert}</p>
+          <p className="text-base leading-normal text-foreground">{business.consumerAlert}</p>
+        </div>
+      ) : null}
+
       <header className="flex flex-col gap-3">
-        <h1 className="text-[28px] leading-[1.2] font-semibold">
-          {business.name}
-        </h1>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <h1 className="text-[28px] leading-[1.2] font-semibold">
+            {business.name}
+          </h1>
+          <SaveBusinessButton
+            businessId={business.id}
+            currentUserId={currentUserId}
+            memberships={collectionMemberships}
+          />
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           {business.primaryCategories.map((category) => (
             <Badge key={category} variant="secondary">
@@ -84,7 +114,7 @@ export function BusinessPageView({
         {business.secondaryCategories.length > 0 && (
           <div className="flex flex-col gap-2">
             <p className="text-sm leading-normal text-muted-foreground">
-              Also listed under
+              {copy.business.alsoListed}
             </p>
             <div className="flex flex-wrap items-center gap-2">
               {business.secondaryCategories.map((category) => (
@@ -105,7 +135,7 @@ export function BusinessPageView({
 
       <section aria-labelledby="about-heading" className="flex flex-col gap-2">
         <h2 id="about-heading" className="text-xl leading-[1.2] font-semibold">
-          About
+          {copy.business.about}
         </h2>
         <p className="text-base leading-normal text-foreground">
           {business.description}
@@ -116,11 +146,16 @@ export function BusinessPageView({
 
       <section aria-labelledby="address-heading" className="flex flex-col gap-2">
         <h2 id="address-heading" className="text-xl leading-[1.2] font-semibold">
-          Address
+          {copy.business.address}
         </h2>
         <p className="text-base leading-normal text-foreground">
           {business.district} &middot; {business.addressFreeText}
         </p>
+        {business.phone && (
+          <p className="text-base leading-normal text-foreground">
+            {copy.business.phone}: {business.phone}
+          </p>
+        )}
         <BusinessMapDynamic
           latitude={business.latitude}
           longitude={business.longitude}
@@ -128,7 +163,7 @@ export function BusinessPageView({
         />
         <Button asChild className="w-fit min-h-11 bg-brand-accent text-white hover:bg-brand-accent/90">
           <a href={directionsHref} target="_blank" rel="noopener noreferrer">
-            Get Directions
+            {copy.business.getDirections}
           </a>
         </Button>
       </section>
@@ -139,7 +174,7 @@ export function BusinessPageView({
 
           <section aria-labelledby="hours-heading" className="flex flex-col gap-2">
             <h2 id="hours-heading" className="text-xl leading-[1.2] font-semibold">
-              Hours
+              {copy.business.hours}
             </h2>
             <HoursAccordion
               hours={business.hours}
@@ -154,7 +189,7 @@ export function BusinessPageView({
 
       <section aria-labelledby="attributes-heading" className="flex flex-col gap-2">
         <h2 id="attributes-heading" className="text-xl leading-[1.2] font-semibold">
-          Attributes
+          {copy.business.attributes}
         </h2>
         <AttributeBadges
           primaryCategory={business.primaryCategories[0]}
@@ -166,11 +201,56 @@ export function BusinessPageView({
 
       <section aria-labelledby="photos-heading" className="flex flex-col gap-2">
         <h2 id="photos-heading" className="text-xl leading-[1.2] font-semibold">
-          Photos
+          {copy.business.photos}
         </h2>
         <PhotoGallery
           photos={business.photos}
           primaryCategories={business.primaryCategories}
+          currentUserId={currentUserId}
+        />
+        <PhotoUploadForm businessSlug={business.slug} currentUserId={currentUserId} />
+        <div className="flex flex-wrap gap-2">
+          <ReportButton
+            targetType="business"
+            targetId={business.id}
+            currentUserId={currentUserId}
+            label="Report business"
+          />
+        </div>
+      </section>
+
+      <Separator />
+
+      <section aria-labelledby="claim-heading" className="flex flex-col gap-2">
+        <h2 id="claim-heading" className="text-xl leading-[1.2] font-semibold">
+          {copy.business.owner}
+        </h2>
+        <ClaimListingCard
+          businessSlug={business.slug}
+          currentUserId={currentUserId}
+          isClaimed={Boolean(business.claimedByUserId)}
+          isOwner={isOwner}
+        />
+        {isOwner && (
+          <OwnerListingEditor
+            businessSlug={business.slug}
+            description={business.description}
+            addressFreeText={business.addressFreeText}
+            hours={business.hours}
+          />
+        )}
+      </section>
+
+      <Separator />
+
+      <section aria-labelledby="qa-heading" className="flex flex-col gap-2">
+        <h2 id="qa-heading" className="text-xl leading-[1.2] font-semibold">
+          {copy.business.qa}
+        </h2>
+        <QuestionList
+          businessSlug={business.slug}
+          questions={questions}
+          currentUserId={currentUserId}
         />
       </section>
 
@@ -178,24 +258,23 @@ export function BusinessPageView({
 
       <section aria-labelledby="write-review-heading" className="flex flex-col gap-2">
         <h2 id="write-review-heading" className="text-xl leading-[1.2] font-semibold">
-          Write a Review
+          {copy.business.writeReview}
         </h2>
         {currentUserId === null ? (
-          // AUTH-02: guest browsing/reading is always fully supported; login
-          // is required only to write a review. Reuses the existing /login
-          // flow rather than a second auth UI (D-05 precedent).
           <div id="write-a-review" className="flex flex-col gap-2 rounded-lg bg-secondary/60 p-4">
             <p className="text-base leading-normal text-foreground">
-              Have you been here? Share your experience.
+              {copy.business.beenHere}
             </p>
             <Button asChild className="min-h-11 w-fit bg-brand-accent text-white hover:bg-brand-accent/90">
-              <Link href="/login">Log in to write a review</Link>
+              <Link href="/login">{copy.business.loginToReview}</Link>
             </Button>
           </div>
         ) : (
           <ReviewComposer businessId={business.id} existingReview={existingReview} />
         )}
       </section>
+
+      <DiscoveryRail heading={copy.business.peopleAlsoViewed} businesses={relatedBusinesses} />
 
       <Separator />
 
@@ -205,6 +284,7 @@ export function BusinessPageView({
           initialReviews={reviews}
           notRecommendedCount={notRecommendedCount}
           currentUserId={currentUserId}
+          isOwner={isOwner}
         />
       </section>
     </article>

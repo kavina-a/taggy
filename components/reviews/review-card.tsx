@@ -2,12 +2,17 @@ import Link from "next/link";
 import { StarIcon } from "lucide-react";
 import { cn } from "cn";
 import { Card, CardContent } from "@/components/ui/card";
+import { VoteButtons } from "./vote-buttons";
+import { OwnerResponseBlock, OwnerResponseComposer } from "./owner-response";
+import { ReportButton } from "@/components/reports/report-button";
 import type { ReviewListItem } from "@/lib/types/review";
 
 export interface ReviewCardProps {
   review: ReviewListItem;
   /** Edit affordance renders only when this review belongs to the current session's user. */
   isOwnReview: boolean;
+  currentUserId: string | null;
+  isOwner?: boolean;
   /** REV-04: distinguishes a not_recommended card in the disclosure panel. */
   variant?: "default" | "filtered";
 }
@@ -34,11 +39,13 @@ function ReadOnlyStars({ rating }: { rating: number }) {
   );
 }
 
-// REV-04: no requirement asks a reviewer's account age to be displayed, so
-// only the Anonymous-name fallback is decided here — a User with no `name`
-// set (Phase 2's progressive profile allows skipping name entirely) shows
-// as "Anonymous" rather than an empty heading.
-export function ReviewCard({ review, isOwnReview, variant = "default" }: ReviewCardProps) {
+export function ReviewCard({
+  review,
+  isOwnReview,
+  currentUserId,
+  isOwner = false,
+  variant = "default",
+}: ReviewCardProps) {
   const displayName = review.userName ?? "Anonymous";
 
   return (
@@ -52,14 +59,22 @@ export function ReviewCard({ review, isOwnReview, variant = "default" }: ReviewC
             <span className="text-base leading-normal font-semibold">{displayName}</span>
             <ReadOnlyStars rating={review.rating} />
           </div>
-          {isOwnReview && (
-            <Link
-              href="#write-a-review"
-              className="min-h-11 text-sm text-brand-accent underline underline-offset-4"
-            >
-              Edit
-            </Link>
-          )}
+          <div className="flex items-center gap-1">
+            {isOwnReview && (
+              <Link
+                href="#write-a-review"
+                className="min-h-11 text-sm text-brand-accent underline underline-offset-4"
+              >
+                Edit
+              </Link>
+            )}
+            <ReportButton
+              targetType="review"
+              targetId={review.id}
+              currentUserId={currentUserId}
+              label="Report review"
+            />
+          </div>
         </div>
         <p className="text-sm leading-normal text-muted-foreground">
           {formatReviewDate(review.createdAt)}
@@ -69,22 +84,44 @@ export function ReviewCard({ review, isOwnReview, variant = "default" }: ReviewC
         {review.photos.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {review.photos.map((photo) => (
-              // Deliberately a plain <img>, NOT next/image: review photos are
-              // arbitrary already-hosted URLs the reviewer supplies (no
-              // upload infra yet, per the backend chunk's simplification),
-              // and next.config.ts's images.remotePatterns is intentionally
-              // restricted to picsum.photos only (T-03-02, security) — never
-              // widened to accept arbitrary user-supplied hostnames.
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={photo.id}
-                src={photo.url}
-                alt={photo.caption || "Review photo"}
-                loading="lazy"
-                className="h-20 w-20 rounded-md object-cover"
-              />
+              <div key={photo.id} className="flex flex-col items-start gap-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photo.url}
+                  alt={photo.caption || "Review photo"}
+                  loading="lazy"
+                  className="h-20 w-20 rounded-md object-cover"
+                />
+                <ReportButton
+                  targetType="photo"
+                  targetId={photo.id}
+                  currentUserId={currentUserId}
+                  label="Report photo"
+                />
+              </div>
             ))}
           </div>
+        )}
+        <VoteButtons
+          reviewId={review.id}
+          usefulCount={review.usefulCount}
+          funnyCount={review.funnyCount}
+          coolCount={review.coolCount}
+          viewerVotes={review.viewerVotes}
+          currentUserId={currentUserId}
+          isOwnReview={isOwnReview}
+        />
+        {review.ownerResponse && (
+          <OwnerResponseBlock
+            text={review.ownerResponse.text}
+            editedAt={review.ownerResponse.editedAt}
+          />
+        )}
+        {isOwner && (
+          <OwnerResponseComposer
+            reviewId={review.id}
+            existingText={review.ownerResponse?.text ?? null}
+          />
         )}
       </CardContent>
     </Card>

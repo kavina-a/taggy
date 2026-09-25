@@ -12,29 +12,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/components/i18n/i18n-provider";
 
 export interface ProgressiveProfileDialogProps {
   open: boolean;
   onDismiss: () => void;
 }
 
-// UI-SPEC Screen 3 Step 3 / D-06 — a non-blocking, dismissible name prompt
-// shown exactly once (the parent only renders this when
-// user.hasSeenProfilePrompt is false). Both "Save" and "Skip for now" persist
-// through the SAME /api/auth/profile call so hasSeenProfilePrompt is always
-// set server-side, regardless of which path the user takes (never two
-// diverging code paths that could drift out of sync).
 export function ProgressiveProfileDialog({ open, onDismiss }: ProgressiveProfileDialogProps) {
+  const t = useT();
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
 
-  async function persist(nameValue: string | null) {
+  async function persist(nameValue: string | null, emailValue: string | null) {
     setSaving(true);
     try {
       await fetch("/api/auth/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: nameValue }),
+        body: JSON.stringify({ name: nameValue, email: emailValue }),
       });
     } finally {
       setSaving(false);
@@ -43,13 +40,17 @@ export function ProgressiveProfileDialog({ open, onDismiss }: ProgressiveProfile
   }
 
   function handleSave() {
-    const trimmed = name.trim();
-    void persist(trimmed.length > 0 ? trimmed : null);
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    void persist(
+      trimmedName.length > 0 ? trimmedName : null,
+      trimmedEmail.length > 0 ? trimmedEmail : null,
+    );
   }
 
   function handleSkip(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    void persist(null);
+    void persist(null, null);
   }
 
   return (
@@ -61,21 +62,31 @@ export function ProgressiveProfileDialog({ open, onDismiss }: ProgressiveProfile
     >
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>What should we call you?</DialogTitle>
-          <DialogDescription>
-            Optional — add a name so it&apos;s clearly you if you write a review or ask a
-            question later. You can skip this for now.
-          </DialogDescription>
+          <DialogTitle>{t.profile.title}</DialogTitle>
+          <DialogDescription>{t.profile.description}</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="profile-name">Name</Label>
-          <Input
-            id="profile-name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Your name"
-            disabled={saving}
-          />
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="profile-name">{t.profile.name}</Label>
+            <Input
+              id="profile-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder={t.profile.namePlaceholder}
+              disabled={saving}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="profile-email">{t.profile.email}</Label>
+            <Input
+              id="profile-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder={t.profile.emailPlaceholder}
+              disabled={saving}
+            />
+          </div>
         </div>
         <DialogFooter>
           <a
@@ -84,7 +95,7 @@ export function ProgressiveProfileDialog({ open, onDismiss }: ProgressiveProfile
             aria-disabled={saving}
             className="flex min-h-11 items-center justify-center text-sm text-muted-foreground underline underline-offset-4 sm:justify-start"
           >
-            Skip for now
+            {t.profile.skip}
           </a>
           <Button
             type="button"
@@ -92,7 +103,7 @@ export function ProgressiveProfileDialog({ open, onDismiss }: ProgressiveProfile
             disabled={saving}
             className="min-h-11 bg-brand-accent text-white hover:bg-brand-accent/90"
           >
-            Save
+            {t.profile.save}
           </Button>
         </DialogFooter>
       </DialogContent>

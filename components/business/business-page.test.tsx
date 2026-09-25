@@ -23,6 +23,10 @@ const mockBusiness: BusinessDetail = {
   addressFreeText: "123 Test Road, Cinnamon Gardens",
   latitude: 6.9061,
   longitude: 79.8621,
+  phone: "+94771234567",
+  claimedByUserId: null,
+  claimedAt: null,
+  consumerAlert: null,
   attributes: { wifi: true, outdoorSeating: true, takeout: true, delivery: false, priceTier: 2 },
   hours: [],
   hoursOverrides: [],
@@ -155,6 +159,11 @@ describe("BusinessPageView", () => {
             editedAt: null,
             createdAt: "2026-09-01T00:00:00.000Z",
             photos: [],
+            usefulCount: 0,
+            funnyCount: 0,
+            coolCount: 0,
+            viewerVotes: [],
+            ownerResponse: null,
           },
         ]}
       />,
@@ -162,5 +171,56 @@ describe("BusinessPageView", () => {
 
     expect(screen.getByRole("heading", { level: 2, name: "Reviews" })).toBeInTheDocument();
     expect(screen.getByText("Kamal")).toBeInTheDocument();
+  });
+
+  it("renders a Consumer Alert banner only when copy is set", () => {
+    const { rerender } = render(<BusinessPageView business={mockBusiness} openNow={null} />);
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+
+    rerender(
+      <BusinessPageView
+        business={{ ...mockBusiness, consumerAlert: "Reviews on this page look coordinated." }}
+        openNow={null}
+      />,
+    );
+    expect(screen.getByRole("alert")).toHaveTextContent("Consumer Alert");
+    expect(screen.getByRole("alert")).toHaveTextContent("Reviews on this page look coordinated.");
+  });
+
+  it("renders People also viewed when related businesses are passed, and hides it when empty", () => {
+    const { rerender } = render(<BusinessPageView business={mockBusiness} openNow={null} />);
+    expect(screen.queryByRole("heading", { name: "People also viewed" })).not.toBeInTheDocument();
+
+    rerender(
+      <BusinessPageView
+        business={mockBusiness}
+        openNow={null}
+        relatedBusinesses={[
+          {
+            slug: "other-cafe",
+            name: "Other Cafe",
+            primaryCategory: "cafe-bakery",
+            categoryLabel: "Cafes & Bakeries",
+            district: "Colombo 03",
+            photoUrl: null,
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByRole("heading", { name: "People also viewed" })).toBeInTheDocument();
+    expect(screen.getByText("Other Cafe")).toBeInTheDocument();
+  });
+
+  it("shows the listing editor for the claimed owner", () => {
+    render(
+      <BusinessPageView
+        business={{ ...mockBusiness, claimedByUserId: "user_1" }}
+        openNow={null}
+        currentUserId="user_1"
+        isOwner
+      />,
+    );
+    expect(screen.getByRole("heading", { name: "Edit listing" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Description")).toBeInTheDocument();
   });
 });

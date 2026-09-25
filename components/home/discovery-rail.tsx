@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useT } from "@/components/i18n/i18n-provider";
 
 // Condensed rail-card business shape — a strict subset of
 // BusinessCardProps (components/directory/business-card.tsx). Deliberately
@@ -24,6 +27,8 @@ export interface DiscoveryRailBusiness {
   priceTier?: 1 | 2 | 3 | 4;
   distanceKm?: number | null;
   openNow?: boolean;
+  avgRating?: number | null;
+  reviewCount?: number;
 }
 
 export interface DiscoveryRailProps {
@@ -39,6 +44,12 @@ const PRICE_TIER_LABEL: Record<1 | 2 | 3 | 4, string> = {
 };
 
 function metadataLine(business: DiscoveryRailBusiness): string {
+  if (business.avgRating != null) {
+    const rating = business.avgRating.toFixed(1);
+    return business.reviewCount
+      ? `${business.categoryLabel} · ★ ${rating} (${business.reviewCount})`
+      : `${business.categoryLabel} · ★ ${rating}`;
+  }
   const priceOrDistance =
     business.priceTier !== undefined
       ? PRICE_TIER_LABEL[business.priceTier]
@@ -79,6 +90,7 @@ function RailCardPhoto({ photoUrl, name }: { photoUrl: string | null; name: stri
 }
 
 function RailCard({ business }: { business: DiscoveryRailBusiness }) {
+  const t = useT();
   return (
     <Link
       href={`/business/${business.slug}`}
@@ -100,7 +112,7 @@ function RailCard({ business }: { business: DiscoveryRailBusiness }) {
                     : "shrink-0 bg-status-closed text-white"
                 }
               >
-                {business.openNow ? "Open now" : "Closed"}
+                {business.openNow ? t.hours.openNow : t.hours.closed}
               </Badge>
             )}
           </div>

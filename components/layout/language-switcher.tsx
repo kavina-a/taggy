@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -8,8 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useT } from "@/components/i18n/i18n-provider";
+import type { LanguageCode } from "@/lib/i18n/messages";
 
-export type LanguageCode = "en" | "si" | "ta";
+export type { LanguageCode };
 
 export interface LanguageSwitcherProps {
   isLoggedIn: boolean;
@@ -22,35 +25,31 @@ const LANGUAGE_OPTIONS: { value: LanguageCode; label: string }[] = [
   { value: "ta", label: "தமிழ்" },
 ];
 
-// 02-CONTEXT.md D-07 / 02-UI-SPEC.md Copywriting Contract "Language switcher
-// label" — selecting si/ta only persists the preference and shows this one
-// inline note; it must NOT change any other rendered string this phase.
 export function LanguageSwitcher({ isLoggedIn, initialValue }: LanguageSwitcherProps) {
+  const t = useT();
+  const router = useRouter();
   const [value, setValue] = useState<LanguageCode>(initialValue);
 
   async function handleChange(next: string) {
     const lang = next as LanguageCode;
     setValue(lang);
+    document.cookie = `lang_pref=${lang}; path=/; max-age=31536000`;
 
     if (isLoggedIn) {
-      // Logged-in users persist via User.languagePref server-side (02-RESEARCH.md Pattern 6).
       await fetch("/api/auth/language", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lang }),
       });
-    } else {
-      // Guests persist via a plain (non-httpOnly) cookie, set directly — no
-      // server round trip needed for a preference with zero PII/security
-      // sensitivity (T-02-10).
-      document.cookie = `lang_pref=${lang}; path=/; max-age=31536000`;
     }
+
+    router.refresh();
   }
 
   return (
     <div className="flex flex-col gap-1">
       <Select value={value} onValueChange={handleChange}>
-        <SelectTrigger size="sm" aria-label="Language">
+        <SelectTrigger size="sm" aria-label={t.header.language}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -61,11 +60,6 @@ export function LanguageSwitcher({ isLoggedIn, initialValue }: LanguageSwitcherP
           ))}
         </SelectContent>
       </Select>
-      {(value === "si" || value === "ta") && (
-        <p className="text-xs text-muted-foreground">
-          Sinhala/Tamil UI coming soon — your preference is saved
-        </p>
-      )}
     </div>
   );
 }

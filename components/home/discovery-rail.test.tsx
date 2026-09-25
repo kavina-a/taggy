@@ -53,9 +53,13 @@ describe("DiscoveryRail", () => {
     expect(screen.queryByText("No reviews yet")).not.toBeInTheDocument();
   });
 
-  it("shows exactly one metadata line combining category label and distance when priceTier is absent", () => {
-    render(<DiscoveryRail heading="Trending Near You" businesses={[restaurant]} />);
-    expect(screen.getByText("Restaurants · 2.5 km")).toBeInTheDocument();
-    expect(screen.queryByText("No reviews yet")).not.toBeInTheDocument();
+  it("shows rating in the metadata line when avgRating is provided", () => {
+    render(
+      <DiscoveryRail
+        heading="Top Rated this month"
+        businesses={[{ ...cafe, avgRating: 4.6, reviewCount: 12 }]}
+      />,
+    );
+    expect(screen.getByText("Cafes & Bakeries · ★ 4.6 (12)")).toBeInTheDocument();
   });
 });

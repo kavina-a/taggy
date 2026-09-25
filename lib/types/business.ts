@@ -32,6 +32,10 @@ export interface BusinessDetail {
   addressFreeText: string;
   latitude: number;
   longitude: number;
+  phone: string | null;
+  claimedByUserId: string | null;
+  claimedAt: string | null;
+  consumerAlert: string | null;
   attributes: Record<string, unknown>;
   hours: BusinessHoursRow[];
   hoursOverrides: BusinessHoursOverrideRow[];

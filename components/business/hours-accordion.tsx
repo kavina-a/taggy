@@ -12,6 +12,7 @@ import type {
   BusinessHoursRow,
   BusinessHoursOverrideRow,
 } from "@/lib/types/business";
+import { useT } from "@/components/i18n/i18n-provider";
 
 export interface HoursAccordionProps {
   hours: BusinessHoursRow[];
@@ -43,6 +44,7 @@ function formatShift(row: BusinessHoursRow): string {
 }
 
 export function HoursAccordion({ hours, overrides, openNow }: HoursAccordionProps) {
+  const t = useT();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -54,7 +56,7 @@ export function HoursAccordion({ hours, overrides, openNow }: HoursAccordionProp
             : "bg-status-closed text-white"
         }
       >
-        {openNow ? "Open now" : "Closed"}
+        {openNow ? t.hours.openNow : t.hours.closed}
       </Badge>
 
       <Accordion

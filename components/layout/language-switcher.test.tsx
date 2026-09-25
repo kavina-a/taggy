@@ -2,12 +2,12 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { LanguageSwitcher } from "./language-switcher";
 
-// Radix Select's item-aligned content positioning scrolls the currently
-// selected item into view when it opens, and jsdom doesn't implement
-// scrollIntoView/pointer-capture — polyfill just enough for open/select to
-// run without throwing. Opening/selecting itself works via fireEvent.click
-// alone: Radix's trigger/item onClick handlers fire whenever pointerType
-// isn't "mouse", which is the jsdom fireEvent.click default.
+const refreshMock = vi.fn();
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: refreshMock }),
+}));
+
 beforeAll(() => {
   Element.prototype.scrollIntoView = vi.fn();
   Element.prototype.hasPointerCapture = vi.fn(() => false);
@@ -19,11 +19,10 @@ function openAndSelect(optionLabel: string) {
   fireEvent.click(screen.getByText(optionLabel));
 }
 
-const COMING_SOON_NOTE = "Sinhala/Tamil UI coming soon — your preference is saved";
-
 describe("LanguageSwitcher", () => {
   beforeEach(() => {
     document.cookie = "lang_pref=; path=/; max-age=0";
+    refreshMock.mockReset();
     global.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
   });
 
@@ -31,34 +30,23 @@ describe("LanguageSwitcher", () => {
     vi.restoreAllMocks();
   });
 
-  it("selecting English persists the choice and shows no coming-soon note", () => {
+  it("selecting English persists the choice and does not show a coming-soon note", () => {
     render(<LanguageSwitcher isLoggedIn={false} initialValue="si" />);
 
     openAndSelect("English");
 
-    expect(screen.queryByText(COMING_SOON_NOTE)).not.toBeInTheDocument();
+    expect(screen.queryByText(/coming soon/i)).not.toBeInTheDocument();
+    expect(document.cookie).toContain("lang_pref=en");
   });
 
-  it("selecting Sinhala shows the coming-soon note while every other string stays in English", () => {
-    render(
-      <div>
-        <p>Search businesses</p>
-        <LanguageSwitcher isLoggedIn={false} initialValue="en" />
-      </div>,
-    );
+  it("selecting Sinhala persists the cookie and refreshes so translated strings can load", async () => {
+    render(<LanguageSwitcher isLoggedIn={false} initialValue="en" />);
 
     openAndSelect("සිංහල");
 
-    expect(screen.getByText(COMING_SOON_NOTE)).toBeInTheDocument();
-    expect(screen.getByText("Search businesses")).toBeInTheDocument();
-  });
-
-  it("selecting Tamil shows the coming-soon note", () => {
-    render(<LanguageSwitcher isLoggedIn={false} initialValue="en" />);
-
-    openAndSelect("தமிழ்");
-
-    expect(screen.getByText(COMING_SOON_NOTE)).toBeInTheDocument();
+    expect(document.cookie).toContain("lang_pref=si");
+    await waitFor(() => expect(refreshMock).toHaveBeenCalled());
+    expect(screen.queryByText(/coming soon/i)).not.toBeInTheDocument();
   });
 
   it("when logged in, selecting a language calls the language endpoint with the new lang", async () => {

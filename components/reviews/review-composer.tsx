@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { PlusIcon, XIcon } from "lucide-react";
 import { updateReviewSchema } from "@/lib/validation/review.schema";
+import { photoUrlSchema } from "@/lib/validation/photo-upload.schema";
 import { StarRatingInput } from "./star-rating-input";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -19,20 +19,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useT } from "@/components/i18n/i18n-provider";
 
-// react-hook-form's useFieldArray needs an array of OBJECTS (a stable `id`
-// key per row), not a raw string[] — updateReviewSchema's `photos: string[]`
-// (server-side truth) is reshaped to `{ url: string }[]` for the form only,
-// then flattened back to string[] before the fetch payload is built.
 const composerFormSchema = updateReviewSchema.omit({ photos: true }).extend({
-  photos: z.array(z.object({ url: z.string().url() })).max(10).optional(),
+  photos: z.array(z.object({ url: photoUrlSchema })).max(10).optional(),
 });
 type ComposerValues = z.infer<typeof composerFormSchema>;
 
-// Mirrors lib/validation/review.schema.ts's real minimum, used here ONLY for
-// the live character-count copy — zodResolver(updateReviewSchema) below is
-// the single source of truth for actual validation, this constant never
-// re-implements it.
 const TEXT_MIN_LENGTH = 50;
 const MAX_PHOTOS = 10;
 
@@ -56,21 +49,14 @@ function buildDefaultValues(existingReview: ExistingReviewForComposer | null): C
   };
 }
 
-// REV-01/REV-02: rating first, then text (min length enforced), then
-// optional photo URLs. Handles both create (POST /api/reviews) and edit
-// (PATCH /api/reviews/[id]) through one form — an existing review starts
-// collapsed behind an "Edit your review" affordance rather than always
-// showing an open form the user already filled in once.
-//
-// spec 6.3 / REV-03's most important UI rule: the success path shows the
-// SAME generic confirmation no matter what visibilityStatus the review was
-// assigned server-side — this component never receives that field (see
-// lib/reviews/author-review-response.ts) and must never try to infer it.
 export function ReviewComposer({ businessId, existingReview }: ReviewComposerProps) {
+  const t = useT();
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [expanded, setExpanded] = useState(existingReview === null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const form = useForm<ComposerValues>({
     resolver: zodResolver(composerFormSchema),
@@ -82,15 +68,40 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
     name: "photos",
   });
 
-  // Keep the form in sync after a parent Server Component refresh (e.g.
-  // router.refresh() following a 409 race, or after our own successful
-  // submit) brings back an updated/newly-created `existingReview` prop.
   useEffect(() => {
     form.reset(buildDefaultValues(existingReview));
     if (existingReview) {
       setExpanded(false);
     }
   }, [existingReview?.id, existingReview?.rating, existingReview?.text]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function onFilesSelected(fileList: FileList | null) {
+    if (!fileList || fileList.length === 0) return;
+    const remaining = MAX_PHOTOS - fields.length;
+    const files = Array.from(fileList).slice(0, remaining);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    setSubmitError(null);
+    try {
+      for (const file of files) {
+        const body = new FormData();
+        body.set("file", file);
+        const res = await fetch("/api/uploads", { method: "POST", body });
+        const data = (await res.json().catch(() => null)) as
+          | { url?: string; error?: string }
+          | null;
+        if (!res.ok || !data?.url) {
+          setSubmitError(data?.error ?? "This photo couldn't be published.");
+          break;
+        }
+        append({ url: data.url });
+      }
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
 
   async function onSubmit(values: ComposerValues) {
     setSubmitError(null);
@@ -116,10 +127,6 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
     });
 
     if (res.status === 409) {
-      // Race: a review for this business already exists (e.g. submitted in
-      // another tab since this page loaded). Refresh rather than dead-end —
-      // the Server Component re-fetches and this composer receives the now-
-      // real `existingReview`, switching itself into edit mode.
       setSubmitError("You've already reviewed this business — refreshing to show your review.");
       router.refresh();
       return;
@@ -128,15 +135,10 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
     const data = await res.json().catch(() => null);
 
     if (!res.ok) {
-      // MOD-01 hard-block or a validation failure — shown verbatim to the
-      // author. NOT the secret REV-03 filter outcome (spec 6.3); MOD-01 is
-      // a hard content block the author is always told about.
       setSubmitError(data?.error ?? "Something went wrong. Please try again.");
       return;
     }
 
-    // Identical confirmation regardless of the review's real (never
-    // revealed) visibility_status — never branch this on `data`.
     setSubmitError(null);
     setSubmitted(true);
     router.refresh();
@@ -148,7 +150,7 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
     return (
       <div id="write-a-review" className="flex flex-col gap-2 rounded-lg bg-secondary/60 p-4">
         <p className="text-base leading-normal text-foreground">
-          {submitted ? "Thanks for your review!" : "You've reviewed this business."}
+          {submitted ? t.review.thanks : t.review.alreadyReviewed}
         </p>
         <Button
           type="button"
@@ -159,7 +161,7 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
             setSubmitted(false);
           }}
         >
-          Edit your review
+          {t.review.edit}
         </Button>
       </div>
     );
@@ -174,10 +176,10 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
             name="rating"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Your rating</FormLabel>
+                <FormLabel>{t.review.yourRating}</FormLabel>
                 <FormControl>
                   <StarRatingInput
-                    label="Your rating"
+                    label={t.review.yourRating}
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -192,18 +194,18 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
             name="text"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="review-text">Your review</FormLabel>
+                <FormLabel htmlFor="review-text">{t.review.yourReview}</FormLabel>
                 <FormControl>
                   <Textarea
                     id="review-text"
-                    aria-label="Your review"
+                    aria-label={t.review.yourReview}
                     placeholder="What did you like or dislike? What should other people know?"
                     rows={5}
                     {...field}
                   />
                 </FormControl>
                 <p className="text-sm leading-normal text-muted-foreground">
-                  {textValue.length}/{TEXT_MIN_LENGTH} characters minimum
+                  {textValue.length}/{TEXT_MIN_LENGTH} {t.review.minChars}
                 </p>
                 <FormMessage />
               </FormItem>
@@ -211,53 +213,61 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
           />
 
           <div className="flex flex-col gap-2">
-            <span className="text-sm leading-normal font-medium">
-              Photos <span className="text-muted-foreground">(optional)</span>
-            </span>
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-2">
-                <Input
-                  type="url"
-                  placeholder="https://..."
-                  aria-label={`Photo URL ${index + 1}`}
-                  {...form.register(`photos.${index}.url` as const)}
+            <span className="text-sm leading-normal font-medium">{t.review.photosOptional}</span>
+            <div className="flex flex-wrap gap-2">
+              {fields.map((field, index) => (
+                <div key={field.id} className="relative size-20 overflow-hidden rounded-md bg-secondary">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={field.url} alt="" className="size-full object-cover" />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="absolute top-0 right-0 min-h-8 min-w-8 bg-background/80 p-0"
+                    aria-label={t.review.removePhoto}
+                    onClick={() => remove(index)}
+                  >
+                    <XIcon className="size-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            {fields.length < MAX_PHOTOS && (
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  className="sr-only"
+                  aria-label={t.review.addPhotos}
+                  onChange={(event) => void onFilesSelected(event.target.files)}
                 />
                 <Button
                   type="button"
-                  variant="ghost"
-                  className="min-h-11 min-w-11"
-                  aria-label="Remove photo"
-                  onClick={() => remove(index)}
+                  variant="outline"
+                  className="min-h-11 w-fit gap-1.5"
+                  disabled={uploading}
+                  onClick={() => fileInputRef.current?.click()}
                 >
-                  <XIcon className="size-4" />
+                  <PlusIcon className="size-4" />
+                  {uploading ? t.review.uploading : t.review.addPhotos}
                 </Button>
-              </div>
-            ))}
-            {fields.length < MAX_PHOTOS && (
-              <Button
-                type="button"
-                variant="outline"
-                className="min-h-11 w-fit gap-1.5"
-                onClick={() => append({ url: "" })}
-              >
-                <PlusIcon className="size-4" />
-                Add photo URL
-              </Button>
+              </>
             )}
           </div>
 
           {submitError && <p className="text-sm text-destructive">{submitError}</p>}
           {submitted && (
-            <p className="text-sm font-medium text-status-open">Thanks for your review!</p>
+            <p className="text-sm font-medium text-status-open">{t.review.thanks}</p>
           )}
 
           <div className="flex items-center gap-2">
             <Button
               type="submit"
-              disabled={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || uploading}
               className="min-h-11 w-fit bg-brand-accent text-white hover:bg-brand-accent/90"
             >
-              Submit review
+              {t.review.submit}
             </Button>
             {existingReview && (
               <Button
@@ -266,7 +276,7 @@ export function ReviewComposer({ businessId, existingReview }: ReviewComposerPro
                 className="min-h-11"
                 onClick={() => setExpanded(false)}
               >
-                Cancel
+                {t.review.cancel}
               </Button>
             )}
           </div>

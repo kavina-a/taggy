@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { verifyOtpCode } from "./generate";
+import { OTP_PURPOSE_LOGIN, type OtpPurpose } from "./purpose";
 
 // T-02-02: this bound (5 attempts) plus the 5-minute OTP_EXPIRY_MS
 // (lib/otp/generate.ts) together keep the brute-force window well under
@@ -18,9 +19,10 @@ export type OtpVerifyResult =
 export async function verifyOtpChallenge(
   phone: string,
   code: string,
+  purpose: OtpPurpose = OTP_PURPOSE_LOGIN,
 ): Promise<OtpVerifyResult> {
   const challenge = await prisma.otpChallenge.findFirst({
-    where: { phone, consumedAt: null },
+    where: { phone, purpose, consumedAt: null },
     orderBy: { createdAt: "desc" },
   });
 

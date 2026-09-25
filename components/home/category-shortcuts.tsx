@@ -32,10 +32,10 @@ const GROUP_ICON: Record<string, LucideIcon> = {
 // CategoryShortcuts — grid (never a horizontal scroll rail, per 02-UI-SPEC.md
 // "Home / discovery page") of taxonomy-driven tiles, one per leaf category.
 // Never hides: categoryTaxonomy is always non-empty static data.
-export function CategoryShortcuts() {
+export function CategoryShortcuts({ heading = "Browse by Category" }: { heading?: string }) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-xl leading-[1.2] font-semibold">Browse by Category</h2>
+      <h2 className="text-xl leading-[1.2] font-semibold">{heading}</h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
         {categoryTaxonomy.flatMap((group) => {
           const Icon = GROUP_ICON[group.groupSlug] ?? Briefcase;

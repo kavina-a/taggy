@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn(), push: vi.fn() }),
+}));
+
 import { ReviewList } from "./review-list";
 import type { ReviewListItem } from "@/lib/types/review";
 
@@ -16,6 +21,11 @@ function makeReview(overrides: Partial<ReviewListItem> & { id: string }): Review
     editedAt: null,
     createdAt: "2026-09-01T00:00:00.000Z",
     photos: [],
+    usefulCount: 0,
+    funnyCount: 0,
+    coolCount: 0,
+    viewerVotes: [],
+    ownerResponse: null,
     ...overrides,
   };
 }

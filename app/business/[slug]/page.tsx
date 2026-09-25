@@ -4,41 +4,20 @@ import { prisma } from "@/lib/prisma";
 import { computeOpenNow } from "@/lib/hours/compute-open-now";
 import { getSession } from "@/lib/session";
 import { sortReviews } from "@/lib/reviews/sort-reviews";
+import { reviewListInclude, toReviewListItem } from "@/lib/reviews/to-review-list-item";
+import { loadViewerVotesByReviewId } from "@/lib/reviews/load-viewer-votes";
+import { loadQuestionsForBusiness } from "@/lib/qa/load-questions";
+import { ensureDefaultCollection } from "@/lib/collections/ensure-default";
+import { loadRelatedBusinesses } from "@/lib/home/load-rails";
+import { getDictionary } from "@/lib/i18n/messages";
+import { getRequestLanguage } from "@/lib/i18n/get-request-language";
 import { BusinessPageView } from "@/components/business/business-page";
 import type { ExistingReviewForComposer } from "@/components/reviews/review-composer";
 import type { BusinessDetail } from "@/lib/types/business";
-import type { ReviewListItem } from "@/lib/types/review";
-import type { Prisma } from "@/lib/generated/prisma/client";
+import type { CollectionMembership } from "@/lib/types/collection";
 
 interface BusinessPageProps {
   params: Promise<{ slug: string }>;
-}
-
-// Same include shape used for both the recommended-review query and the
-// current user's own review lookup below, so the mapper stays a single
-// source of truth for the Prisma-row -> ReviewListItem shape.
-const reviewInclude = {
-  user: { select: { name: true, createdAt: true, _count: { select: { reviews: true } } } },
-  photos: { select: { id: true, url: true, caption: true } },
-} satisfies Prisma.ReviewInclude;
-
-type ReviewWithRelations = Prisma.ReviewGetPayload<{ include: typeof reviewInclude }>;
-
-function toReviewListItem(review: ReviewWithRelations): ReviewListItem {
-  return {
-    id: review.id,
-    userId: review.userId,
-    userName: review.user.name,
-    userAccountCreatedAt: review.user.createdAt.toISOString(),
-    userReviewCount: review.user._count.reviews,
-    rating: review.rating,
-    text: review.text,
-    visitDate: review.visitDate ? review.visitDate.toISOString() : null,
-    visibilityStatus: review.visibilityStatus,
-    editedAt: review.editedAt ? review.editedAt.toISOString() : null,
-    createdAt: review.createdAt.toISOString(),
-    photos: review.photos,
-  };
 }
 
 export default async function BusinessPage({ params }: BusinessPageProps) {
@@ -56,14 +35,11 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
   const session = await getSession();
   const currentUserId = session.userId ?? null;
 
-  // Direct Prisma queries in the page component, matching this project's
-  // established data-fetching pattern (never an internal fetch() to this
-  // app's own API routes from a Server Component).
-  const [recommendedReviews, notRecommendedCount, ownReview] = await Promise.all([
+  const [recommendedReviews, notRecommendedCount, ownReview, questions] = await Promise.all([
     prisma.review.findMany({
       where: { businessId: business.id, visibilityStatus: "recommended" },
       orderBy: { createdAt: "desc" },
-      include: reviewInclude,
+      include: reviewListInclude,
     }),
     prisma.review.count({
       where: { businessId: business.id, visibilityStatus: "not_recommended" },
@@ -74,19 +50,21 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
           include: { photos: { select: { id: true, url: true, caption: true } } },
         })
       : Promise.resolve(null),
+    loadQuestionsForBusiness(business.id, business.claimedByUserId, currentUserId),
   ]);
 
-  // REV-05: blended default order (recency + reviewer credibility + a
-  // neutral helpfulness placeholder) computed once, server-side, for the
-  // initial SSR render — ReviewList's sort dropdown re-applies the same
-  // pure function client-side for the Newest/Highest/Lowest override.
-  const reviews = sortReviews(recommendedReviews.map(toReviewListItem), "blended");
+  const votesByReview = await loadViewerVotesByReviewId(
+    currentUserId,
+    recommendedReviews.map((r) => r.id),
+  );
 
-  // REV-03/spec 6.3: this value is used ONLY to decide the composer's
-  // create-vs-edit starting mode — never to tell the author their own
-  // visibilityStatus (ReviewComposer/ExistingReviewForComposer's shape
-  // deliberately excludes it, same secrecy boundary as
-  // lib/reviews/author-review-response.ts).
+  const reviews = sortReviews(
+    recommendedReviews.map((r) => toReviewListItem(r, votesByReview.get(r.id) ?? [])),
+    "blended",
+  );
+
+  // REV-03/spec 6.3: used ONLY to decide the composer's create-vs-edit
+  // starting mode — never to tell the author their own visibilityStatus.
   const existingReview: ExistingReviewForComposer | null = ownReview
     ? {
         id: ownReview.id,
@@ -95,6 +73,29 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
         photos: ownReview.photos.map((p) => ({ url: p.url })),
       }
     : null;
+
+  let collectionMemberships: CollectionMembership[] = [];
+  if (currentUserId) {
+    const defaultCollection = await ensureDefaultCollection(currentUserId);
+    const collections = await prisma.collection.findMany({
+      where: { userId: currentUserId },
+      orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+      include: {
+        items: { where: { businessId: business.id }, select: { id: true } },
+      },
+    });
+    if (collections.length === 0) {
+      collectionMemberships = [
+        { id: defaultCollection.id, name: defaultCollection.name, containsBusiness: false },
+      ];
+    } else {
+      collectionMemberships = collections.map((c) => ({
+        id: c.id,
+        name: c.name,
+        containsBusiness: c.items.length > 0,
+      }));
+    }
+  }
 
   const detail: BusinessDetail = {
     id: business.id,
@@ -107,6 +108,10 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
     addressFreeText: business.addressFreeText,
     latitude: business.latitude,
     longitude: business.longitude,
+    phone: business.phone,
+    claimedByUserId: business.claimedByUserId,
+    claimedAt: business.claimedAt ? business.claimedAt.toISOString() : null,
+    consumerAlert: business.consumerAlert,
     attributes: (business.attributes ?? {}) as Record<string, unknown>,
     hours: business.hours.map((h) => ({
       dayOfWeek: h.dayOfWeek,
@@ -130,14 +135,17 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
     })),
   };
 
-  // Computed server-side with a hardcoded Asia/Colombo zone (never the
-  // server's OS/env timezone) — see 01-RESEARCH.md's anti-pattern warning
-  // against computing "open now" client-side.
   const openNow = computeOpenNow(
     detail.hours,
     detail.hoursOverrides,
     DateTime.now().setZone("Asia/Colombo"),
   );
+
+  const [relatedBusinesses, lang] = await Promise.all([
+    loadRelatedBusinesses(business.id, business.primaryCategories[0]),
+    getRequestLanguage(),
+  ]);
+  const copy = getDictionary(lang);
 
   return (
     <BusinessPageView
@@ -147,6 +155,11 @@ export default async function BusinessPage({ params }: BusinessPageProps) {
       notRecommendedCount={notRecommendedCount}
       currentUserId={currentUserId}
       existingReview={existingReview}
+      isOwner={currentUserId !== null && business.claimedByUserId === currentUserId}
+      questions={questions}
+      collectionMemberships={collectionMemberships}
+      relatedBusinesses={relatedBusinesses}
+      copy={copy}
     />
   );
 }

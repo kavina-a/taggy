@@ -5,6 +5,7 @@ import { sendOtpSchema } from "@/lib/otp/otp.schema";
 import { generateOtpCode, hashOtpCode, OTP_EXPIRY_MS } from "@/lib/otp/generate";
 import { ConsoleOtpTransport } from "@/lib/otp/transport";
 import { checkRateLimit } from "@/lib/rate-limit/in-memory-limiter";
+import { OTP_PURPOSE_LOGIN } from "@/lib/otp/purpose";
 
 // T-02-03: rate limits are enforced before any OtpChallenge row is created
 // or transport.send is called — never after.
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
       phone,
       codeHash: hashOtpCode(code),
       expiresAt: new Date(Date.now() + OTP_EXPIRY_MS),
+      purpose: OTP_PURPOSE_LOGIN,
     },
   });
   await transport.send(phone, code);

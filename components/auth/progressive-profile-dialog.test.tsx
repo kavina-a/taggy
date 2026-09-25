@@ -33,7 +33,7 @@ describe("ProgressiveProfileDialog", () => {
         "/api/auth/profile",
         expect.objectContaining({
           method: "POST",
-          body: JSON.stringify({ name: "Nimal" }),
+          body: JSON.stringify({ name: "Nimal", email: null }),
         }),
       );
     });
@@ -50,7 +50,7 @@ describe("ProgressiveProfileDialog", () => {
         "/api/auth/profile",
         expect.objectContaining({
           method: "POST",
-          body: JSON.stringify({ name: null }),
+          body: JSON.stringify({ name: null, email: null }),
         }),
       );
     });
@@ -60,5 +60,23 @@ describe("ProgressiveProfileDialog", () => {
   it("never navigates the URL — renders only as an overlay dialog, not a route", () => {
     render(<ProgressiveProfileDialog open onDismiss={onDismiss} />);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("clicking Save with an optional email includes it in the profile payload", async () => {
+    render(<ProgressiveProfileDialog open onDismiss={onDismiss} />);
+
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Nimal" } });
+    fireEvent.change(screen.getByLabelText(/Email/i), { target: { value: "nimal@example.com" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/auth/profile",
+        expect.objectContaining({
+          method: "POST",
+          body: JSON.stringify({ name: "Nimal", email: "nimal@example.com" }),
+        }),
+      );
+    });
   });
 });

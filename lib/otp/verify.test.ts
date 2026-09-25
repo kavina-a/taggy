@@ -18,7 +18,12 @@ const WRONG_CODE = "999999";
 
 async function createChallenge(
   phone: string,
-  opts: { expiresInMs?: number; attemptCount?: number; consumedAt?: Date | null } = {},
+  opts: {
+    expiresInMs?: number;
+    attemptCount?: number;
+    consumedAt?: Date | null;
+    purpose?: string;
+  } = {},
 ) {
   return prisma.otpChallenge.create({
     data: {
@@ -27,6 +32,7 @@ async function createChallenge(
       expiresAt: new Date(Date.now() + (opts.expiresInMs ?? OTP_EXPIRY_MS)),
       attemptCount: opts.attemptCount ?? 0,
       consumedAt: opts.consumedAt ?? null,
+      purpose: opts.purpose ?? "login",
     },
   });
 }
@@ -84,5 +90,16 @@ describe("verifyOtpChallenge", () => {
     if (!secondResult.ok) {
       expect(["not_found", "expired"]).toContain(secondResult.reason);
     }
+  });
+
+  it("does not accept a claim-purpose OTP when verifying for login, and vice versa", async () => {
+    const phone = uniquePhone();
+    await createChallenge(phone, { purpose: "claim" });
+
+    const loginResult = await verifyOtpChallenge(phone, CODE, "login");
+    expect(loginResult).toEqual({ ok: false, reason: "not_found" });
+
+    const claimResult = await verifyOtpChallenge(phone, CODE, "claim");
+    expect(claimResult).toEqual({ ok: true });
   });
 });

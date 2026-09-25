@@ -3,11 +3,13 @@
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ReportButton } from "@/components/reports/report-button";
 import type { BusinessPhotoRow } from "@/lib/types/business";
 
 export interface PhotoGalleryProps {
   photos: BusinessPhotoRow[];
   primaryCategories: string[];
+  currentUserId?: string | null;
 }
 
 // Small static neutral-gray 1x1 PNG, base64-encoded, shared across every
@@ -29,7 +31,13 @@ function EmptyState({ heading, body }: { heading: string; body: string }) {
   );
 }
 
-function PhotoGrid({ photos }: { photos: BusinessPhotoRow[] }) {
+function PhotoGrid({
+  photos,
+  currentUserId,
+}: {
+  photos: BusinessPhotoRow[];
+  currentUserId: string | null;
+}) {
   if (photos.length === 0) {
     return (
       <EmptyState
@@ -45,7 +53,7 @@ function PhotoGrid({ photos }: { photos: BusinessPhotoRow[] }) {
         <AspectRatio
           key={photo.id}
           ratio={4 / 3}
-          className="overflow-hidden rounded-md bg-secondary"
+          className="relative overflow-hidden rounded-md bg-secondary"
         >
           <Image
             src={photo.url}
@@ -59,19 +67,31 @@ function PhotoGrid({ photos }: { photos: BusinessPhotoRow[] }) {
             sizes="(min-width: 640px) 33vw, 50vw"
             className="object-cover"
           />
+          <div className="absolute right-1 bottom-1">
+            <ReportButton
+              targetType="photo"
+              targetId={photo.id}
+              currentUserId={currentUserId}
+              label="Report photo"
+            />
+          </div>
         </AspectRatio>
       ))}
     </div>
   );
 }
 
-export function PhotoGallery({ photos, primaryCategories }: PhotoGalleryProps) {
+export function PhotoGallery({
+  photos,
+  primaryCategories,
+  currentUserId = null,
+}: PhotoGalleryProps) {
   const isRestaurant = primaryCategories.includes("restaurant");
 
   if (!isRestaurant) {
     // Non-restaurant categories never get a Tabs wrapper — plain grid only,
     // even if some photos happen to carry isMenuPhoto: true (T-03-03).
-    return <PhotoGrid photos={photos} />;
+    return <PhotoGrid photos={photos} currentUserId={currentUserId} />;
   }
 
   const menuPhotos = photos.filter((p) => p.isMenuPhoto);
@@ -94,7 +114,7 @@ export function PhotoGallery({ photos, primaryCategories }: PhotoGalleryProps) {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="photos">
-        <PhotoGrid photos={galleryPhotos} />
+        <PhotoGrid photos={galleryPhotos} currentUserId={currentUserId} />
       </TabsContent>
       <TabsContent value="menu">
         {menuPhotos.length === 0 ? (
@@ -103,7 +123,7 @@ export function PhotoGallery({ photos, primaryCategories }: PhotoGalleryProps) {
             body="This restaurant hasn't added menu photos yet."
           />
         ) : (
-          <PhotoGrid photos={menuPhotos} />
+          <PhotoGrid photos={menuPhotos} currentUserId={currentUserId} />
         )}
       </TabsContent>
     </Tabs>

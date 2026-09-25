@@ -8,7 +8,9 @@ import { test, expect } from "@playwright/test";
 // A fresh phone number every run — reusing a fixed one would hit an
 // already-signed-up User on a re-run (hasSeenProfilePrompt: true already
 // persisted), skipping the exact "logged-in header" step this test proves.
-const TEST_PHONE = `+9477${Date.now().toString().slice(-7)}`;
+const TEST_PHONE = `+9477${Date.now().toString().slice(-5)}${Math.floor(Math.random() * 100)
+  .toString()
+  .padStart(2, "0")}`;
 
 test("home -> search -> filter -> business page -> OTP login -> logged-in header", async ({
   page,

@@ -33,14 +33,29 @@ model Business {
   // distinguish "no data yet" from "a genuine low score".
   avgRating           Float?
   reviewCount         Int       @default(0)
+  // CLAIM-01: listed contact number (E.164). Phone-OTP to this number is
+  // the only verification needed to unlock owner-response rights — no
+  // Business Registration upload (that's v2 / BIZ-01).
+  phone               String?
+  claimedByUserId     String?
+  claimedByUser       User?     @relation("BusinessOwner", fields: [claimedByUserId], references: [id], onDelete: SetNull)
+  claimedAt           DateTime?
+  // TRUST-02 v1 slot: public Consumer Alert copy. Null = no banner.
+  // Moderators set this from /moderation; it is never a reporter-facing field.
+  consumerAlert       String?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
   hours               BusinessHours[]
   hoursOverrides      BusinessHoursOverride[]
   photos              BusinessPhoto[]
   reviews             Review[]
+  ownerResponses      OwnerResponse[]
+  questions           Question[]
+  collectionItems     CollectionItem[]
 
   @@index([district])
+  @@index([phone])
+  @@index([claimedByUserId])
   @@index([searchable], type: Gin, map: "business_searchable_gin_idx")
 }
 
@@ -70,16 +85,20 @@ model BusinessHoursOverride {
 }
 
 model BusinessPhoto {
-  id          String   @id @default(cuid())
-  businessId  String
-  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  url         String
-  caption     String?
-  sortOrder   Int      @default(0)
-  isMenuPhoto Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id               String   @id @default(cuid())
+  businessId       String
+  business         Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  url              String
+  caption          String?
+  sortOrder        Int      @default(0)
+  isMenuPhoto      Boolean  @default(false)
+  // PHOTO-01: seed/gallery photos have no uploader; community uploads set this.
+  uploadedByUserId String?
+  uploadedByUser   User?    @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  createdAt        DateTime @default(now())
 
   @@index([businessId])
+  @@index([uploadedByUserId])
 }
 
 model User {
@@ -92,6 +111,15 @@ model User {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
   reviews              Review[]
+  votes                ReviewVote[]
+  ownedBusinesses      Business[]      @relation("BusinessOwner")
+  ownerResponses       OwnerResponse[]
+  reports              Report[]
+  uploadedPhotos       BusinessPhoto[]
+  questions            Question[]
+  answers              Answer[]
+  answerVotes          AnswerVote[]
+  collections          Collection[]
 }
 
 // visibilityStatus per REV-03: every review is synchronously classified at
@@ -129,12 +157,93 @@ model Review {
   createdAt         DateTime                @default(now())
   updatedAt         DateTime                @updatedAt
   photos            ReviewPhoto[]
+  votes             ReviewVote[]
+  ownerResponse     OwnerResponse?
+  // Denormalized vote totals (VOTE-01) — recomputed in the same
+  // transaction as each toggle so GET / sort never has to COUNT().
+  usefulCount       Int                     @default(0)
+  funnyCount        Int                     @default(0)
+  coolCount         Int                     @default(0)
 
   // REV-01: one review per user per business, enforced at the DB level —
   // never only in application code.
   @@unique([userId, businessId])
   @@index([businessId, visibilityStatus])
   @@index([userId, createdAt])
+}
+
+enum VoteKind {
+  useful
+  funny
+  cool
+}
+
+// VOTE-01: three independent toggles — a user can have Useful AND Funny
+// AND Cool on the same review. The unique is (review, user, kind), not
+// (review, user), so each kind is its own row.
+model ReviewVote {
+  id        String   @id @default(cuid())
+  reviewId  String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      VoteKind
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, userId, kind])
+  @@index([reviewId, kind])
+}
+
+// VOTE-02: exactly one public owner response per review, enforced at the
+// DB level. The responding user must be the claimed owner of the review's
+// business (enforced in application code — the unique here only prevents
+// a second response, not a non-owner from posting).
+model OwnerResponse {
+  id         String   @id @default(cuid())
+  reviewId   String   @unique
+  review     Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  editedAt   DateTime?
+
+  @@index([businessId])
+}
+
+enum ReportTargetType {
+  review
+  photo
+  business
+}
+
+enum ReportReason {
+  spam
+  offensive
+  misleading
+  not_relevant
+  other
+}
+
+// MOD-02: a report is a write-only submission. `status` exists so a future
+// moderator console has somewhere to land, but it must NEVER appear in any
+// reporter-facing API response (same secrecy principle as REV-03).
+model Report {
+  id         String           @id @default(cuid())
+  userId     String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType ReportTargetType
+  targetId   String
+  reason     ReportReason
+  status     String           @default("pending")
+  createdAt  DateTime         @default(now())
+
+  @@unique([userId, targetType, targetId])
+  @@index([targetType, targetId])
+  @@index([status, createdAt])
 }
 
 model ReviewPhoto {
@@ -156,6 +265,83 @@ model OtpChallenge {
   attemptCount Int       @default(0)
   consumedAt   DateTime?
   createdAt    DateTime  @default(now())
+  // "login" (AUTH-01) vs "claim" (CLAIM-01). A claim OTP sent to a
+  // business's listed number must never satisfy a login verify, and vice
+  // versa — otherwise proving you control a listing number would silently
+  // sign you in as a User bound to that number.
+  purpose      String    @default("login")
 
-  @@index([phone, expiresAt])
+  @@index([phone, purpose, expiresAt])
+}
+
+// QA-01: any logged-in user can ask; any logged-in user (including the
+// claimed owner) can answer. Guests read freely (AUTH-02).
+model Question {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text       String
+  createdAt  DateTime @default(now())
+  answers    Answer[]
+
+  @@index([businessId, createdAt])
+}
+
+model Answer {
+  id         String       @id @default(cuid())
+  questionId String
+  question   Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text       String
+  voteCount  Int          @default(0)
+  createdAt  DateTime     @default(now())
+  votes      AnswerVote[]
+
+  @@index([questionId, voteCount])
+}
+
+// Simple upvote toggle — unique on (answer, user), not a signed score.
+model AnswerVote {
+  id        String   @id @default(cuid())
+  answerId  String
+  answer    Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([answerId, userId])
+  @@index([answerId])
+}
+
+// COLL-01: every user gets a default "My Saved Places" list (app-created on
+// first save). Named lists are extra Collection rows. COLL-02: isPublic +
+// unique slug is the shareable URL (/collections/[slug]).
+model Collection {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  slug      String           @unique
+  isDefault Boolean          @default(false)
+  isPublic  Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  items     CollectionItem[]
+
+  @@index([userId])
+}
+
+model CollectionItem {
+  id           String     @id @default(cuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  businessId   String
+  business     Business   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@unique([collectionId, businessId])
+  @@index([businessId])
 }
