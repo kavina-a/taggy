@@ -5,15 +5,15 @@ milestone_name: Yelp Parity Redesign
 current_phase: 6
 current_phase_name: Data Foundation
 status: executing
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-09-25T05:47:50.764Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-09-25T06:42:54.586Z"
 last_activity: 2026-09-25
 last_activity_desc: Phase 6 execution started
 progress:
   total_phases: 10
   completed_phases: 0
   total_plans: 7
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -30,7 +30,7 @@ that trust is the asset every business-side revenue stream is sold against.
 ## Current Position
 
 Phase: 6 (Data Foundation) — EXECUTING
-Plan: 2 of 7
+Plan: 3 of 7
 Status: Ready to execute
 Last activity: 2026-09-25 — Phase 6 execution started
 System, Home & Search, Business Page & Write a Review, Login/Signup/Claim); REQUIREMENTS.md
@@ -86,6 +86,7 @@ Progress: [█████░░░░░] 50% (5 of 10 phases complete across b
 | Phase 04-voting-owner-response-reporting (implementation) | — | 1 chunk | schema + APIs + UI + e2e |
 | Phase 05-rich-content-photos-qa-collections (implementation) | — | 1 chunk | schema + APIs + UI + e2e |
 | Phase 06-data-foundation P01 | 12min | 3 tasks | 5 files |
+| Phase 06 P02 | 8min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -176,6 +177,8 @@ Recent decisions affecting current work:
 - [Post-MVP leftovers]: Top Rated rail, review file uploads, pixel NSFW scan, optional email, si/ta chrome strings, people-also-viewed, Consumer Alert slot, owner listing editor, /moderation queue.
 - [Phase ?]: [Phase 06, Plan 01]: BusinessPhoto.tag/ReviewPhoto.tag kept nullable (PhotoTag?) at the DB level per the plan's literal type spec, even though prose called BusinessPhoto.tag 'required' -- 06-07 fulfills that as an application-level seeding guarantee, not a schema constraint
 - [Phase ?]: [Phase 06, Plan 01]: Sixth occurrence of the Prisma migrate-dev DROP INDEX/DROP DEFAULT trap on Business.location/searchable -- stripped before applying, documented in migration header comment
+- [Phase 06]: [Phase 06, Plan 02]: computeOpenNowByBusinessId's isTest-exclusion test lives in run-search-query.test.ts (imported from ./business-open-now) rather than a new dedicated test file, matching the plan's literal Task 1 files list
+- [Phase 06]: [Phase 06, Plan 02]: load-rails.ts's own separate, pre-existing computeOpenNowByBusinessId implementation was left unfiltered by isTest -- out of scope per the plan's literal task actions/acceptance-criteria grep counts; its callers only ever pass ids already isTest-filtered upstream
 
 ### Pending Todos
 
@@ -200,7 +203,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-25T05:47:50.756Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-09-25T06:42:54.572Z
+Stopped at: Completed 06-02-PLAN.md
 traceability updated with all 37 v2.0 requirement mappings; ready to plan Phase 6.
 Resume file: None
