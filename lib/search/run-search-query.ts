@@ -159,7 +159,7 @@ async function runRankedCandidateQuery(
             ELSE ${RATING_SCORE_NEUTRAL}::float END
       ) AS "score"
     FROM "Business"
-    WHERE ${whereClause}
+    WHERE "isTest" = false AND ${whereClause}
     ORDER BY "score" DESC
   `);
 }
@@ -279,7 +279,7 @@ export async function runSearchQuery(filters: SearchFilters): Promise<SearchResu
   // Batch-fetch full Business rows (with a lead photo) for exactly the
   // candidate IDs the raw query returned — one findMany, not N.
   const rawBusinesses = await prisma.business.findMany({
-    where: { id: { in: candidateIds } },
+    where: { id: { in: candidateIds }, isTest: false },
     include: { photos: { take: 1 } },
   });
 

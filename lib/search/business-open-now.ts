@@ -13,7 +13,7 @@ export async function computeOpenNowByBusinessId(ids: string[]): Promise<Map<str
   if (ids.length === 0) return new Map();
 
   const rows = await prisma.business.findMany({
-    where: { id: { in: ids } },
+    where: { id: { in: ids }, isTest: false },
     select: { id: true, hours: true, hoursOverrides: true },
   });
 
