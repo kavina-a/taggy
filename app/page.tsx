@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { SearchBar } from "@/components/search/search-bar";
 import { DiscoveryRail } from "@/components/home/discovery-rail";
 import { CategoryShortcuts } from "@/components/home/category-shortcuts";
@@ -6,42 +5,25 @@ import { getDictionary } from "@/lib/i18n/messages";
 import { getRequestLanguage } from "@/lib/i18n/get-request-language";
 import {
   computeOpenNowByBusinessId,
+  getTrendingBusinessIds,
+  loadBusinessesByIds,
+  loadNewBusinesses,
   loadTopRatedBusinesses,
   RAIL_SIZE,
   toRailBusiness,
 } from "@/lib/home/load-rails";
-import { prisma } from "@/lib/prisma";
 
 const TRENDING_RAIL_SIZE = RAIL_SIZE;
 const NEW_BUSINESSES_RAIL_SIZE = RAIL_SIZE;
 
-function stableHash(value: string): string {
-  return createHash("sha256").update(value).digest("hex");
-}
-
-async function getTrendingIds(): Promise<string[]> {
-  const all = await prisma.business.findMany({ select: { id: true } });
-  const scored = all
-    .map((b) => ({ id: b.id, hash: stableHash(`${b.id}trending-v1`) }))
-    .sort((a, b) => (a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0));
-  return scored.slice(0, TRENDING_RAIL_SIZE).map((s) => s.id);
-}
-
 export default async function Home() {
   const lang = await getRequestLanguage();
   const t = getDictionary(lang);
-  const trendingIds = await getTrendingIds();
+  const trendingIds = await getTrendingBusinessIds(TRENDING_RAIL_SIZE);
 
   const [trendingRows, newRows, topRated] = await Promise.all([
-    prisma.business.findMany({
-      where: { id: { in: trendingIds } },
-      include: { photos: { take: 1 } },
-    }),
-    prisma.business.findMany({
-      orderBy: { createdAt: "desc" },
-      take: NEW_BUSINESSES_RAIL_SIZE,
-      include: { photos: { take: 1 } },
-    }),
+    loadBusinessesByIds(trendingIds),
+    loadNewBusinesses(NEW_BUSINESSES_RAIL_SIZE),
     loadTopRatedBusinesses(),
   ]);
 

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { getCategoryLabel } from "@/lib/categories/category-config";
 import { computeOpenNow } from "@/lib/hours/compute-open-now";
 import { prisma } from "@/lib/prisma";
@@ -112,4 +113,45 @@ export async function loadRelatedBusinesses(
     select: railSelect,
   });
   return rows.map((b) => toRailBusiness(b, undefined));
+}
+
+function stableHash(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+// Extracted from app/page.tsx (DATA-03) — the home page's "Trending Near
+// You" rail samples a stable, deterministic subset of ids (identical across
+// requests/dev-restarts) via a SHA-256 hash of businessId+"trending-v1"
+// (02-RESEARCH.md/PROJECT.md decision log). isTest:false is applied to the
+// candidate-id query itself, before scoring/sorting, so a test fixture can
+// never hash-sort into the returned set.
+export async function getTrendingBusinessIds(limit: number): Promise<string[]> {
+  const all = await prisma.business.findMany({
+    where: { isTest: false },
+    select: { id: true },
+  });
+  const scored = all
+    .map((b) => ({ id: b.id, hash: stableHash(`${b.id}trending-v1`) }))
+    .sort((a, b) => (a.hash < b.hash ? -1 : a.hash > b.hash ? 1 : 0));
+  return scored.slice(0, limit).map((s) => s.id);
+}
+
+// Extracted from app/page.tsx (DATA-03) — hydrates a set of ids (e.g. the
+// trending id list above) into full rail rows, in one batched findMany.
+export async function loadBusinessesByIds(ids: string[]): Promise<BusinessRailRow[]> {
+  return prisma.business.findMany({
+    where: { id: { in: ids }, isTest: false },
+    select: railSelect,
+  });
+}
+
+// Extracted from app/page.tsx (DATA-03) — the home page's "New Businesses"
+// rail, most-recently-created first.
+export async function loadNewBusinesses(limit: number): Promise<BusinessRailRow[]> {
+  return prisma.business.findMany({
+    where: { isTest: false },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: railSelect,
+  });
 }
