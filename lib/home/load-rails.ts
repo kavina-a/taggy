@@ -88,7 +88,7 @@ const railSelect = {
 
 export async function loadTopRatedBusinesses(): Promise<DiscoveryRailBusiness[]> {
   const rows = await prisma.business.findMany({
-    where: { avgRating: { not: null }, reviewCount: { gt: 0 } },
+    where: { isTest: false, avgRating: { not: null }, reviewCount: { gt: 0 } },
     orderBy: [{ avgRating: "desc" }, { reviewCount: "desc" }],
     take: RAIL_SIZE,
     select: railSelect,
@@ -106,6 +106,7 @@ export async function loadRelatedBusinesses(
     where: {
       id: { not: businessId },
       primaryCategories: { has: primaryCategory },
+      isTest: false,
     },
     take: RELATED_SIZE,
     select: railSelect,
