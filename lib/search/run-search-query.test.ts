@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { runSearchQuery, SEARCH_PAGE_SIZE } from "./run-search-query";
+import { computeOpenNowByBusinessId } from "./business-open-now";
 
 // This test suite creates and tears down its own `test-search-*`-slugged
 // fixture businesses — it never depends on or mutates the 107-row seed
@@ -33,6 +34,10 @@ interface FixtureBusiness {
   // not Review/recompute-business-rating.ts (covered elsewhere).
   avgRating?: number | null;
   reviewCount?: number;
+  // DATA-03: test-fixture flag under test itself — this fixture proves
+  // runSearchQuery's isTest:false filter, so it must be settable per-row
+  // rather than always defaulting.
+  isTest?: boolean;
 }
 
 const CAT_RESTAURANT = "zzztest-restaurant-cat";
@@ -42,6 +47,7 @@ const CAT_NAMESORT = "zzztest-namesort-cat";
 const CAT_FALLBACK = "zzztest-fallback-cat";
 const CAT_OPENNOW = "zzztest-opennow-cat";
 const CAT_RATING = "zzztest-rating-cat";
+const CAT_ISTEST = "zzztest-istest-cat";
 
 const fixtures: FixtureBusiness[] = [
   // Category / price-tier AND-semantics fixtures.
@@ -243,6 +249,21 @@ const fixtures: FixtureBusiness[] = [
     attributes: { priceTier: 2 },
     avgRating: null,
     reviewCount: 0,
+  },
+  // DATA-03 isTest-exclusion fixture — a business flagged isTest:true must
+  // never surface through runSearchQuery, even when it otherwise matches
+  // every filter (its own dedicated invented category, no competing rows).
+  {
+    slug: `${SLUG_PREFIX}istest-fixture`,
+    name: "Test Search IsTest Fixture",
+    description: "A test-fixture business that must never appear in search results.",
+    primaryCategories: [CAT_ISTEST],
+    district: "Colombo 03",
+    addressFreeText: "17 Test Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+    isTest: true,
   },
 ];
 
@@ -588,5 +609,23 @@ describe("runSearchQuery — open-now application-layer post-filter (SRCH-03, Ta
     expect(hoursCalls).toHaveLength(1);
 
     spy.mockRestore();
+  });
+});
+
+describe("runSearchQuery — isTest exclusion (DATA-03)", () => {
+  it("never returns an isTest:true business even when it uniquely matches the category filter", async () => {
+    const result = await runSearchQuery({
+      categories: [CAT_ISTEST],
+      sort: "recommended",
+      page: 1,
+    });
+    expect(result.businesses).toHaveLength(0);
+    expect(result.totalCount).toBe(0);
+  });
+
+  it("computeOpenNowByBusinessId filters an isTest:true id out of its underlying findMany, not just the returned Map", async () => {
+    const istestId = fixtureId("istest-fixture", idBySlug);
+    const map = await computeOpenNowByBusinessId([istestId]);
+    expect(map.has(istestId)).toBe(false);
   });
 });
