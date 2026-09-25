@@ -1,7 +1,13 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { loadRelatedBusinesses, loadTopRatedBusinesses } from "./load-rails";
+import {
+  getTrendingBusinessIds,
+  loadBusinessesByIds,
+  loadNewBusinesses,
+  loadRelatedBusinesses,
+  loadTopRatedBusinesses,
+} from "./load-rails";
 
 // Fixture-creation/teardown convention matches lib/search/run-search-query.test.ts
 // (SLUG_PREFIX, beforeAll create / afterAll deleteMany by slug prefix) — this
@@ -96,6 +102,33 @@ const fixtures: FixtureBusiness[] = [
     attributes: { priceTier: 2 },
     isTest: false,
   },
+  // getTrendingBusinessIds / loadNewBusinesses fixtures — created "now" (same
+  // moment as every other fixture in this suite), so both the trending hash
+  // pool and the createdAt-desc ordering naturally include them.
+  {
+    slug: `${SLUG_PREFIX}istest-new`,
+    name: "Test Rails IsTest New",
+    description: "A test-fixture business that must never appear on Trending or New rails.",
+    primaryCategories: [CAT_RAILS],
+    district: "Colombo 03",
+    addressFreeText: "6 Test Rails Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+    isTest: true,
+  },
+  {
+    slug: `${SLUG_PREFIX}real-new`,
+    name: "Test Rails Real New",
+    description: "A real (non-test) business, same creation moment as the isTest fixture.",
+    primaryCategories: [CAT_RAILS],
+    district: "Colombo 03",
+    addressFreeText: "7 Test Rails Lane",
+    latitude: COLOMBO_03.lat,
+    longitude: COLOMBO_03.lng,
+    attributes: { priceTier: 2 },
+    isTest: false,
+  },
 ];
 
 const idBySlug = new Map<string, string>();
@@ -133,5 +166,41 @@ describe("loadRelatedBusinesses — isTest exclusion (DATA-03)", () => {
     const slugs = result.map((b) => b.slug);
     expect(slugs).not.toContain(`${SLUG_PREFIX}istest-related`);
     expect(slugs).toContain(`${SLUG_PREFIX}real-related`);
+  });
+});
+
+describe("getTrendingBusinessIds — isTest exclusion (DATA-03)", () => {
+  it("never includes an isTest:true business's id, even with a limit covering every business", async () => {
+    const istestId = idBySlug.get(`${SLUG_PREFIX}istest-new`);
+    const realId = idBySlug.get(`${SLUG_PREFIX}real-new`);
+    if (!istestId || !realId) throw new Error("fixture not found: istest-new / real-new");
+
+    const total = await prisma.business.count();
+    const ids = await getTrendingBusinessIds(total + 10);
+
+    expect(ids).not.toContain(istestId);
+    expect(ids).toContain(realId);
+  });
+});
+
+describe("loadNewBusinesses — isTest exclusion (DATA-03)", () => {
+  it("never returns an isTest:true business regardless of createdAt recency", async () => {
+    const result = await loadNewBusinesses(10);
+    const slugs = result.map((b) => b.slug);
+    expect(slugs).not.toContain(`${SLUG_PREFIX}istest-new`);
+    expect(slugs).toContain(`${SLUG_PREFIX}real-new`);
+  });
+});
+
+describe("loadBusinessesByIds — isTest exclusion (DATA-03)", () => {
+  it("returns rows only for the isTest:false ids when the input list includes an isTest:true id", async () => {
+    const istestId = idBySlug.get(`${SLUG_PREFIX}istest-new`);
+    const realId = idBySlug.get(`${SLUG_PREFIX}real-new`);
+    if (!istestId || !realId) throw new Error("fixture not found: istest-new / real-new");
+
+    const result = await loadBusinessesByIds([istestId, realId]);
+    const ids = result.map((b) => b.id);
+    expect(ids).not.toContain(istestId);
+    expect(ids).toContain(realId);
   });
 });
