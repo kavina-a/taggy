@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { BusinessCard } from "@/components/directory/business-card";
 import { categoryTaxonomy } from "@/lib/categories/category-config";
+import { loadDirectoryBusinesses } from "@/lib/directory/load-directory-businesses";
 
 // T-04-02: fixed server-side page size — the client only ever controls the
 // page *number* via ?page=, never the page size/limit directly.
@@ -43,17 +43,7 @@ export default async function DirectoryPage({ searchParams }: DirectoryPageProps
   const resolvedSearchParams = await searchParams;
   const page = parsePage(resolvedSearchParams.page);
 
-  const [businesses, totalCount] = await Promise.all([
-    prisma.business.findMany({
-      orderBy: { name: "asc" },
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE,
-      include: {
-        photos: { orderBy: { sortOrder: "asc" }, take: 1 },
-      },
-    }),
-    prisma.business.count(),
-  ]);
+  const { businesses, totalCount } = await loadDirectoryBusinesses(page, PAGE_SIZE);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
