@@ -5,15 +5,15 @@ milestone_name: Yelp Parity Redesign
 current_phase: 6
 current_phase_name: Data Foundation
 status: executing
-stopped_at: v2.0 Yelp Parity Redesign roadmap created (Phases 6-10); REQUIREMENTS.md
-last_updated: "2026-09-25T00:32:37.900Z"
-last_activity: 2026-09-24
-last_activity_desc: ROADMAP.md updated with v2.0 Phases 6-10 (Data Foundation, Design
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-09-25T05:47:50.764Z"
+last_activity: 2026-09-25
+last_activity_desc: Phase 6 execution started
 progress:
-  total_phases: 5
+  total_phases: 10
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 7
+  completed_plans: 1
   percent: 0
 ---
 
@@ -25,14 +25,14 @@ See: .planning/PROJECT.md (updated 2026-09-24)
 
 **Core value:** The free consumer review/search product must stay trustworthy and useful —
 that trust is the asset every business-side revenue stream is sold against.
-**Current focus:** Phase 6 — Data Foundation (v2.0 Yelp Parity Redesign roadmap created; ready to plan)
+**Current focus:** Phase 6 — Data Foundation
 
 ## Current Position
 
-Phase: 6 of 10 (Data Foundation)
-Plan: — (not yet planned)
+Phase: 6 (Data Foundation) — EXECUTING
+Plan: 2 of 7
 Status: Ready to execute
-Last activity: 2026-09-24 — ROADMAP.md updated with v2.0 Phases 6-10 (Data Foundation, Design
+Last activity: 2026-09-25 — Phase 6 execution started
 System, Home & Search, Business Page & Write a Review, Login/Signup/Claim); REQUIREMENTS.md
 traceability updated; 37/37 v2.0 requirements mapped
 
@@ -85,6 +85,7 @@ Progress: [█████░░░░░] 50% (5 of 10 phases complete across b
 | Phase 03-reviews-ratings P02 (ui) | 19min | 17 commits | 21 files |
 | Phase 04-voting-owner-response-reporting (implementation) | — | 1 chunk | schema + APIs + UI + e2e |
 | Phase 05-rich-content-photos-qa-collections (implementation) | — | 1 chunk | schema + APIs + UI + e2e |
+| Phase 06-data-foundation P01 | 12min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -173,6 +174,8 @@ Recent decisions affecting current work:
 - [Phase 5]: One default collection per user via partial unique SQL index; name is the literal "My Saved Places".
 - [Phase 5]: Fifth Prisma migrate trap — same gist/trgm DROP INDEX + searchable DROP DEFAULT strip.
 - [Post-MVP leftovers]: Top Rated rail, review file uploads, pixel NSFW scan, optional email, si/ta chrome strings, people-also-viewed, Consumer Alert slot, owner listing editor, /moderation queue.
+- [Phase ?]: [Phase 06, Plan 01]: BusinessPhoto.tag/ReviewPhoto.tag kept nullable (PhotoTag?) at the DB level per the plan's literal type spec, even though prose called BusinessPhoto.tag 'required' -- 06-07 fulfills that as an application-level seeding guarantee, not a schema constraint
+- [Phase ?]: [Phase 06, Plan 01]: Sixth occurrence of the Prisma migrate-dev DROP INDEX/DROP DEFAULT trap on Business.location/searchable -- stripped before applying, documented in migration header comment
 
 ### Pending Todos
 
@@ -197,7 +200,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-24T00:00:00.000Z
-Stopped at: v2.0 Yelp Parity Redesign roadmap created (Phases 6-10); REQUIREMENTS.md
+Last session: 2026-09-25T05:47:50.756Z
+Stopped at: Completed 06-01-PLAN.md
 traceability updated with all 37 v2.0 requirement mappings; ready to plan Phase 6.
-Resume file: .planning/ROADMAP.md
+Resume file: None

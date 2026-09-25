@@ -230,11 +230,11 @@ no PLAN.md/CONTEXT.md/RESEARCH.md artifacts, only SUMMARY.md)
   4. Every seeded business shows 0-5 real Q&A threads with answers, and business/search/home pages carry correct, business-specific browser-tab titles (never the literal "localhost").
   5. 60+ seeded users exist with avatars, names, cities, friend/review/photo counts, and elite-year badges, and the Business schema carries `guaranteed`/`responseTime`/`responseRate` fields ready for Phase 9's business page to read.
 
-**Plans**: 0/7 plans
+**Plans**: 1/7 plans executed
 Plans:
 **Wave 1**
 
-- [ ] 06-01-PLAN.md — Schema migration (all Phase 6 fields/enums in one pass) + businessSeedSchema extension + one-time mu3 test-fixture cleanup
+- [x] 06-01-PLAN.md — Schema migration (all Phase 6 fields/enums in one pass) + businessSeedSchema extension + one-time mu3 test-fixture cleanup
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -330,7 +330,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Reviews & Ratings | 2/2 | Complete    | 2026-09-15 |
 | 4. Voting, Owner Response & Reporting | 1/1 | Complete    | 2026-09-15 |
 | 5. Rich Content — Photos, Q&A & Collections | 1/1 | Complete    | 2026-09-16 |
-| 6. Data Foundation | 0/7 | Not started | - |
+| 6. Data Foundation | 1/7 | In Progress|  |
 | 7. Design System | 0/? | Not started | - |
 | 8. Home & Search | 0/? | Not started | - |
 | 9. Business Page, Reviews/Photos/Q&A Restyle & Write a Review | 0/? | Not started | - |

@@ -80,22 +80,28 @@ UI/data-quality work on top of them unless noted otherwise.
 
 ### Data Foundation
 
-- [ ] **DATA-01**: Business schema has `guaranteed`, `responseTime`, `responseRate` fields
-- [ ] **DATA-02**: User schema has an `eliteYear` field
-- [ ] **DATA-03**: Business/Review/User records support an `isTest` flag; all `mu3…` test
+- [x] **DATA-01**: Business schema has `guaranteed`, `responseTime`, `responseRate` fields
+- [x] **DATA-02**: User schema has an `eliteYear` field
+- [x] **DATA-03**: Business/Review/User records support an `isTest` flag; all `mu3…` test
       fixtures are flagged/deleted and excluded from every UI surface
+
 - [ ] **DATA-04**: All seed business photos are local, category-matched images under
       `/public/seed`, not `picsum.photos` URLs
+
 - [ ] **DATA-05**: The business page renders human-readable category labels everywhere,
       never a raw slug
+
 - [ ] **DATA-06**: Every seeded business has 5-60 reviews with a realistic rating
       distribution (skewed 3-5 stars), dates spread over 3 years, 80-400 word bodies, and
       some reviews carrying 1-3 photos
-- [ ] **DATA-07**: Seeded reviews carry vote counts (Useful/Funny/Cool) and seeded photos
+
+- [x] **DATA-07**: Seeded reviews carry vote counts (Useful/Funny/Cool) and seeded photos
       carry a tag (`food|inside|outside|menu|drink|video`)
+
 - [ ] **DATA-08**: Every seeded business has 0-5 Q&A threads with answers
-- [ ] **DATA-09**: 60+ seeded users exist with avatar, name, city, friend/review/photo
+- [x] **DATA-09**: 60+ seeded users exist with avatar, name, city, friend/review/photo
       counts, and `eliteYear`
+
 - [ ] **DATA-10**: Business, search, and home pages emit `generateMetadata` titles matching
       the spec's format (never the literal "localhost")
 
@@ -103,23 +109,31 @@ UI/data-quality work on top of them unless noted otherwise.
 
 - [ ] **DESIGN-01**: `globals.css` defines the spec's red/teal/rating-tier color tokens,
       replacing the current orange `--brand-accent`
+
 - [ ] **DESIGN-02**: Headings/nav/buttons render in Poppins and body text in Open Sans via
       `next/font`, with the existing Noto Sans Sinhala/Tamil fallback chain preserved
+
 - [ ] **DESIGN-03**: A shared `<Header>` component supports transparent/white/minimal/
       legacy variants and a hover-triggered category mega-nav, replacing the current inline
       plain header bar in `app/layout.tsx`
+
 - [ ] **DESIGN-04**: A shared `<Footer>` component with the spec's 5-column link layout
       renders on every non-minimal page (currently missing entirely)
+
 - [ ] **DESIGN-05**: A `<StarRating>` display component renders rounded-square rating boxes
       in tier colors with a formatted review-count label, usable anywhere a rating shows
       (search cards, business page, reviews) — distinct from the existing
       `star-rating-input.tsx` write-review picker
+
 - [ ] **DESIGN-06**: An `<OpenStatus>` component renders plain-text "Open"/"Closed" state,
       replacing the current pill badges
+
 - [ ] **DESIGN-07**: Primary/secondary/gray-pill/filter-chip button and chip styles match
       the spec's radius/color rules
+
 - [ ] **DESIGN-08**: A shared `<Modal>` component (focus trap, Esc/backdrop close) backs a
       login-wall modal shown whenever a logged-out user attempts Save/Follow/Message/etc.
+
 - [ ] **DESIGN-09**: A `<SectionLinkList>` component (4-column link list with "Show more")
       and a cookie-consent banner exist as shared components
 
@@ -127,16 +141,22 @@ UI/data-quality work on top of them unless noted otherwise.
 
 - [ ] **HOME-01**: Home page shows a full-bleed autoplay hero carousel with slide captions
       and a red pill CTA linking to search
+
 - [ ] **HOME-02**: Home page shows a 3-column Recent Activity feed of review/photo/check-in
       cards
+
 - [ ] **HOME-03**: Home page shows a categories grid using two-tone category icons (no
       repeated icons)
+
 - [ ] **HOME-04**: Home page shows city chips with Top/Trending/Seasonal `SectionLinkList`s
       for the selected city
+
 - [ ] **SEARCHUI-01**: Search results page shows a results column with a sticky map styled
       per spec (numbered pins, hover-sync between row and pin)
+
 - [ ] **SEARCHUI-02**: Search results page shows the spec's filter chip row and full filter
       panel (price, suggested, dietary, category, features, distance)
+
 - [ ] **SEARCHUI-03**: Search results page header shows the spec's "Top 10 Best {Query}
       Near {City}" H1 and sort dropdown
 
@@ -145,17 +165,22 @@ UI/data-quality work on top of them unless noted otherwise.
 - [ ] **BIZPAGE-01**: Business page header (photo-strip or round-logo variant) matches the
       spec's layout with name, `StarRating`, claimed/category line, `OpenStatus`, and
       action row
+
 - [ ] **BIZPAGE-02**: Business page sections (hours, amenities, about, Q&A, people-also-
       viewed) render in the spec's layout and order, reusing existing data/APIs from
       Phases 3-5 without re-implementing them
+
 - [ ] **BIZPAGE-03**: Recommended Reviews section matches the spec's layout (rating
       breakdown bars, sort/language/rating filters, reaction buttons) using the existing
       review/vote data
+
 - [ ] **BIZPAGE-04**: Photos section/lightbox matches the spec's tabbed grid + lightbox
       layout
+
 - [ ] **BIZPAGE-05**: The business page is reachable as a normal full page at
       `/business/[slug]` first; an intercepted-route modal-over-search variant is added
       last, only after the full-page version works
+
 - [ ] **WRITEREV-01**: A Write a Review flow (landing + form) lets a user pick a star
       rating, write a review with tag-chip prompts, and autosave a draft, matching the
       spec's layout
@@ -164,12 +189,15 @@ UI/data-quality work on top of them unless noted otherwise.
 
 - [ ] **LOGINUI-01**: `/login` is restyled to the spec's two-column layout with phone OTP
       as the primary flow (unchanged auth mechanism)
+
 - [ ] **LOGINUI-02**: A new `/signup` page exists with the spec's form fields and layout
 - [ ] **LOGINUI-03** (stretch): "Continue with Google" is added to login/signup only if
       low-effort to integrate; Apple sign-in is explicitly out of scope for this milestone
+
 - [ ] **CLAIMUI-01**: A multi-step `/claim` wizard (business name → email → phone OTP →
       address/map → categories → hours → photos → done) replaces the current ad-hoc
       `/businesses/new` flow, with a live business-page preview from step 2 onward
+
 - [ ] **STUB-01**: A styled 404 page and footer-linked stub pages (about, terms, privacy,
       support, etc.) exist so no footer link 404s
 
@@ -268,12 +296,14 @@ roadmap yet).
 
 - v1 requirements: 33 total (corrected from the initial definition pass's count of 30 —
   every individually-listed `XXX-NN` id above was recounted directly)
+
 - Mapped to roadmap phases: 33
 - Unmapped: 0 ✓
 
 - v2.0 "Yelp Parity Redesign" requirements: 37 total (DATA-01..10, DESIGN-01..09,
   HOME-01..04, SEARCHUI-01..03, BIZPAGE-01..05, WRITEREV-01, LOGINUI-01..03, CLAIMUI-01,
   STUB-01)
+
 - Mapped to roadmap phases: 37
 - Unmapped: 0 ✓
 
