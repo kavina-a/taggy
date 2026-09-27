@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useT } from "@/components/i18n/i18n-provider";
+import { StarRating } from "@/components/ui/star-rating";
 
 // Condensed rail-card business shape — a strict subset of
 // BusinessCardProps (components/directory/business-card.tsx). Deliberately
@@ -95,28 +96,40 @@ function RailCard({ business }: { business: DiscoveryRailBusiness }) {
     <Link
       href={`/business/${business.slug}`}
       data-primary-category={business.primaryCategory}
-      className="block w-[240px] min-h-11 shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[280px]"
+      className="block w-[250px] min-h-11 shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-[290px]"
     >
-      <Card className="h-full transition-colors hover:bg-secondary/60">
-        <CardContent className="flex flex-col gap-2">
+      <Card className="h-full border border-neutral-200/90 transition-all hover:border-neutral-300 hover:shadow-md bg-white">
+        <CardContent className="flex flex-col gap-2.5 p-3.5">
           <RailCardPhoto photoUrl={business.photoUrl} name={business.name} />
           <div className="flex items-center justify-between gap-2">
-            <h3 className="truncate text-base leading-[1.2] font-semibold">
+            <h3 className="truncate text-base leading-[1.2] font-bold text-neutral-900 hover:text-[#D71616] transition-colors">
               {business.name}
             </h3>
             {business.openNow !== undefined && (
               <Badge
                 className={
                   business.openNow
-                    ? "shrink-0 bg-status-open text-white"
-                    : "shrink-0 bg-status-closed text-white"
+                    ? "shrink-0 bg-[#008055] text-white text-[11px] font-bold"
+                    : "shrink-0 bg-[#D71616] text-white text-[11px] font-bold"
                 }
               >
                 {business.openNow ? t.hours.openNow : t.hours.closed}
               </Badge>
             )}
           </div>
-          <p className="text-sm leading-normal text-muted-foreground">
+
+          {business.avgRating != null && (
+            <div className="flex items-center gap-1.5 -mt-1">
+              <StarRating
+                rating={business.avgRating}
+                reviewCount={business.reviewCount}
+                size="xs"
+                showCount={false}
+              />
+            </div>
+          )}
+
+          <p className="text-xs leading-normal text-muted-foreground font-medium">
             {metadataLine(business)}
           </p>
         </CardContent>

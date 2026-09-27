@@ -85,12 +85,16 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --status-open: #16a34a;
-  --status-closed: #71717a;
-  /* UI-SPEC accent (10%): reserved ONLY for the primary CTA, active tab
-     indicator, and selected category chip — never shadcn's own semantic
-     `--accent` (used for hover/muted backgrounds), which stays neutral. */
-  --brand-accent: #ea580c;
+  --status-open: #008055;
+  --status-closed: #D71616;
+  /* Yelp brand red (#D71616) and rating colors */
+  --brand-accent: #D71616;
+  --rating-5: #FB433C;
+  --rating-4: #FF643D;
+  --rating-3: #FF8742;
+  --rating-2: #FFAD48;
+  --rating-1: #FFCC4B;
+  --rating-0: #C8C9CA;
   /* UI-SPEC Design System: Inter first, with Sinhala/Tamil glyph fallback since
      real seeded business names/addresses may contain Sinhala/Tamil script. */
   --font-sans: var(--font-inter), "Noto Sans Sinhala", "Noto Sans Tamil", system-ui,
@@ -141,4 +145,24 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Yelp-style Map Tooltip */
+.leaflet-tooltip.yelp-map-tooltip {
+  background-color: #ffffff !important;
+  color: #171717 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 5px 10px !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  transition: opacity 0.15s ease-in-out !important;
+}
+
+.leaflet-tooltip-top.yelp-map-tooltip::before {
+  border-top-color: #ffffff !important;
 }

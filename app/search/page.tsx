@@ -30,11 +30,22 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     attrs: parseAttrsParam(parsed.attrs) ?? {},
   };
 
+  const searchKey = new URLSearchParams(
+    Object.entries(resolvedSearchParams).flatMap(([k, v]) =>
+      Array.isArray(v) ? v.map((item) => [k, item]) : v != null ? [[k, v]] : []
+    )
+  ).toString();
+
   return (
     <main className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 md:py-12">
-      <SearchBar initialFindDesc={parsed.find_desc} initialFindLoc={parsed.find_loc} />
+      <SearchBar
+        key={`bar-${searchKey}`}
+        initialFindDesc={parsed.find_desc}
+        initialFindLoc={parsed.find_loc}
+      />
 
       <SearchExperience
+        key={`exp-${searchKey}`}
         initialFilters={initialFilters}
         initialSort={parsed.sort}
         initialResult={initialResult}

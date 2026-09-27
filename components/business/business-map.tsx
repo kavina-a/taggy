@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
 
 // Leaflet's default marker icon references relative image paths that break
@@ -49,6 +49,14 @@ export function BusinessMap({ latitude, longitude, name }: BusinessMapProps) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Marker position={[latitude, longitude]} icon={DEFAULT_ICON}>
+          <Tooltip
+            direction="top"
+            offset={[0, -8]}
+            opacity={1}
+            className="yelp-map-tooltip"
+          >
+            <span className="font-semibold text-xs text-neutral-900">{name}</span>
+          </Tooltip>
           <Popup>{name}</Popup>
         </Marker>
       </MapContainer>

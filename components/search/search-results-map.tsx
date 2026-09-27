@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import Link from "next/link";
 import { DEFAULT_ICON } from "@/components/business/business-map";
@@ -55,8 +55,21 @@ export function SearchResultsMap({ businesses }: SearchResultsMapProps) {
             position={[business.latitude, business.longitude]}
             icon={DEFAULT_ICON}
           >
+            <Tooltip
+              direction="top"
+              offset={[0, -8]}
+              opacity={1}
+              className="yelp-map-tooltip"
+            >
+              <span className="font-semibold text-xs text-neutral-900">{business.name}</span>
+            </Tooltip>
             <Popup>
-              <Link href={`/business/${business.slug}`}>{business.name}</Link>
+              <Link
+                href={`/business/${business.slug}`}
+                className="font-semibold text-sm hover:underline text-[#007692]"
+              >
+                {business.name}
+              </Link>
             </Popup>
           </Marker>
         ))}

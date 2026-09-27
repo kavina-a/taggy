@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { VoteButtons } from "./vote-buttons";
 import { OwnerResponseBlock, OwnerResponseComposer } from "./owner-response";
 import { ReportButton } from "@/components/reports/report-button";
+import { getRatingTierColor } from "@/components/ui/star-rating";
 import type { ReviewListItem } from "@/lib/types/review";
 
 export interface ReviewCardProps {
@@ -26,14 +27,19 @@ function formatReviewDate(iso: string): string {
 }
 
 function ReadOnlyStars({ rating }: { rating: number }) {
+  const tierColor = getRatingTierColor(rating);
   return (
     <span aria-label={`Rating: ${rating} out of 5`} className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((n) => (
-        <StarIcon
+        <span
           key={n}
-          aria-hidden="true"
-          className={cn("size-4", n <= rating ? "fill-brand-accent text-brand-accent" : "text-muted-foreground")}
-        />
+          style={{ backgroundColor: n <= rating ? tierColor : "#C8C9CA" }}
+          className="inline-flex size-4 items-center justify-center rounded-[3px] text-white"
+        >
+          <svg className="size-3 fill-current" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.9z" />
+          </svg>
+        </span>
       ))}
     </span>
   );

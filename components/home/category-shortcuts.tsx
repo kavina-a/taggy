@@ -3,7 +3,7 @@ import {
   UtensilsCrossed,
   ShoppingBag,
   Wrench,
-  Sparkles,
+  Flower2,
   GraduationCap,
   PartyPopper,
   Scissors,
@@ -21,7 +21,7 @@ const GROUP_ICON: Record<string, LucideIcon> = {
   "food-dining": UtensilsCrossed,
   "shopping-retail": ShoppingBag,
   "home-local-services": Wrench,
-  "beauty-wellness": Sparkles,
+  "beauty-wellness": Flower2,
   education: GraduationCap,
   "events-weddings": PartyPopper,
   "fashion-tailoring": Scissors,
@@ -36,7 +36,7 @@ export function CategoryShortcuts({ heading = "Browse by Category" }: { heading?
   return (
     <section className="flex flex-col gap-4">
       <h2 className="text-xl leading-[1.2] font-semibold">{heading}</h2>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {categoryTaxonomy.flatMap((group) => {
           const Icon = GROUP_ICON[group.groupSlug] ?? Briefcase;
           return group.categories.map((category) => (

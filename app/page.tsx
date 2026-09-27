@@ -1,6 +1,9 @@
-import { SearchBar } from "@/components/search/search-bar";
 import { DiscoveryRail } from "@/components/home/discovery-rail";
-import { CategoryShortcuts } from "@/components/home/category-shortcuts";
+import { YelpCategories } from "@/components/home/yelp-categories";
+import { RecentActivity } from "@/components/home/recent-activity";
+import { CityExplorer } from "@/components/home/city-explorer";
+import { YelpHeroCarousel } from "@/components/home/yelp-hero-carousel";
+import { CuratedCollectionsSection } from "@/components/home/curated-collections";
 import { getDictionary } from "@/lib/i18n/messages";
 import { getRequestLanguage } from "@/lib/i18n/get-request-language";
 import {
@@ -41,20 +44,36 @@ export default async function Home() {
   const newBusinesses = newRows.map((b) => toRailBusiness(b, openNowById.get(b.id)));
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-12 px-4 py-8 md:gap-16 md:py-12">
-      <section className="flex flex-col items-center gap-6 py-8 text-center md:py-12">
-        <h1 className="max-w-2xl text-[28px] leading-[1.2] font-semibold">
-          {t.home.headline}
-        </h1>
-        <div className="w-full max-w-2xl">
-          <SearchBar />
-        </div>
-      </section>
+    <main className="flex w-full flex-col bg-white">
+      {/* Yelp-style Dynamic Hero with Rotating High-Res Backgrounds & Synchronized Text */}
+      <YelpHeroCarousel />
 
-      <DiscoveryRail heading={t.home.trending} businesses={trending} />
-      <DiscoveryRail heading={t.home.topRated} businesses={topRated} />
-      <DiscoveryRail heading={t.home.newBusinesses} businesses={newBusinesses} />
-      <CategoryShortcuts heading={t.home.browseCategory} />
+      {/* Main Content Sections */}
+      <div
+        id="explore"
+        className="mx-auto flex w-full max-w-[1600px] flex-col gap-16 px-4 py-12 sm:px-8 md:gap-20 md:py-16 lg:px-12 xl:px-16"
+      >
+        {/* 1. Yelp 8-Category Grid */}
+        <YelpCategories />
+
+        {/* 2. Recent Community Activity Feed */}
+        <RecentActivity />
+
+        {/* 3. Trending Near You Rail */}
+        <DiscoveryRail heading={t.home.trending} businesses={trending} />
+
+        {/* 4. Top Rated Businesses Rail */}
+        <DiscoveryRail heading={t.home.topRated} businesses={topRated} />
+
+        {/* 5. New Businesses Rail */}
+        <DiscoveryRail heading={t.home.newBusinesses} businesses={newBusinesses} />
+
+        {/* 6. Handcrafted Curated Collections */}
+        <CuratedCollectionsSection />
+
+        {/* 7. Searches in Sri Lankan Cities */}
+        <CityExplorer />
+      </div>
     </main>
   );
 }
