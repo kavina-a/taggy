@@ -220,7 +220,7 @@ export function SearchBar({
               setWhereFocused(false);
             }}
             onChange={(event) => setFindDesc(event.target.value)}
-            className="border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm sm:text-base font-normal placeholder:text-neutral-400 pl-2 pr-6 h-full"
+            className="border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm sm:text-base font-normal text-black placeholder:text-neutral-400 pl-2 pr-6 h-full"
           />
           {findDesc && (
             <button
@@ -281,7 +281,7 @@ export function SearchBar({
               setWhatFocused(false);
             }}
             onChange={(event) => setFindLoc(event.target.value)}
-            className="border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm sm:text-base font-normal placeholder:text-neutral-400 pl-2 pr-14 h-full"
+            className="border-0 bg-transparent shadow-none focus-visible:ring-0 text-sm sm:text-base font-normal text-black placeholder:text-neutral-400 pl-2 pr-14 h-full"
           />
 
           <div className="absolute right-2 flex items-center gap-1">
