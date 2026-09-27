@@ -67,3 +67,27 @@ export function lookupDistrictCentroid(query: string): DistrictCentroid | null {
   );
   return partial ?? null;
 }
+
+export const DEFAULT_COLOMBO_COORDS = { lat: 6.9271, lng: 79.8612 };
+
+export function resolveLocationQuery(query: string): { lat: number; lng: number } | null {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return null;
+
+  if (
+    normalized === "near you" ||
+    normalized === "near me" ||
+    normalized === "current location" ||
+    normalized === "colombo" ||
+    normalized === "colombo, sri lanka"
+  ) {
+    return DEFAULT_COLOMBO_COORDS;
+  }
+
+  const district = lookupDistrictCentroid(query);
+  if (district) {
+    return { lat: district.lat, lng: district.lng };
+  }
+
+  return null;
+}

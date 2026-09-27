@@ -1,6 +1,7 @@
 import type { SearchParams } from "./search-params.schema";
 import type { SearchFilters } from "./run-search-query";
 import { parseAttrsParam } from "./attrs-param";
+import { resolveLocationQuery } from "./district-centroids";
 
 // Single shared conversion from parseSearchParams's already-validated
 // output to runSearchQuery's SearchFilters shape — used by both
@@ -21,10 +22,21 @@ export function buildSearchFiltersFromParams(parsed: SearchParams): SearchFilter
         .filter((n) => n >= 1 && n <= 4)
     : undefined;
 
+  let originLat = parsed.lat;
+  let originLng = parsed.lng;
+
+  if ((originLat == null || originLng == null) && parsed.find_loc) {
+    const resolved = resolveLocationQuery(parsed.find_loc);
+    if (resolved) {
+      originLat = resolved.lat;
+      originLng = resolved.lng;
+    }
+  }
+
   return {
     textQuery: parsed.find_desc,
-    originLat: parsed.lat,
-    originLng: parsed.lng,
+    originLat,
+    originLng,
     categories: categories && categories.length > 0 ? categories : undefined,
     priceTiers: priceTiers && priceTiers.length > 0 ? priceTiers : undefined,
     attributeFilters: parseAttrsParam(parsed.attrs),

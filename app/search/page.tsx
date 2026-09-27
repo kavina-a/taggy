@@ -19,7 +19,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const result = await runSearchQuery(filters);
   const initialResult = await serializeSearchResult(result);
 
-  const hasLocation = parsed.lat != null && parsed.lng != null;
+  const hasLocation =
+    (parsed.lat != null && parsed.lng != null) ||
+    (filters.originLat != null && filters.originLng != null);
 
   const initialFilters: FilterState = {
     categories: filters.categories ?? [],
