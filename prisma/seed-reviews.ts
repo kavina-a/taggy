@@ -38,6 +38,31 @@ const REVIEWERS: ReviewerSeed[] = [
     photoCount: 14,
   },
   {
+    phone: "+94776667788",
+    name: "Hasini Wickramasinghe",
+    city: "Colombo 03 (Kollupitiya)",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
+    eliteYear: 2025,
+    friendCount: 46,
+    photoCount: 31,
+  },
+  {
+    phone: "+94777778899",
+    name: "Chathura Silva",
+    city: "Nugegoda",
+    avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
+    friendCount: 24,
+    photoCount: 18,
+  },
+  {
+    phone: "+94778889900",
+    name: "Anuka Fernando",
+    city: "Mount Lavinia",
+    avatarUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=200&q=80",
+    friendCount: 33,
+    photoCount: 22,
+  },
+  {
     phone: "+94774445566",
     name: "Ayesha Senanayake",
     city: "Colombo 04 (Bambalapitiya)",
@@ -69,8 +94,19 @@ interface ReviewData {
 }
 
 const REVIEWS: ReviewData[] = [
+  // Saman Kumara (0)
   {
-    reviewerIndex: 0, // Saman Kumara
+    reviewerIndex: 0,
+    businessSlug: "toni-and-guy-colombo",
+    rating: 5,
+    text: "Exceptional service and styling! The team is extremely attentive, professional, and knowledgeable. By far the finest salon experience in Colombo. Highly recommended for hair treatments.",
+    usefulCount: 4,
+    funnyCount: 2,
+    coolCount: 6,
+    daysAgo: 1,
+  },
+  {
+    reviewerIndex: 0,
     businessSlug: "ministry-of-crab",
     rating: 5,
     text: "Ministry of Crab never fails to impress! The Garlic Chilli Crab with fresh Kade Bread is an absolute masterpiece. The crustacean quality is world-class, perfectly cooked with tender, juicy meat in every bite. Service at the Dutch Hospital courtyard was impeccable.",
@@ -86,7 +122,29 @@ const REVIEWS: ReviewData[] = [
     daysAgo: 2,
   },
   {
-    reviewerIndex: 1, // Dilani Perera
+    reviewerIndex: 0,
+    businessSlug: "cafe-kumbuk",
+    rating: 4,
+    text: "Wonderful healthy brunch options and high quality locally sourced ingredients. The iced oat latte and sourdough avocado toast with poached eggs were spot on. Cozy, welcoming atmosphere with plenty of natural light.",
+    usefulCount: 6,
+    funnyCount: 0,
+    coolCount: 4,
+    daysAgo: 12,
+  },
+
+  // Dilani Perera (1)
+  {
+    reviewerIndex: 1,
+    businessSlug: "the-curry-leaf",
+    rating: 5,
+    text: "Superb authentic Sri Lankan seafood and hoppers prepared fresh at the live stations. The ambiance at night by the lotus pond is truly magical. Make sure to try the crab curry!",
+    usefulCount: 8,
+    funnyCount: 3,
+    coolCount: 9,
+    daysAgo: 1,
+  },
+  {
+    reviewerIndex: 1,
     businessSlug: "barefoot-garden-cafe",
     rating: 5,
     text: "The perfect oasis in Colombo. Sitting in the open-air courtyard beneath the frangipani trees listening to acoustic tunes while sipping iced lime tea is sublime. The black pork curry and quiche are consistently delicious. A must-visit whenever friends visit Sri Lanka.",
@@ -102,7 +160,29 @@ const REVIEWS: ReviewData[] = [
     daysAgo: 4,
   },
   {
-    reviewerIndex: 2, // Nuwan Jayasuriya
+    reviewerIndex: 1,
+    businessSlug: "nihonbashi-colombo",
+    rating: 5,
+    text: "Exceptional Japanese gastronomy right in Colombo. The sashimi is fresh off the southern coast boats, and the charcoal yakitori skewers are grilled to perfection. A tranquil garden ambiance reminiscent of Kyoto.",
+    usefulCount: 9,
+    funnyCount: 1,
+    coolCount: 11,
+    daysAgo: 18,
+  },
+
+  // Nuwan Jayasuriya (2)
+  {
+    reviewerIndex: 2,
+    businessSlug: "cheers-pub",
+    rating: 4,
+    text: "Great British pub vibe with live sports screenings, cold brews, and generous portions. The fish and chips along with the beef pie are always dependable favorites.",
+    usefulCount: 3,
+    funnyCount: 1,
+    coolCount: 2,
+    daysAgo: 1,
+  },
+  {
+    reviewerIndex: 2,
     businessSlug: "upalis-by-nawaloka",
     rating: 5,
     text: "Authentic Sri Lankan culinary heritage at its finest. The mutton curry, pol sambol, and hot hoppers are out of this world. Clean, comfortable, and great view of Victoria Park across the road. Always take visiting relatives here.",
@@ -111,34 +191,64 @@ const REVIEWS: ReviewData[] = [
     coolCount: 6,
     daysAgo: 6,
   },
+
+  // Hasini Wickramasinghe (3)
   {
-    reviewerIndex: 3, // Ayesha Senanayake
+    reviewerIndex: 3,
     businessSlug: "spa-ceylon-colombo",
     rating: 5,
-    text: "Pure bliss! The de-stress body massage melted away all fatigue from the week. The therapists are exceptionally skilled, the aromatic oils smell heavenly, and the serene ambiance makes you forget you are in the middle of bustling Colombo.",
+    text: "Pure sanctuary of relaxation. The herbal massage and natural aromatherapy scents melt away all stress. Staff are courteous and the signature teas are delicious.",
     photos: [
       {
         url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
         caption: "Herbal relaxation oils",
       },
     ],
-    usefulCount: 10,
-    funnyCount: 1,
+    usefulCount: 7,
+    funnyCount: 4,
     coolCount: 8,
-    daysAgo: 8,
+    daysAgo: 1,
   },
+
+  // Chathura Silva (4)
   {
-    reviewerIndex: 0, // Saman Kumara
-    businessSlug: "cafe-kumbuk",
+    reviewerIndex: 4,
+    businessSlug: "house-of-fashions",
     rating: 4,
-    text: "Wonderful healthy brunch options and high quality locally sourced ingredients. The iced oat latte and sourdough avocado toast with poached eggs were spot on. Cozy, welcoming atmosphere with plenty of natural light.",
-    usefulCount: 6,
-    funnyCount: 0,
-    coolCount: 4,
-    daysAgo: 12,
+    text: "A massive department store with multiple floors. Huge variety of casual clothing, home goods, and accessories at very accessible prices. Spacious parking available.",
+    usefulCount: 2,
+    funnyCount: 1,
+    coolCount: 1,
+    daysAgo: 2,
   },
+
+  // Anuka Fernando (5)
   {
-    reviewerIndex: 4, // Dinesh Fernando
+    reviewerIndex: 5,
+    businessSlug: "navy-food-restaurant",
+    rating: 5,
+    text: "Consistently delicious food right near the harbor area. Fast friendly service, spotlessly clean dining space, and reasonable prices for Colombo Fort. Will return soon.",
+    usefulCount: 5,
+    funnyCount: 2,
+    coolCount: 4,
+    daysAgo: 2,
+  },
+
+  // Ayesha Senanayake (6)
+  {
+    reviewerIndex: 6,
+    businessSlug: "cinnamon-grand-weddings",
+    rating: 5,
+    text: "We attended an evening wedding banquet here and the entire arrangement was world class. The chandeliers, ballroom acoustics, and five-star culinary spread left every guest delighted.",
+    usefulCount: 11,
+    funnyCount: 1,
+    coolCount: 7,
+    daysAgo: 7,
+  },
+
+  // Dinesh Fernando (7)
+  {
+    reviewerIndex: 7,
     businessSlug: "dimo-automobile-service-centre",
     rating: 5,
     text: "First rate service diagnostics and maintenance. The service advisors were transparent with quotation and delivered the vehicle on the exact promised hour. Best place in Western Province for modern vehicle care.",
@@ -146,16 +256,6 @@ const REVIEWS: ReviewData[] = [
     funnyCount: 0,
     coolCount: 3,
     daysAgo: 15,
-  },
-  {
-    reviewerIndex: 1, // Dilani Perera
-    businessSlug: "nihonbashi",
-    rating: 5,
-    text: "Exceptional Japanese gastronomy right in Colombo. The sashimi is fresh off the southern coast boats, and the charcoal yakitori skewers are grilled to perfection. A tranquil garden ambiance reminiscent of Kyoto.",
-    usefulCount: 9,
-    funnyCount: 1,
-    coolCount: 11,
-    daysAgo: 18,
   },
 ];
 
@@ -171,7 +271,7 @@ async function seedReviews() {
         name: r.name,
         city: r.city,
         avatarUrl: r.avatarUrl,
-        eliteYear: r.eliteYear,
+        eliteYear: r.eliteYear ?? null,
         friendCount: r.friendCount,
         photoCount: r.photoCount,
       },
@@ -180,13 +280,13 @@ async function seedReviews() {
         name: r.name,
         city: r.city,
         avatarUrl: r.avatarUrl,
-        eliteYear: r.eliteYear,
+        eliteYear: r.eliteYear ?? null,
         friendCount: r.friendCount,
         photoCount: r.photoCount,
       },
     });
     createdUsers.push(user);
-    console.log(`User created/updated: ${user.name} (${user.id})`);
+    console.log(`User created/updated: ${user.name} -> ID: ${user.id} (Phone: ${user.phone})`);
   }
 
   // 2. Create reviews

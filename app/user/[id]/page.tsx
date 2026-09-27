@@ -16,10 +16,12 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getSession } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getRatingTierColor } from "@/components/ui/star-rating";
+import { EditProfileDialog } from "@/components/user/edit-profile-dialog";
+import { UserAvatar } from "@/components/ui/user-avatar";
 
 interface UserProfilePageProps {
   params: Promise<{ id: string }>;
@@ -61,6 +63,7 @@ function formatMonthYear(date: Date): string {
 
 export default async function UserProfilePage({ params }: UserProfilePageProps) {
   const { id } = await params;
+  const session = await getSession();
 
   const user = await prisma.user.findFirst({
     where: {
@@ -130,6 +133,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
     );
   }
 
+  const isOwnProfile = session.userId === user.id;
   const displayName = user.name || "Community Reviewer";
   const userInitials = displayName
     .split(" ")
@@ -148,13 +152,8 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
       <div className="bg-white border-b border-neutral-200">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            {/* Avatar */}
-            <Avatar className="size-28 sm:size-32 border-4 border-white shadow-md shrink-0">
-              {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={displayName} />}
-              <AvatarFallback className="bg-gradient-to-br from-neutral-700 to-neutral-900 text-white font-extrabold text-2xl">
-                {userInitials}
-              </AvatarFallback>
-            </Avatar>
+            {/* Avatar Circle with Respective Profile Picture or Fallback Initials */}
+            <UserAvatar src={user.avatarUrl} name={displayName} size="xl" />
 
             {/* User Bio & Meta */}
             <div className="flex flex-col items-center sm:items-start flex-1">
@@ -166,6 +165,18 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
                   <span className="text-xs font-black uppercase px-2.5 py-1 rounded bg-[#D71616] text-white tracking-wider shadow-xs">
                     Elite &apos;{String(user.eliteYear).slice(-2)}
                   </span>
+                )}
+                {isOwnProfile && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-neutral-100 text-neutral-600 border border-neutral-200">
+                      Your Profile
+                    </span>
+                    <EditProfileDialog
+                      initialName={user.name}
+                      initialCity={user.city}
+                      initialAvatarUrl={user.avatarUrl}
+                    />
+                  </div>
                 )}
               </div>
 

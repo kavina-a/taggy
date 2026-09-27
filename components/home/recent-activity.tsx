@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ThumbsUp, HeartHandshake, Heart, Frown } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { StarRating } from "@/components/ui/star-rating";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,7 @@ interface ActivityItem {
   id: string;
   userId: string;
   userName: string;
+  userAvatarUrl?: string;
   userCity: string;
   action: string;
   timeAgo: string;
@@ -34,6 +35,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
     id: "act-1",
     userId: "cmujq1rwd0000jgwecndn2njo", // Saman Kumara
     userName: "Saman Kumara",
+    userAvatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
     userCity: "Colombo 07",
     action: "wrote a review",
     timeAgo: "25 minutes ago",
@@ -51,6 +53,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
     id: "act-2",
     userId: "cmujq1ry70001jgwev6gtkkmu", // Dilani Perera
     userName: "Dilani Perera",
+    userAvatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
     userCity: "Colombo 03",
     action: "wrote a review",
     timeAgo: "1 hour ago",
@@ -68,6 +71,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
     id: "act-3",
     userId: "cmujq1ryi0002jgwe3wkwhuq8", // Nuwan Jayasuriya
     userName: "Nuwan Jayasuriya",
+    userAvatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
     userCity: "Rajagiriya",
     action: "wrote a review",
     timeAgo: "3 hours ago",
@@ -83,8 +87,9 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-4",
-    userId: "cmujq1ryo0003jgwejoetqwgq",
+    userId: "cmujqui7b00035swegfiuz8fv", // Hasini Wickramasinghe
     userName: "Hasini Wickramasinghe",
+    userAvatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
     userCity: "Kollupitiya",
     action: "wrote a review",
     timeAgo: "5 hours ago",
@@ -100,8 +105,9 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-5",
-    userId: "cmujq1ryw0004jgweb6uql1tc",
+    userId: "cmujqui7i00045swe6h32oywu", // Chathura Silva
     userName: "Chathura Silva",
+    userAvatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
     userCity: "Nugegoda",
     action: "wrote a review",
     timeAgo: "7 hours ago",
@@ -117,8 +123,9 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-6",
-    userId: "cmujq1rwd0000jgwecndn2njo",
+    userId: "cmujqui7q00055swe2py44jah", // Anuka Fernando
     userName: "Anuka Fernando",
+    userAvatarUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=200&q=80",
     userCity: "Mount Lavinia",
     action: "wrote a review",
     timeAgo: "10 hours ago",
@@ -201,11 +208,12 @@ export function RecentActivity() {
                     className="shrink-0 transition-transform hover:scale-105"
                     title={`View ${item.userName}'s profile`}
                   >
-                    <Avatar className="size-10 border border-neutral-200 hover:border-[#D71616] transition-colors">
-                      <AvatarFallback className="bg-neutral-100 text-neutral-800 font-bold text-xs">
-                        {userInitials}
-                      </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                      src={item.userAvatarUrl}
+                      name={item.userName}
+                      size="md"
+                      className="border border-neutral-200 hover:border-[#D71616] transition-colors"
+                    />
                   </Link>
                   <div className="flex flex-col">
                     <div className="flex items-baseline gap-1.5 flex-wrap">

@@ -14,8 +14,10 @@ const optionalEmail = z
 
 const profileSchema = z
   .object({
-    name: z.string().min(1).max(80).nullable(),
+    name: z.string().min(1).max(80).nullable().optional(),
     email: optionalEmail.optional(),
+    city: z.string().max(80).nullable().optional(),
+    avatarUrl: z.string().max(500).nullable().optional(),
   })
   .strict();
 
@@ -35,8 +37,10 @@ export async function POST(req: NextRequest) {
     await prisma.user.update({
       where: { id: session.userId },
       data: {
-        name: parsedBody.data.name ?? undefined,
+        name: parsedBody.data.name !== undefined ? (parsedBody.data.name ?? null) : undefined,
         email: email === undefined || email === "" ? undefined : email,
+        city: parsedBody.data.city !== undefined ? (parsedBody.data.city ?? null) : undefined,
+        avatarUrl: parsedBody.data.avatarUrl !== undefined ? (parsedBody.data.avatarUrl ?? null) : undefined,
         hasSeenProfilePrompt: true,
       },
     });

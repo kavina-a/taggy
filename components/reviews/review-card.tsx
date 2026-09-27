@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Star, MapPin, User as UserIcon } from "lucide-react";
 import { cn } from "cn";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/ui/user-avatar";
 import { VoteButtons } from "./vote-buttons";
 import { OwnerResponseBlock, OwnerResponseComposer } from "./owner-response";
 import { ReportButton } from "@/components/reports/report-button";
@@ -77,14 +77,12 @@ export function ReviewCard({
               title={`View ${displayName}'s profile`}
               aria-label={`View ${displayName}'s profile`}
             >
-              <Avatar className="size-11 border-2 border-neutral-200 group-hover:border-[#D71616] transition-colors shadow-xs">
-                {review.userAvatarUrl && (
-                  <AvatarImage src={review.userAvatarUrl} alt={displayName} />
-                )}
-                <AvatarFallback className="bg-gradient-to-br from-neutral-100 to-neutral-200 text-neutral-800 font-bold text-xs">
-                  {userInitials || <UserIcon className="size-4 text-neutral-500" />}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                src={review.userAvatarUrl}
+                name={displayName}
+                size="lg"
+                className="border-2 border-neutral-200 group-hover:border-[#D71616] transition-colors"
+              />
             </Link>
 
             {/* Reviewer Details */}
