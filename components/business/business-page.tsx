@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -98,11 +101,28 @@ export function BusinessPageView({
           <h1 className="text-[28px] leading-[1.2] font-semibold">
             {business.name}
           </h1>
-          <SaveBusinessButton
-            businessId={business.id}
-            currentUserId={currentUserId}
-            memberships={collectionMemberships}
-          />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="min-h-9 gap-1.5 text-sm"
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({ title: business.name, url: window.location.href }).catch(() => {});
+                } else {
+                  navigator.clipboard.writeText(window.location.href).then(() => alert("Link copied!"));
+                }
+              }}
+            >
+              <Share2 className="size-4" />
+              Share
+            </Button>
+            <SaveBusinessButton
+              businessId={business.id}
+              currentUserId={currentUserId}
+              memberships={collectionMemberships}
+            />
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {business.primaryCategories.map((category) => (
