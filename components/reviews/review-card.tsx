@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { StarIcon } from "lucide-react";
+import { Star, MapPin, User as UserIcon } from "lucide-react";
 import { cn } from "cn";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { VoteButtons } from "./vote-buttons";
 import { OwnerResponseBlock, OwnerResponseComposer } from "./owner-response";
 import { ReportButton } from "@/components/reports/report-button";
@@ -53,18 +54,72 @@ export function ReviewCard({
   variant = "default",
 }: ReviewCardProps) {
   const displayName = review.userName ?? "Anonymous";
+  const userInitials = (review.userName ?? "Anonymous")
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
     <Card
       size="sm"
       className={cn(variant === "filtered" && "border-dashed bg-muted/40")}
     >
-      <CardContent className="flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-base leading-normal font-semibold">{displayName}</span>
-            <ReadOnlyStars rating={review.rating} />
+      <CardContent className="flex flex-col gap-3">
+        {/* Reviewer Profile Header */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            {/* Clickable Profile Avatar */}
+            <Link
+              href={`/user/${review.userId}`}
+              className="group shrink-0 transition-transform hover:scale-105"
+              title={`View ${displayName}'s profile`}
+              aria-label={`View ${displayName}'s profile`}
+            >
+              <Avatar className="size-11 border-2 border-neutral-200 group-hover:border-[#D71616] transition-colors shadow-xs">
+                {review.userAvatarUrl && (
+                  <AvatarImage src={review.userAvatarUrl} alt={displayName} />
+                )}
+                <AvatarFallback className="bg-gradient-to-br from-neutral-100 to-neutral-200 text-neutral-800 font-bold text-xs">
+                  {userInitials || <UserIcon className="size-4 text-neutral-500" />}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+
+            {/* Reviewer Details */}
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Link
+                  href={`/user/${review.userId}`}
+                  className="text-base font-bold text-neutral-900 hover:text-[#D71616] hover:underline transition-colors leading-tight"
+                >
+                  {displayName}
+                </Link>
+                {review.userEliteYear && (
+                  <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded bg-[#D71616] text-white tracking-wider">
+                    Elite &apos;{String(review.userEliteYear).slice(-2)}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-neutral-500 font-normal mt-0.5 flex-wrap">
+                {review.userCity && (
+                  <span className="flex items-center gap-1 text-neutral-600">
+                    <MapPin className="size-3 text-neutral-400" />
+                    {review.userCity}
+                  </span>
+                )}
+                {review.userCity && <span>·</span>}
+                <span className="flex items-center gap-1 text-neutral-600 font-medium">
+                  <Star className="size-3 text-amber-500 fill-amber-500" />
+                  {review.userReviewCount} {review.userReviewCount === 1 ? "review" : "reviews"}
+                </span>
+              </div>
+            </div>
           </div>
+
+          {/* Action buttons */}
           <div className="flex items-center gap-1">
             {isOwnReview && (
               <Link
@@ -82,11 +137,19 @@ export function ReviewCard({
             />
           </div>
         </div>
-        <p className="text-sm leading-normal text-muted-foreground">
-          {formatReviewDate(review.createdAt)}
-          {review.editedAt && " · Edited"}
-        </p>
-        <p className="text-base leading-normal text-foreground">{review.text}</p>
+
+        {/* Rating and Date */}
+        <div className="flex items-center gap-2 pt-0.5">
+          <ReadOnlyStars rating={review.rating} />
+          <span className="text-xs text-muted-foreground">
+            {formatReviewDate(review.createdAt)}
+            {review.editedAt && " · Edited"}
+          </span>
+        </div>
+
+        {/* Review Text */}
+        <p className="text-base leading-relaxed text-foreground">{review.text}</p>
+
         {review.photos.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {review.photos.map((photo) => (

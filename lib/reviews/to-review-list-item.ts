@@ -2,7 +2,16 @@ import type { Prisma } from "@/lib/generated/prisma/client";
 import type { ReviewListItem } from "@/lib/types/review";
 
 export const reviewListInclude = {
-  user: { select: { name: true, createdAt: true, _count: { select: { reviews: true } } } },
+  user: {
+    select: {
+      name: true,
+      createdAt: true,
+      avatarUrl: true,
+      city: true,
+      eliteYear: true,
+      _count: { select: { reviews: true } },
+    },
+  },
   photos: { select: { id: true, url: true, caption: true } },
   ownerResponse: { select: { id: true, text: true, createdAt: true, editedAt: true } },
 } satisfies Prisma.ReviewInclude;
@@ -17,6 +26,9 @@ export function toReviewListItem(
     id: review.id,
     userId: review.userId,
     userName: review.user.name,
+    userAvatarUrl: review.user.avatarUrl,
+    userCity: review.user.city,
+    userEliteYear: review.user.eliteYear,
     userAccountCreatedAt:
       review.user.createdAt instanceof Date
         ? review.user.createdAt.toISOString()

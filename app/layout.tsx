@@ -40,11 +40,11 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const session = await getSession();
-  let user: { name: string | null; phone: string; languagePref: string } | null = null;
+  let user: { id: string; name: string | null; phone: string; languagePref: string } | null = null;
   if (session.userId) {
     user = await prisma.user.findUnique({
       where: { id: session.userId },
-      select: { name: true, phone: true, languagePref: true },
+      select: { id: true, name: true, phone: true, languagePref: true },
     });
   }
 

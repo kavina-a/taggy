@@ -20,6 +20,9 @@ export interface ReviewListItem {
   id: string;
   userId: string;
   userName: string | null;
+  userAvatarUrl?: string | null;
+  userCity?: string | null;
+  userEliteYear?: number | null;
   userAccountCreatedAt: string;
   userReviewCount: number;
   rating: number;

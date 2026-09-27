@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 
 interface ActivityItem {
   id: string;
+  userId: string;
   userName: string;
   userCity: string;
   action: string;
@@ -31,6 +32,7 @@ interface ActivityItem {
 const SEED_ACTIVITY: ActivityItem[] = [
   {
     id: "act-1",
+    userId: "cmujq1rwd0000jgwecndn2njo", // Saman Kumara
     userName: "Saman Kumara",
     userCity: "Colombo 07",
     action: "wrote a review",
@@ -47,6 +49,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-2",
+    userId: "cmujq1ry70001jgwev6gtkkmu", // Dilani Perera
     userName: "Dilani Perera",
     userCity: "Colombo 03",
     action: "wrote a review",
@@ -63,6 +66,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-3",
+    userId: "cmujq1ryi0002jgwe3wkwhuq8", // Nuwan Jayasuriya
     userName: "Nuwan Jayasuriya",
     userCity: "Rajagiriya",
     action: "wrote a review",
@@ -79,6 +83,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-4",
+    userId: "cmujq1ryo0003jgwejoetqwgq",
     userName: "Hasini Wickramasinghe",
     userCity: "Kollupitiya",
     action: "wrote a review",
@@ -95,6 +100,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-5",
+    userId: "cmujq1ryw0004jgweb6uql1tc",
     userName: "Chathura Silva",
     userCity: "Nugegoda",
     action: "wrote a review",
@@ -111,6 +117,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
   },
   {
     id: "act-6",
+    userId: "cmujq1rwd0000jgwecndn2njo",
     userName: "Anuka Fernando",
     userCity: "Mount Lavinia",
     action: "wrote a review",
@@ -126,6 +133,7 @@ const SEED_ACTIVITY: ActivityItem[] = [
     reactions: { helpful: 5, thanks: 2, love: 4, ohNo: 0 },
   },
 ];
+
 
 export function RecentActivity() {
   const [reactions, setReactions] = useState<Record<string, Record<string, boolean>>>({});
@@ -188,16 +196,25 @@ export function RecentActivity() {
               <div>
                 {/* User Header */}
                 <div className="flex items-center gap-3 pb-3 border-b border-neutral-100">
-                  <Avatar className="size-10 border border-neutral-200">
-                    <AvatarFallback className="bg-neutral-100 text-neutral-800 font-bold text-xs">
-                      {userInitials}
-                    </AvatarFallback>
-                  </Avatar>
+                  <Link
+                    href={`/user/${item.userId}`}
+                    className="shrink-0 transition-transform hover:scale-105"
+                    title={`View ${item.userName}'s profile`}
+                  >
+                    <Avatar className="size-10 border border-neutral-200 hover:border-[#D71616] transition-colors">
+                      <AvatarFallback className="bg-neutral-100 text-neutral-800 font-bold text-xs">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
                   <div className="flex flex-col">
                     <div className="flex items-baseline gap-1.5 flex-wrap">
-                      <span className="font-bold text-sm text-neutral-900">
+                      <Link
+                        href={`/user/${item.userId}`}
+                        className="font-bold text-sm text-neutral-900 hover:text-[#D71616] hover:underline transition-colors"
+                      >
                         {item.userName}
-                      </span>
+                      </Link>
                       <span className="text-xs text-neutral-500 font-normal">
                         {item.action}
                       </span>

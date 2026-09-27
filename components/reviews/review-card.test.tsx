@@ -74,4 +74,13 @@ describe("ReviewCard", () => {
       "#write-a-review",
     );
   });
+
+  it("links to the reviewer's user profile page", () => {
+    render(<ReviewCard review={makeReview({ userId: "usr_456", userName: "Saman K." })} isOwnReview={false} currentUserId={null} />);
+
+    const profileLinks = screen.getAllByRole("link", { name: /Saman K\./i });
+    expect(profileLinks.length).toBeGreaterThan(0);
+    expect(profileLinks[0]).toHaveAttribute("href", "/user/usr_456");
+  });
 });
+

@@ -31,7 +31,7 @@ import type { LanguageCode } from "@/lib/i18n/messages";
 import type { Messages } from "@/lib/i18n/messages";
 
 export interface HeaderProps {
-  user: { name: string | null; phone: string; languagePref: string } | null;
+  user: { id?: string; name: string | null; phone: string; languagePref: string } | null;
   lang: LanguageCode;
   dict: Messages;
   isModerator: boolean;
@@ -198,6 +198,14 @@ export function Header({ user, lang, dict, isModerator, initials }: HeaderProps)
                     </p>
                     <p className="text-xs text-neutral-500 truncate">{user.phone}</p>
                   </div>
+                  {user.id && (
+                    <DropdownMenuItem asChild>
+                      <Link href={`/user/${user.id}`} className="flex items-center gap-2 py-2 cursor-pointer font-medium">
+                        <UserIcon className="size-4 text-neutral-500" />
+                        <span>My Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/saved" className="flex items-center gap-2 py-2 cursor-pointer">
                       <Bookmark className="size-4 text-neutral-500" />
